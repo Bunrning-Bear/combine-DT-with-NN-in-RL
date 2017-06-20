@@ -15,11 +15,23 @@ import os
 import random
 import re
 import unittest
+import random
+import logging
+import json
+logging.basicConfig(level=logging.INFO)
 
 import six
 from six.moves import cPickle as pickle
 from six import iteritems, iterkeys, itervalues, string_types
-
+from sklearn.neural_network import MLPClassifier
+import numpy as np
+"""
+Six is a Python 2 and 3 compatibility library. 
+It provides utility functions for smoothing over the differences 
+between the Python versions with the goal of writing Python code 
+that is compatible on both Python versions. See the documentation 
+for more information on what is provided.
+"""
 VERSION = (1, 0, 1)
 __version__ = '.'.join(map(str, VERSION))
 
@@ -39,6 +51,8 @@ DISCRETE_METRICS = [
     ENTROPY3,
 ]
 
+# define the max value of a continous attribute
+MAX_VALUE = 9999999999
 # Simple statistical variance, the measure of how far a set of numbers
 # is spread out.
 VARIANCE1 = 'variance1'
@@ -168,11 +182,13 @@ def normrange(x1, x2, mu, sigma, f=True):
 def cmp(a, b): # pylint: disable=redefined-builtin
     return (a > b) - (a < b)
 
+# ------ global function ----
+
+
 class DDist(object):
     """
     Incrementally tracks the probability distribution of discrete elements.
-    """
-    
+    """    
     def __init__(self, seq=None):
         self.clear()
         if seq:
@@ -524,8 +540,20 @@ def get_values(data, attr):
     """
     Creates a list of values in the chosen attribut for each record in data,
     prunes out all of the redundant values, and return the list.  
+    [todo] can be done just one time then be stored..
     """
     return unique([record[attr] for record in data])
+
+def split_values(data, attr):
+    """
+    Creates a list of values in the chosen attribute, 
+    including a random value in the attribute range of data set and a MAX VALUE
+    """
+    uni_data = unique([record[attr] for record in data])
+    min_sample = min(uni_data)
+    max_sample = max(uni_data)
+    selected_val = random.randint(min_sample,max_sample)
+    return [selected_val, MAX_VALUE]
 
 def choose_attribute(data, attributes, class_attr, fitness, method):
     """
@@ -539,80 +567,139 @@ def choose_attribute(data, attributes, class_attr, fitness, method):
         gain = fitness(data, attr, class_attr, method=method)
         best = max(best, (gain, attr))
     return best[1]
+def random_choose_attribute(data, attributes, class_attr):
+    """
+    [change]Choose a attribute just randomly.
+
+    Args:
+        attributes: a list of attribute. eg. ['a', 'c', 'b', 'd']
+    """
+    length = len(attributes)
+    attr = random.randint(0,length-1)
+    return attributes[attr]
+
 
 def is_continuous(v):
     return isinstance(v, (float, Decimal))
 
-def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper, **kwargs):
+def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,current_deep, **kwargs):
     """
     Returns a new decision tree based on the examples given.
+    Args:
+        data:
+        attributes:
+        class_attr:
+        fitness_func:
+        wrapper: pass Class Tree to record all of parameter in trees.
     """
     
     split_attr = kwargs.get('split_attr', None)
     split_val = kwargs.get('split_val', None)
     
-    assert class_attr not in attributes
+    assert class_attr not in attributes, "Class attributes should not in class attribute"
     node = None
     data = list(data) if isinstance(data, Data) else data
     if wrapper.is_continuous_class:
         stop_value = CDist(seq=[r[class_attr] for r in data])
         # For a continuous class case, stop if all the remaining records have
         # a variance below the given threshold.
-        stop = wrapper.leaf_threshold is not None \
-            and stop_value.variance <= wrapper.leaf_threshold
+        # [add] current_deep >= wrapper.max_deep
+        # constructe of CDist will set the mean of class value as follows:
+        #     def __iadd__(self, value):
+        #       last_mean = self.mean
+        #       self.mean_sum += value
+        #         self.mean_count += 1
+        #         if last_mean is not None:
+        #             self.last_variance = self.last_variance \
+        #                 + (value  - last_mean)*(value - self.mean)
+        #         return self
+        stop = (wrapper.leaf_threshold is not None \
+            and stop_value.variance <= wrapper.leaf_threshold) \
+            or current_deep > wrapper.max_deep
     else:
         stop_value = DDist(seq=[r[class_attr] for r in data])
         # For a discrete class, stop if all remaining records have the same
         # classification.
-        stop = len(stop_value.counts) <= 1
-
-    if not data or len(attributes) <= 0:
+        # [add] current_deep >= wrapper.max_deep
+        stop = (len(stop_value.counts) <= 1) \
+            or current_deep > wrapper.max_deep
+    if not data:
         # If the dataset is empty or the attributes list is empty, return the
         # default value. The target attribute is not in the attributes list, so
         # we need not subtract 1 to account for the target attribute.
+        # [add]
+        
+        assert len(attributes) > 0, "none attributes left when create tree."
         if wrapper:
             wrapper.leaf_count += 1
-        return stop_value
+        node = Node(tree=wrapper)
+        node.leaf_attributes = attributes
+        wrapper.leaves_list.append(node)
+        return node
+        # return stop_value
     elif stop:
         # If all the records in the dataset have the same classification,
         # return that classification.
+        
         if wrapper:
             wrapper.leaf_count += 1
-        return stop_value
+        node = Node(tree=wrapper)
+        node.leaf_attributes = attributes
+        wrapper.leaves_list.append(node)
+        return node
+        # return stop_value
     else:
+        #[to change] random select next attribute
         # Choose the next best attribute to best classify our data
-        best = choose_attribute(
+        best = random_choose_attribute(
             data,
             attributes,
-            class_attr,
-            fitness_func,
-            method=wrapper.metric)
+            class_attr)
 
         # Create a new decision tree/node with the best attribute and an empty
         # dictionary object--we'll fill that up next.
 #        tree = {best:{}}
         node = Node(tree=wrapper, attr_name=best)
+        logging.info("best attribute is %s"%best)
+        # [question] n is data amount in current node. 
         node.n += len(data)
-
+        node.leaf_attributes = [attr for attr in attributes if attr != best]
         # Create a new decision tree/sub-node for each of the values in the
         # best attribute field
-        for val in get_values(data, best):
+        # [todo] get value must be stationary instead of depending on the rest of dataset
+        is_continuous = wrapper.get_attribute_type(best) == ATTR_TYPE_CONTINUOUS
+        if is_continuous:
+            # just split into two part randomly 
+            values = split_values(data,best)
+        else:
+            values = get_values(data,best)
+        logging.info("the values of this best attributes:[%s]"%(values))
+        for val in values:
             # Create a subtree for the current value under the "best" field
+            # [question] for countinus attribute, should we regard it as discrete points. means create a node for each points?
+            logging.info("now we choose value (%s),from [%s]"%(val,best))
+            if is_continuous:
+                selected_data = [r for r in data if r[best] <= val]
+            else:
+                selected_data = [r for r in data if r[best] == val]
             subtree = create_decision_tree(
-                [r for r in data if r[best] == val],
-                [attr for attr in attributes if attr != best],
+                selected_data,
+                node.leaf_attributes,
                 class_attr,
                 fitness_func,
                 split_attr=best,
                 split_val=val,
-                wrapper=wrapper)
+                wrapper=wrapper,
+                current_deep=current_deep+1)
 
             # Add the new subtree to the empty dictionary object in our new
             # tree/node we just created.
             if isinstance(subtree, Node):
                 node._branches[val] = subtree
             elif isinstance(subtree, (CDist, DDist)):
+                logging.info("in leaf loop, val is %s"%val)
                 node.set_leaf_dist(attr_value=val, dist=subtree)
+                # [change] add node to leaves list.
             else:
                 raise Exception("Unknown subtree type: %s" % (type(subtree),))
 
@@ -627,13 +714,34 @@ class Data(object):
     """
     
     def __init__(self, inp, order=None, types=None, modes=None):
+        """
+            inp: path name
+                data format:
+                    a:discrete,b:discrete,c:discrete,d:discrete,cls:nominal:class
+                    1,1,1,1,a
+                    1,1,1,2,a
+                    1,1,2,3,a
+                    1,1,2,4,a
+                    1,2,3,5,a
+                    1,2,6,6,a
+                    1,2,4,7,a
+                    1,3,5,8,a
+                    2,2,4,1,b
+                    2,3,5,2,b
+                    2,3,3,3,b
+                    2,3,6,4,b
+                    2,4,7,5,b
+                    2,4,7,6,b
+                    2,4,8,7,b
+                    2,4,8,8,b
+        """
         
         self.header_types = types or {} # {attr_name:type}
         self.header_modes = modes or {} # {attr_name:mode}
         if isinstance(order, string_types):
             order = order.split(',')
         self.header_order = order or [] # [attr_name,...]
-        
+
         # Validate header type.
         if isinstance(self.header_types, (tuple, list)):
             assert self.header_order, 'If header type names were not ' + \
@@ -652,7 +760,7 @@ class Data(object):
         else:
             assert self.header_types, "No attribute types specified."
             assert self.header_modes, "No attribute modes specified."
-            #assert self.header_order, "No attribute order specified."
+            # assert self.header_order, "No attribute order specified."
             self.data = inp
         
         self._class_attr_name = None
@@ -663,7 +771,28 @@ class Data(object):
                 self._class_attr_name = k
                 break
             assert self._class_attr_name, "No class attribute specified."
-    
+        attrs = self.attribute_names
+        self._uni_attri_value = {}
+        self._extre_attri_value = {}
+
+
+    @property
+    def uni_attri_value(self):
+        if self._uni_attri_value == {}:
+            for item in self:
+                for key in attrs:
+                    if not self._uni_attri_value.has_key(key):
+                        self._uni_attri_value[key] = set()
+                    self._uni_attri_value[key].add(item[key])
+        return self._uni_attri_value
+
+    @property
+    def extre_attri_value(self):
+        if self._extre_attri_value == {}:
+            for key,item in self.uni_attri_value.items():
+                self._extre_attri_value[key] = [min(item),max(item)]
+        return self._extre_attri_value   
+
     def copy_no_data(self):
         """
         Returns a copy of the object without any data.
@@ -695,6 +824,7 @@ class Data(object):
             n for n in iterkeys(self.header_types)
             if n != self._class_attr_name
         ]
+
 
     def get_attribute_type(self, name):
         if not self.header_types:
@@ -740,14 +870,17 @@ class Data(object):
             matches = ATTR_HEADER_PATTERN.findall(el)
             assert matches, "Invalid header element: %s" % (el,)
             el_name, el_type, el_mode = matches[0]
+            # logging.info(matches[0])
             el_name = el_name.strip()
             self.header_order.append(el_name)
             self.header_types[el_name] = el_type
             if el_mode == ATTR_MODE_CLASS:
+
                 assert self._class_attr_name is None, \
                     "Multiple class attributes are not supported."
                 self._class_attr_name = el_name
             else:
+                # [todo]to support continuous attributes
                 assert self.header_types[el_name] != ATTR_TYPE_CONTINUOUS, \
                     "Non-class continuous attributes are not supported."
         assert self._class_attr_name, "A class attribute must be specified."
@@ -859,14 +992,14 @@ class Node(object):
         # Counts of each observed attribute value, used to calculate an
         # attribute value's probability.
         # {attr_name:{attr_value:count}}
-        self._attr_value_counts = defaultdict(_get_dd_int)
+        # [delete] self._attr_value_counts = defaultdict(_get_dd_int)
         # {attr_name:total}
-        self._attr_value_count_totals = defaultdict(int)
+        # [delete] self._attr_value_count_totals = defaultdict(int)
         
         # Counts of each observed class value and attribute value in
         # combination, used to calculate an attribute value's entropy.
         # {attr_name:{attr_value:{class_value:count}}}
-        self._attr_class_value_counts = defaultdict(_get_dd_dd_int)
+        # [delete] self._attr_class_value_counts = defaultdict(_get_dd_dd_int)
         
         #### Continuous values.
         
@@ -874,12 +1007,16 @@ class Node(object):
         # value's probability.
         # {class_value:count}
         self._class_ddist = DDist()
-        
+        self.record_list = []
         # {attr_name:{attr_value:CDist(variance)}}
-        self._attr_value_cdist = defaultdict(_get_dd_cdist)
+        # [delete] self._attr_value_cdist = defaultdict(_get_dd_cdist)
         self._class_cdist = CDist()
-        
+        self.leaf_attributes = []
         self._branches = {} # {v:Node}
+
+        self.base_model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=30, alpha=1e-4,
+                    solver='sgd', verbose=10, tol=1e-4, random_state=1,
+                    learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
     
     def __getitem__(self, attr_name):
         assert attr_name == self.attr_name
@@ -907,6 +1044,8 @@ class Node(object):
         # given record.
         attr = self.attr_name
         attr_value = record[attr]
+        # get kind of values in this node.
+        # [todo] consider continuous attribute distribute.
         attr_values = self.get_values(attr)
         if attr_value in attr_values:
             return attr_value
@@ -924,6 +1063,7 @@ class Node(object):
                 assert self.tree.data.header_types[attr] \
                     in (ATTR_TYPE_DISCRETE, ATTR_TYPE_CONTINUOUS), \
                     "The use-nearest policy is invalid for nominal types."
+                # find the _value with min distance from attr_value to _value 
                 nearest = (1e999999, None)
                 for _value in attr_values:
                     nearest = min(
@@ -943,12 +1083,13 @@ class Node(object):
         Retrieves the unique set of values seen for the given attribute
         at this node.
         """
-        ret = list(self._attr_value_cdist[attr_name].keys()) \
-            + list(self._attr_value_counts[attr_name].keys()) \
-            + list(self._branches.keys())
+        # ret = list(self._attr_value_cdist[attr_name].keys()) \
+        #     + list(self._attr_value_counts[attr_name].keys()) \
+        #     + list(self._branches.keys())
+        ret = list(self._branches.keys())
         ret = set(ret)
         return ret
-    
+
     @property
     def is_continuous_class(self):
         return self._tree.is_continuous_class
@@ -1072,37 +1213,101 @@ class Node(object):
         Returns the estimated value of the class attribute for the given
         record.
         """
+        attr_value = self._get_attribute_value_for_node(record)
+        logging.info("attribute:[%s]"%self.attr_name)
+        logging.info("attribute value:[%s]"%attr_value)
+        if self.attr_name == None:
+            # arrived at leaf node
+            sample = [value for key,value in record.items() if key in self.leaf_attributes]
+            sample = np.array(sample)
+            logging.info("in predicting ,sample is %s"%sample)
+            result = self.base_model.predict(sample.reshape(1,-1))
+            logging.info("predict result is %s"%result)
+            return result
+        elif attr_value in self._branches:
+            try:
+                # Propagate decision to leaf node.
+                # assert self.attr_name
+                logging.info("[to next deep]")
+                return self._branches[attr_value].predict(record, depth=depth+1)
+            except NodeNotReadyToPredict:
+                #TODO:allow re-raise if user doesn't want an intermediate prediction?
+                pass
+
+        # # Check if we're ready to predict.
+        # if not self.ready_to_predict:
+        #     raise NodeNotReadyToPredict
         
-        # Check if we're ready to predict.
-        if not self.ready_to_predict:
-            raise NodeNotReadyToPredict
+        # # Lookup attribute value.
+        # attr_value = self._get_attribute_value_for_node(record)
         
+        # # Propagate decision to leaf node.
+        # if self.attr_name:
+        #     if attr_value in self._branches:
+        #         try:
+        #             return self._branches[attr_value].predict(record, depth=depth+1)
+        #         except NodeNotReadyToPredict:
+        #             #TODO:allow re-raise if user doesn't want an intermediate prediction?
+        #             pass
+                
+        # # Otherwise make decision at current node.
+        # if self.attr_name:
+        #     if self._tree.data.is_continuous_class:
+        #         return self._attr_value_cdist[self.attr_name][attr_value].copy()
+        #     else:
+        #         # return self._class_ddist.copy()
+        #         return self.get_value_ddist(self.attr_name, attr_value)
+        # elif self._tree.data.is_continuous_class:
+        #     # Make decision at current node, which may be a true leaf node
+        #     # or an incomplete branch in a tree currently being built.
+        #     assert self._class_cdist is not None
+        #     return self._class_cdist.copy()
+        # else:
+        #     return self._class_ddist.copy()
+
+    def distribute(self, record, depth=0):
+        """
+        Returns the estimated value of the class attribute for the given
+        record.
+
+        Args: record: eg.[[featrue1, feature2],[label]]
+        """
+
         # Lookup attribute value.
         attr_value = self._get_attribute_value_for_node(record)
-        
-        # Propagate decision to leaf node.
-        if self.attr_name:
-            if attr_value in self._branches:
-                try:
-                    return self._branches[attr_value].predict(record, depth=depth+1)
-                except NodeNotReadyToPredict:
-                    #TODO:allow re-raise if user doesn't want an intermediate prediction?
-                    pass
-                
+        logging.info("attribute:[%s]"%self.attr_name)
+        logging.info("attribute value:[%s]"%attr_value)
+        if self.attr_name == None:
+            # arrived at leaf node
+            self.record_list.append(record)
+            logging.info("[in leaf node], record: %s"%self.record_list)
+            logging.info("self-attributes:%s"%self.leaf_attributes)
+            logging.info("[leave this node]")
+        elif attr_value in self._branches:
+            try:
+                # Propagate decision to leaf node.
+                # assert self.attr_name
+                logging.info("[to next deep]")
+                self._branches[attr_value].distribute(record, depth=depth+1)
+            except NodeNotReadyToPredict:
+                #TODO:allow re-raise if user doesn't want an intermediate prediction?
+                pass
+
         # Otherwise make decision at current node.
-        if self.attr_name:
-            if self._tree.data.is_continuous_class:
-                return self._attr_value_cdist[self.attr_name][attr_value].copy()
-            else:
-#                return self._class_ddist.copy()
-                return self.get_value_ddist(self.attr_name, attr_value)
-        elif self._tree.data.is_continuous_class:
-            # Make decision at current node, which may be a true leaf node
-            # or an incomplete branch in a tree currently being built.
-            assert self._class_cdist is not None
-            return self._class_cdist.copy()
-        else:
-            return self._class_ddist.copy()
+        # if self.attr_name:
+        #     if self._tree.data.is_continuous_class:
+        #         return self._attr_value_cdist[self.attr_name][attr_value].copy()
+        #     else:
+        #         # return self._class_ddist.copy()
+        #         return self.get_value_ddist(self.attr_name, attr_value)
+        # elif self._tree.data.is_continuous_class:
+        #     # Make decision at current node, which may be a true leaf node
+        #     # or an incomplete branch in a tree currently being built.
+        #     assert self._class_cdist is not None
+        #     return self._class_cdist.copy()
+        # else:
+        #     return self._class_ddist.copy()
+
 
     @property
     def ready_to_predict(self):
@@ -1133,6 +1338,7 @@ class Node(object):
 
     def set_leaf_dist(self, attr_value, dist):
         """
+        [delete this function]
         Sets the probability distribution at a leaf node.
         """
         assert self.attr_name
@@ -1142,6 +1348,7 @@ class Node(object):
         if self.is_continuous_class:
             assert isinstance(dist, CDist)
             assert self.attr_name
+            # dist.copy() is the mean of class value
             self._attr_value_cdist[self.attr_name][attr_value] = dist.copy()
 #            self.n += dist.count
         else:
@@ -1180,7 +1387,7 @@ class Node(object):
     @property
     def tree(self):
         return self._tree
-
+        
     def train(self, record):
         """
         Incrementally update the statistics at this node.
@@ -1229,8 +1436,21 @@ class Tree(object):
     """
     
     def __init__(self, data, **kwargs):
+        """Init method just set some parameter of decision tree.
+        
+        Args:
+            data:
+            kwargs:
+                {
+                    "metric":
+                    "splitting_n":
+                    "auto_grow":
+                    "leaf_threshold":
+                }
+        """
         assert isinstance(data, Data)
         self._data = data
+        self.max_deep = len(data.attribute_names)/2
         
         # Root splitting node.
         # This can be traversed via [name1][value1][name2][value2]...
@@ -1239,7 +1459,8 @@ class Tree(object):
         # The mean absolute error.
         self.mae = CDist()
         self._mae_clean = True
-        
+        #[q] what is metric
+
         # Set the metric used to calculate the information gain
         # after an attribute split.
         if self.data.is_continuous_class:
@@ -1248,18 +1469,20 @@ class Tree(object):
         else:
             self.metric = kwargs.get('metric', DEFAULT_DISCRETE_METRIC)
             assert self.metric in DISCRETE_METRICS
-            
+        # [todo] prohibit this method, we should not splitting any nodes.
         # Set metric to splitting nodes after a sample threshold has been met.
         self.splitting_n = kwargs.get('splitting_n', 100)
         
         # Declare the policy for handling missing values for each attribute.
         self.missing_value_policy = {}
-        
+        # [todo]: automatically grow???
         # Allow the tree to automatically grow and split after an update().
         self.auto_grow = kwargs.get('auto_grow', False)
         
+
         # Determine the threshold at which further splitting is unnecessary
-        # if enough accuracy has been achieved.
+        # solution: if enough accuracy has been achieved.
+        # [q]
         if self.data.is_continuous_class:
             # Zero variance is the default continuous stopping criteria.
             self.leaf_threshold = kwargs.get('leaf_threshold', 0.0)
@@ -1269,6 +1492,9 @@ class Tree(object):
             
         # The total number of leaf nodes.
         self.leaf_count = 0
+
+        # the list of leaf nodes.
+        self.leaves_list = []
         
         # The total number of samples trained on.
         self.sample_count = 0
@@ -1294,8 +1520,12 @@ class Tree(object):
         """
         Constructs a classification or regression tree in a single batch by
         analyzing the given data.
+        Args:
+            cls: class method decorator will pass Class object as the first parameter to function imply
+            data: 'Data' type parameter, containing data to be builded.
         """
         assert isinstance(data, Data)
+        # select fitness_function.
         if data.is_continuous_class:
             fitness_func = gain_variance
         else:
@@ -1310,12 +1540,15 @@ class Tree(object):
             class_attr=data.class_attribute_name,
             fitness_func=fitness_func,
             wrapper=t,
+            current_deep=1
         )
         return t
     
     @property
     def data(self):
         return self._data
+
+
     
     @property
     def is_continuous_class(self):
@@ -1364,9 +1597,16 @@ class Tree(object):
                     yield _
         return O(self)
 
+    def get_attribute_type(self,name):
+        return self.data.get_attribute_type(name)
+
     def predict(self, record):
         record = record.copy()
         return self._tree.predict(record)
+
+    def distribute(self, record):
+        record = record.copy()
+        return self._tree.distribute(record)
     
     def save(self, fn):
         pickle.dump(self, open(fn, 'w'))
@@ -1421,6 +1661,23 @@ class Tree(object):
         record = record.copy()
         self.sample_count += 1
         self.tree.train(record)
+
+    def incremental_training_Driver(self):
+        logging.info("[in incremental training driver...]")
+        for leaf in self.leaves_list:
+            attrs = leaf.leaf_attributes
+            leaf_data = leaf.record_list
+            logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
+            logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
+            label_list = []
+            features_list = []
+            for item in leaf_data:
+                label_list.append(item[self.data.class_attribute_name])
+                features_list.append([value for key,value in item.items() if key in attrs])
+            logging.info("label :%s"%label_list)
+            logging.info("features : %s"%features_list)
+            leaf.base_model.fit(features_list,label_list)
+            leaf.record_list = []
 
 def _get_defaultdict_cdist():
     return defaultdict(CDist)

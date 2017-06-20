@@ -57,8 +57,7 @@ tree.set_missing_value_policy(USE_NEAREST)
 print "----------------------------"
 for item in ori:
     logging.info("distributing: %s"%item)
-    Tree.distribute(tree,item)
-
+    tree.distribute(item)
 print "----------------------------"
 tree.incremental_training_Driver()
 prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})

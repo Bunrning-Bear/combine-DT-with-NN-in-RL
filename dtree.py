@@ -542,17 +542,15 @@ def get_values(data, attr):
     prunes out all of the redundant values, and return the list.  
     [todo] can be done just one time then be stored..
     """
-    return unique([record[attr] for record in data])
+    return data.uni_attri_value[attr]
 
 def split_values(data, attr):
     """
     Creates a list of values in the chosen attribute, 
     including a random value in the attribute range of data set and a MAX VALUE
     """
-    uni_data = unique([record[attr] for record in data])
-    min_sample = min(uni_data)
-    max_sample = max(uni_data)
-    selected_val = random.randint(min_sample,max_sample)
+    extr_value = data.extre_attri_value
+    selected_val = random.randint(extr_value[0],extr_value[1])
     return [selected_val, MAX_VALUE]
 
 def choose_attribute(data, attributes, class_attr, fitness, method):
@@ -582,7 +580,7 @@ def random_choose_attribute(data, attributes, class_attr):
 def is_continuous(v):
     return isinstance(v, (float, Decimal))
 
-def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,current_deep, **kwargs):
+def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,current_deep,father_node, **kwargs):
     """
     Returns a new decision tree based on the examples given.
     Args:
@@ -634,6 +632,7 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
             wrapper.leaf_count += 1
         node = Node(tree=wrapper)
         node.leaf_attributes = attributes
+        node.father_node = father_node
         wrapper.leaves_list.append(node)
         return node
         # return stop_value
@@ -645,6 +644,7 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
             wrapper.leaf_count += 1
         node = Node(tree=wrapper)
         node.leaf_attributes = attributes
+        node.father_node = father_node
         wrapper.leaves_list.append(node)
         return node
         # return stop_value
@@ -664,15 +664,16 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
         # [question] n is data amount in current node. 
         node.n += len(data)
         node.leaf_attributes = [attr for attr in attributes if attr != best]
+        node.father_node = father_node
         # Create a new decision tree/sub-node for each of the values in the
         # best attribute field
         # [todo] get value must be stationary instead of depending on the rest of dataset
         is_continuous = wrapper.get_attribute_type(best) == ATTR_TYPE_CONTINUOUS
         if is_continuous:
             # just split into two part randomly 
-            values = split_values(data,best)
+            values = split_values(wrapper.data,best)
         else:
-            values = get_values(data,best)
+            values = get_values(wrapper.data,best)
         logging.info("the values of this best attributes:[%s]"%(values))
         for val in values:
             # Create a subtree for the current value under the "best" field
@@ -690,7 +691,8 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
                 split_attr=best,
                 split_val=val,
                 wrapper=wrapper,
-                current_deep=current_deep+1)
+                current_deep=current_deep+1,
+                father_node=node)
 
             # Add the new subtree to the empty dictionary object in our new
             # tree/node we just created.
@@ -771,7 +773,7 @@ class Data(object):
                 self._class_attr_name = k
                 break
             assert self._class_attr_name, "No class attribute specified."
-        attrs = self.attribute_names
+
         self._uni_attri_value = {}
         self._extre_attri_value = {}
 
@@ -779,6 +781,7 @@ class Data(object):
     @property
     def uni_attri_value(self):
         if self._uni_attri_value == {}:
+            attrs = self.attribute_names
             for item in self:
                 for key in attrs:
                     if not self._uni_attri_value.has_key(key):
@@ -1013,8 +1016,8 @@ class Node(object):
         self._class_cdist = CDist()
         self.leaf_attributes = []
         self._branches = {} # {v:Node}
-
-        self.base_model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=30, alpha=1e-4,
+        self.father_node = None
+        self.base_model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=70, alpha=1e-4,
                     solver='sgd', verbose=10, tol=1e-4, random_state=1,
                     learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
     
@@ -1540,7 +1543,8 @@ class Tree(object):
             class_attr=data.class_attribute_name,
             fitness_func=fitness_func,
             wrapper=t,
-            current_deep=1
+            current_deep=1,
+            father_node=None
         )
         return t
     
@@ -1664,20 +1668,32 @@ class Tree(object):
 
     def incremental_training_Driver(self):
         logging.info("[in incremental training driver...]")
-        for leaf in self.leaves_list:
+        non_data_index = []
+        for index, leaf in enumerate(self.leaves_list):
             attrs = leaf.leaf_attributes
             leaf_data = leaf.record_list
             logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
             logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
             label_list = []
             features_list = []
-            for item in leaf_data:
-                label_list.append(item[self.data.class_attribute_name])
-                features_list.append([value for key,value in item.items() if key in attrs])
+            if leaf_data == []:
+                logging.info("[empty node]")
+                fn = leaf.father_node
+                for key,other_leaf in fn._branches.items():
+                    other_leaf_data = other_leaf.record_list
+                    if other_leaf_data != []:
+                        for item in other_leaf_data:
+                            label_list.append(item[self.data.class_attribute_name])
+                            features_list.append([value for key,value in item.items() if key in attrs])
+            else:
+                logging.info("[not empty node]")
+                for item in leaf_data:
+                    label_list.append(item[self.data.class_attribute_name])
+                    features_list.append([value for key,value in item.items() if key in attrs])
             logging.info("label :%s"%label_list)
             logging.info("features : %s"%features_list)
             leaf.base_model.fit(features_list,label_list)
-            leaf.record_list = []
+            
 
 def _get_defaultdict_cdist():
     return defaultdict(CDist)

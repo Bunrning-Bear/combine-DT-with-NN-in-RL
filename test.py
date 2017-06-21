@@ -59,7 +59,7 @@ for item in ori[1:size/10]:
     logging.info("distributing: %s"%item)
     tree.distribute(item)
 print "training----------------------------"
-tree.incremental_training_Driver()
+tree.initial_model()
 # prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})
 
 # right_amount = 0

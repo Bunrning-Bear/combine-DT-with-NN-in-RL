@@ -566,7 +566,8 @@ def choose_attribute(data, attributes, class_attr, fitness, method):
         gain = fitness(data, attr, class_attr, method=method)
         best = max(best, (gain, attr))
     return best[1]
-def random_choose_attribute(data, attributes, class_attr):
+
+def random_choose_attribute(attributes, class_attr):
     """
     [change]Choose a attribute just randomly.
 
@@ -581,7 +582,7 @@ def random_choose_attribute(data, attributes, class_attr):
 def is_continuous(v):
     return isinstance(v, (float, Decimal))
 
-def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,current_deep,father_node, **kwargs):
+def create_decision_tree(attributes, class_attr, fitness_func, wrapper,current_deep,father_node, **kwargs):
     """
     Returns a new decision tree based on the examples given.
     Args:
@@ -597,38 +598,63 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
     
     assert class_attr not in attributes, "Class attributes should not in class attribute"
     node = None
-    data = list(data) if isinstance(data, Data) else data
-    if wrapper.is_continuous_class:
-        stop_value = CDist(seq=[r[class_attr] for r in data])
-        # For a continuous class case, stop if all the remaining records have
-        # a variance below the given threshold.
-        # [add] current_deep >= wrapper.max_deep
-        # constructe of CDist will set the mean of class value as follows:
-        #     def __iadd__(self, value):
-        #       last_mean = self.mean
-        #       self.mean_sum += value
-        #         self.mean_count += 1
-        #         if last_mean is not None:
-        #             self.last_variance = self.last_variance \
-        #                 + (value  - last_mean)*(value - self.mean)
-        #         return self
-        stop = (wrapper.leaf_threshold is not None \
-            and stop_value.variance <= wrapper.leaf_threshold) \
-            or current_deep > wrapper.max_deep
-    else:
-        stop_value = DDist(seq=[r[class_attr] for r in data])
-        # For a discrete class, stop if all remaining records have the same
-        # classification.
-        # [add] current_deep >= wrapper.max_deep
-        stop = (len(stop_value.counts) <= 1) \
-            or current_deep > wrapper.max_deep
-    if not data:
-        # If the dataset is empty or the attributes list is empty, return the
-        # default value. The target attribute is not in the attributes list, so
-        # we need not subtract 1 to account for the target attribute.
-        # [add]
+    #[delete data] 
+    # data = list(data) if isinstance(data, Data) else data
+    # if wrapper.is_continuous_class:
+    #     #[delete] stop_value = CDist(seq=[r[class_attr] for r in data])
+    #     # For a continuous class case, stop if all the remaining records have
+    #     # a variance below the given threshold.
+    #     # [add] current_deep >= wrapper.max_deep
+    #     # constructe of CDist will set the mean of class value as follows:
+    #     #     def __iadd__(self, value):
+    #     #       last_mean = self.mean
+    #     #       self.mean_sum += value
+    #     #         self.mean_count += 1
+    #     #         if last_mean is not None:
+    #     #             self.last_variance = self.last_variance \
+    #     #                 + (value  - last_mean)*(value - self.mean)
+    #     #         return self
+    #     stop = (wrapper.leaf_threshold is not None \
+    #         and stop_value.variance <= wrapper.leaf_threshold) \
+    #         or current_deep > wrapper.max_deep
+    # else:
+    #     stop_value = DDist(seq=[r[class_attr] for r in data])
+    #     # For a discrete class, stop if all remaining records have the same
+    #     # classification.
+    #     # [add] current_deep >= wrapper.max_deep
+    #     stop = (len(stop_value.counts) <= 1) \
+    #         or current_deep > wrapper.max_deep
+    # if not data:
+    #     # [change] needn't use this conditional statement. 
+    #     # If the dataset is empty or the attributes list is empty, return the
+    #     # default value. The target attribute is not in the attributes list, so
+    #     # we need not subtract 1 to account for the target attribute.
+    #     # [add]
         
-        assert len(attributes) > 0, "none attributes left when create tree."
+    #     assert len(attributes) > 0, "none attributes left when create tree."
+    #     if wrapper:
+    #         wrapper.leaf_count += 1
+    #     node = Node(tree=wrapper)
+    #     node.leaf_attributes = attributes
+    #     node.father_node = father_node
+    #     wrapper.leaves_list.append(node)
+    #     return node
+    #     # return stop_value
+    # elif stop:
+    #     # If all the records in the dataset have the same classification,
+    #     # return that classification.
+        
+    #     if wrapper:
+    #         wrapper.leaf_count += 1
+    #     node = Node(tree=wrapper)
+    #     node.leaf_attributes = attributes
+    #     node.father_node = father_node
+    #     wrapper.leaves_list.append(node)
+    #     return node
+    #     # return stop_value
+
+    if current_deep > wrapper.max_deep:
+        # stop create tree node only if enough deep.
         if wrapper:
             wrapper.leaf_count += 1
         node = Node(tree=wrapper)
@@ -636,24 +662,11 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
         node.father_node = father_node
         wrapper.leaves_list.append(node)
         return node
-        # return stop_value
-    elif stop:
-        # If all the records in the dataset have the same classification,
-        # return that classification.
-        
-        if wrapper:
-            wrapper.leaf_count += 1
-        node = Node(tree=wrapper)
-        node.leaf_attributes = attributes
-        node.father_node = father_node
-        wrapper.leaves_list.append(node)
-        return node
-        # return stop_value
     else:
         #[to change] random select next attribute
         # Choose the next best attribute to best classify our data
         best = random_choose_attribute(
-            data,
+            # [delete data]data,
             attributes,
             class_attr)
 
@@ -679,12 +692,13 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
             # Create a subtree for the current value under the "best" field
             # [question] for countinus attribute, should we regard it as discrete points. means create a node for each points?
             logging.info("now we choose value (%s),from [%s]"%(val,best))
-            if is_continuous:
-                selected_data = [r for r in data if r[best] <= val]
-            else:
-                selected_data = [r for r in data if r[best] == val]
+            #[delete data]
+            #  if is_continuous:
+            #     selected_data = [r for r in data if r[best] <= val]
+            # else:
+            #     selected_data = [r for r in data if r[best] == val]
             subtree = create_decision_tree(
-                selected_data,
+                #[delete data] selected_data,
                 node.leaf_attributes,
                 class_attr,
                 fitness_func,
@@ -1543,7 +1557,7 @@ class Tree(object):
         t._data = data
         t.sample_count = len(data)
         t._tree = create_decision_tree(
-            data=data,
+            #[delete data] data=data,
             attributes=data.attribute_names,
             class_attr=data.class_attribute_name,
             fitness_func=fitness_func,
@@ -1671,7 +1685,10 @@ class Tree(object):
         self.sample_count += 1
         self.tree.train(record)
 
-    def incremental_training_Driver(self):
+    def initial_model(self):
+        """Initial nerual network after contructure trees.
+
+        """
         logging.info("[in incremental training driver...]")
         non_data_index = []
         for index, leaf in enumerate(self.leaves_list):
@@ -1680,7 +1697,7 @@ class Tree(object):
             leaf_data = leaf.record_list
             label_list = []
             features_list = []
-            (features_list,label_list)=self._find_data(leaf,attrs)
+            (features_list,label_list) = self._find_data(leaf,attrs)
             # logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
             # logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
 
@@ -1701,6 +1718,27 @@ class Tree(object):
             logging.info("label :%s"%label_list)
             logging.info("features : %s"%features_list)
             leaf.base_model.fit(features_list,label_list)
+        for leaf in enumerate(self.leaves_list):
+            leaf.record_list = []
+
+    def incremental_training_Driver(self):
+        logging.info("[in incremental training driver...]")
+        for leaf in self.leaves_list:
+            attrs = leaf.leaf_attributes
+            leaf_data = leaf.record_list
+            logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
+            logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
+            label_list = []
+            features_list = []
+            if leaf_data != []:
+                for item in leaf_data:
+                    label_list.append(item[self.data.class_attribute_name])
+                    features_list.append([value for key,value in item.items() if key in attrs])
+                logging.info("label :%s"%label_list)
+                logging.info("features : %s"%features_list)
+                leaf.base_model.fit(features_list,label_list)
+                leaf.record_list = []
+
     def _find_data(self,node,attrs):
         """Find data which is the nearest to node. 
         Args:

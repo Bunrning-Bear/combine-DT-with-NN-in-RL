@@ -18,7 +18,7 @@ import unittest
 import random
 import logging
 import json
-logging.basicConfig(level=logging.ERROR)
+
 
 import six
 from six.moves import cPickle as pickle
@@ -718,7 +718,6 @@ def create_decision_tree(attributes, class_attr, fitness_func, wrapper,current_d
                 # [change] add node to leaves list.
             else:
                 raise Exception("Unknown subtree type: %s" % (type(subtree),))
-
     return node
 
 class Data(object):
@@ -1057,7 +1056,7 @@ class Node(object):
         given record.
         """
         
-        # Abort if this node has not get split on an attribute. 
+        # Abort if this node is a leaf node. 
         if self.attr_name is None:
             return
         
@@ -1065,35 +1064,48 @@ class Node(object):
         # given record.
         attr = self.attr_name
         attr_value = record[attr]
+        
         # get kind of values in this node.
         # [todo] consider continuous attribute distribute.
         attr_values = self.get_values(attr)
-        if attr_value in attr_values:
-            return attr_value
+        is_continuous = self.tree.get_attribute_type(attr) == ATTR_TYPE_CONTINUOUS
+        
+        if is_continuous:
+            select_value = attr_values[0]
+            for critical_value in attr_values:
+                logging.info("compare value %s and critival %s"%(attr_value,critical_value))
+                if critical_value > attr_value:
+                    select_value = critical_value
+                    return select_value
+            raise Exception("can not find a valid critical value!!")
         else:
-            # The value of the attribute in the given record does not directly
-            # map to any previously known values, so apply a missing value
-            # policy.
-            policy = self.tree.missing_value_policy.get(attr)
-            assert policy, \
-                ("No missing value policy specified for attribute %s.") \
-                % (attr,)
-            if policy == USE_NEAREST:
-                # Use the value that the tree has seen that's also has the
-                # smallest Euclidean distance to the actual value.
-                assert self.tree.data.header_types[attr] \
-                    in (ATTR_TYPE_DISCRETE, ATTR_TYPE_CONTINUOUS), \
-                    "The use-nearest policy is invalid for nominal types."
-                # find the _value with min distance from attr_value to _value 
-                nearest = (1e999999, None)
-                for _value in attr_values:
-                    nearest = min(
-                        nearest,
-                        (abs(_value - attr_value), _value))
-                _, nearest_value = nearest
-                return nearest_value
-            else:
-                raise Exception("Unknown missing value policy: %s" % (policy,))
+            assert attr_value in attr_values," attribute value of this record not exist in node's key."
+            return attr_value
+        # [delete]: because we guarantee all of attribute value of this record in node's key.
+        # else:
+        #     # The value of the attribute in the given record does not directly
+        #     # map to any previously known values, so apply a missing value
+        #     # policy.
+        #     policy = self.tree.missing_value_policy.get(attr)
+        #     assert policy, \
+        #         ("No missing value policy specified for attribute %s.") \
+        #         % (attr,)
+        #     if policy == USE_NEAREST:
+        #         # Use the value that the tree has seen that's also has the
+        #         # smallest Euclidean distance to the actual value.
+        #         assert self.tree.data.header_types[attr] \
+        #             in (ATTR_TYPE_DISCRETE, ATTR_TYPE_CONTINUOUS), \
+        #             "The use-nearest policy is invalid for nominal types."
+        #         # find the _value with min distance from attr_value to _value 
+        #         nearest = (1e999999, None)
+        #         for _value in attr_values:
+        #             nearest = min(
+        #                 nearest,
+        #                 (abs(_value - attr_value), _value))
+        #         _, nearest_value = nearest
+        #         return nearest_value
+        #     else:
+        #         raise Exception("Unknown missing value policy: %s" % (policy,))
 
     @property
     def attributes(self):
@@ -1108,7 +1120,7 @@ class Node(object):
         #     + list(self._attr_value_counts[attr_name].keys()) \
         #     + list(self._branches.keys())
         ret = list(self._branches.keys())
-        ret = set(ret)
+        assert len(set(ret))==len(ret),"repeated key found"
         return ret
 
     @property
@@ -1305,15 +1317,18 @@ class Node(object):
             logging.info("[in leaf node], record: %s"%self.record_list)
             logging.info("self-attributes:%s"%self.leaf_attributes)
             logging.info("[leave this node]")
-        elif attr_value in self._branches:
-            try:
+        else:
+            assert attr_value in self._branches,"find attribute value not in any branch when distribute."
+            # elif attr_value in self._branches:
+            # try:
                 # Propagate decision to leaf node.
                 # assert self.attr_name
-                logging.info("[to next deep]")
-                self._branches[attr_value].distribute(record, depth=depth+1)
-            except NodeNotReadyToPredict:
-                #TODO:allow re-raise if user doesn't want an intermediate prediction?
-                pass
+            logging.info("[to next deep]")
+            self._branches[attr_value].distribute(record, depth=depth+1)
+            # [delete] this try-catch not exist.
+            # except NodeNotReadyToPredict:
+            #     #TODO:allow re-raise if user doesn't want an intermediate prediction?
+            #     pass
 
         # Otherwise make decision at current node.
         # if self.attr_name:
@@ -1718,7 +1733,7 @@ class Tree(object):
             logging.info("label :%s"%label_list)
             logging.info("features : %s"%features_list)
             leaf.base_model.fit(features_list,label_list)
-        for leaf in enumerate(self.leaves_list):
+        for leaf in self.leaves_list:
             leaf.record_list = []
 
     def incremental_training_Driver(self):

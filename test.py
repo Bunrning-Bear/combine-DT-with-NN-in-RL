@@ -14,7 +14,9 @@ import numpy as np
 import random
 import csv
 import logging
-train_data = Data('dataset/uci_adult/delete_adult.data')
+logging.basicConfig(level=logging.INFO)
+train_data = Data('dataset/uci_adult/delete_adult2.data')
+# train_data = Data('dataset/uci_adult/delete_adult.data')
 # train_data = Data('cdata6')
 # train_data = Data('dataset/mnist/new_strain.csv')
 # test_data = Data('cdata5')
@@ -25,7 +27,7 @@ train_data = Data('dataset/uci_adult/delete_adult.data')
 
 
 
-class_name = 'label'
+class_name = 'cls'
 print "listing..."
 ori = list(train_data)
 # print ori
@@ -52,10 +54,11 @@ ori = list(train_data)
 
 size = len(ori)
 # Tree.build(train_data)
+print "building-----------"
 tree = Tree.build(train_data)
 tree.set_missing_value_policy(USE_NEAREST)
 print "distributing----------------------------"
-for item in ori[1:size/10]:
+for item in ori[1:15]:
     logging.info("distributing: %s"%item)
     tree.distribute(item)
 print "training----------------------------"

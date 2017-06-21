@@ -77,3 +77,71 @@ for val in values:
             for cls_value, cls_count in iteritems(dist.counts):
                 self._attr_class_value_counts[self.attr_name][attr_value] \
                     [cls_value] += cls_count
+
+
+
+
+INFO:root:best attribute is workclass
+INFO:root:the values of this best attributes:[set([0, 1, 3, 4, 5])]
+INFO:root:now we choose value (0),from [workclass]
+INFO:root:best attribute is age
+INFO:root:{'fnlwgt': [28887.0, 544091.0], 'age': [19.0, 59.0], 'education': [0, 13], 'workclass': [0, 5]}
+INFO:root:the values of this best attributes:[[34, 9999999999]]
+INFO:root:now we choose value (34),from [age]
+    {'fnlwgt': 338409.0, 'age': 28.0, 'education': 0, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 45781.0, 'age': 31.0, 'education': 10, 'workclass': 0, 'cls': 0}
+    {'fnlwgt': 122272.0, 'age': 23.0, 'education': 0, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 205019.0, 'age': 32.0, 'education': 5, 'workclass': 0, 'cls': 1}
+INFO:root:now we choose value (9999999999),from [age]
+    {'fnlwgt': 215646.0, 'age': 38.0, 'education': 3, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 234721.0, 'age': 53.0, 'education': 2, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 284582.0, 'age': 37.0, 'education': 10, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 160187.0, 'age': 49.0, 'education': 7, 'workclass': 0, 'cls': 1}
+    {'fnlwgt': 159449.0, 'age': 42.0, 'education': 0, 'workclass': 0, 'cls': 0}
+    {'fnlwgt': 280464.0, 'age': 37.0, 'education': 1, 'workclass': 0, 'cls': 0}
+    {'fnlwgt': 245487.0, 'age': 34.0, 'education': 8, 'workclass': 0, 'cls': 1}
+INFO:root:now we choose value (1),from [workclass]
+INFO:root:best attribute is education
+INFO:root:the values of this best attributes:[set([0, 1, 2, 3, 5, 7, 8, 10, 13])]
+INFO:root:now we choose value (0),from [education]
+    {'fnlwgt': 83311.0, 'age': 50.0, 'education': 0, 'workclass': 1, 'cls': 1}
+INFO:root:now we choose value (1),from [education]
+INFO:root:now we choose value (2),from [education]
+INFO:root:now we choose value (3),from [education]
+    {'fnlwgt': 209642.0, 'age': 52.0, 'education': 3, 'workclass': 1, 'cls': 0}
+INFO:root:now we choose value (5),from [education]
+INFO:root:now we choose value (7),from [education]
+INFO:root:now we choose value (8),from [education]
+INFO:root:now we choose value (10),from [education]
+INFO:root:now we choose value (13),from [education]
+INFO:root:now we choose value (3),from [workclass]
+INFO:root:best attribute is education
+INFO:root:the values of this best attributes:[set([0, 1, 2, 3, 5, 7, 8, 10, 13])]
+INFO:root:now we choose value (0),from [education]
+INFO:root:now we choose value (1),from [education]
+INFO:root:now we choose value (2),from [education]
+INFO:root:now we choose value (3),from [education]
+INFO:root:now we choose value (5),from [education]
+INFO:root:now we choose value (7),from [education]
+INFO:root:now we choose value (8),from [education]
+INFO:root:now we choose value (10),from [education]
+INFO:root:now we choose value (13),from [education]
+INFO:root:now we choose value (4),from [workclass]
+INFO:root:best attribute is fnlwgt
+INFO:root:{'fnlwgt': [28887.0, 544091.0], 'age': [19.0, 59.0], 'education': [0, 13], 'workclass': [0, 5]}
+INFO:root:the values of this best attributes:[[186791, 9999999999]]
+INFO:root:now we choose value (186791),from [fnlwgt]
+INFO:root:now we choose value (9999999999),from [fnlwgt]
+INFO:root:now we choose value (5),from [workclass]
+INFO:root:best attribute is education
+INFO:root:the values of this best attributes:[set([0, 1, 2, 3, 5, 7, 8, 10, 13])]
+INFO:root:now we choose value (0),from [education]
+    {'fnlwgt': 141297.0, 'age': 30.0, 'education': 0, 'workclass': 5, 'cls': 0}
+INFO:root:now we choose value (1),from [education]
+INFO:root:now we choose value (2),from [education]
+INFO:root:now we choose value (3),from [education]
+INFO:root:now we choose value (5),from [education]
+INFO:root:now we choose value (7),from [education]
+INFO:root:now we choose value (8),from [education]
+INFO:root:now we choose value (10),from [education]
+INFO:root:now we choose value (13),from [education]

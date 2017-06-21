@@ -14,7 +14,7 @@ import numpy as np
 import random
 import csv
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 train_data = Data('dataset/uci_adult/delete_adult2.data')
 # train_data = Data('dataset/uci_adult/delete_adult.data')
 # train_data = Data('cdata6')
@@ -58,24 +58,44 @@ print "building-----------"
 tree = Tree.build(train_data)
 tree.set_missing_value_policy(USE_NEAREST)
 print "distributing----------------------------"
-for item in ori[1:15]:
+for item in ori[1:size/10*4]:
     logging.info("distributing: %s"%item)
     tree.distribute(item)
 print "training----------------------------"
 tree.initial_model()
+print "testing----------------------------"
+right_amount=0
+test_data = ori[size/10*8:]
+for item in test_data:
+    pre = tree.predict(item)
+    # print "pre is %s , item is %s"%(pre,item)
+    if pre[0] == item[class_name]:
+        right_amount = right_amount + 1
+
+print float(right_amount)/len(test_data)
+print "incremental training----------------------------"
+
+for item in ori[size/10*4:size/10*8]:
+    logging.info("distributing: %s"%item)
+    tree.distribute(item)
+tree.incremental_training_Driver()
+print "testing2----------------------------"
+right_amount=0
+for item in test_data:
+    pre = tree.predict(item)
+    if pre[0] ==item[class_name]:
+        right_amount = right_amount + 1
+
+print float(right_amount)/len(test_data)
+"""
+0.612698412698
+0.792063492063
+"""
 # prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})
 
 # right_amount = 0
 # use_amount = 0
-# for item in test_data:
-#     if use_amount < size/10:
-#         use_amount+=1
-#         continue
-#     pre = tree.predict(item)
-#     if pre[0] ==item[class_name]:
-#         right_amount = right_amount + 1
 
-# print float(right_amount)/len(test_data)
 # result = tree.test(test_data)
 # print 'Accuracy:',result.mean
 # prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})

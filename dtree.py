@@ -32,6 +32,7 @@ between the Python versions with the goal of writing Python code
 that is compatible on both Python versions. See the documentation 
 for more information on what is provided.
 """
+MAX_DEPTH = 5
 VERSION = (1, 0, 1)
 __version__ = '.'.join(map(str, VERSION))
 
@@ -1034,7 +1035,7 @@ class Node(object):
         self.leaf_attributes = []
         self._branches = {} # {v:Node}
         self.father_node = None
-        self.base_model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=70, alpha=1e-4,
+        self.base_model = MLPClassifier(hidden_layer_sizes=(40,), max_iter=70, alpha=1e-4,
                     solver='sgd', verbose=False, tol=1e-4, random_state=1,
                     learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
     
@@ -1257,15 +1258,14 @@ class Node(object):
             result = self.base_model.predict(sample.reshape(1,-1))
             logging.info("predict result is %s"%result)
             return result
-        elif attr_value in self._branches:
-            try:
+        else:
+            assert attr_value in self._branches,"find attribute value not in any branch when distribute."
+            # elif attr_value in self._branches:
+            # try:
                 # Propagate decision to leaf node.
                 # assert self.attr_name
-                logging.info("[to next deep]")
-                return self._branches[attr_value].predict(record, depth=depth+1)
-            except NodeNotReadyToPredict:
-                #TODO:allow re-raise if user doesn't want an intermediate prediction?
-                pass
+            logging.info("[to next deep]")
+            return self._branches[attr_value].predict(record, depth=depth+1)
 
         # # Check if we're ready to predict.
         # if not self.ready_to_predict:
@@ -1314,9 +1314,9 @@ class Node(object):
         if self.attr_name == None:
             # arrived at leaf node
             self.record_list.append(record)
-            logging.info("[in leaf node], record: %s"%self.record_list)
-            logging.info("self-attributes:%s"%self.leaf_attributes)
-            logging.info("[leave this node]")
+            # logging.info("[in leaf node], record: %s"%self.record_list)
+            # logging.info("self-attributes:%s"%self.leaf_attributes)
+            # logging.info("[leave this node]")
         else:
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
@@ -1487,7 +1487,7 @@ class Tree(object):
         """
         assert isinstance(data, Data)
         self._data = data
-        self.max_deep = len(data.attribute_names)/2
+        self.max_deep = len(data.attribute_names)/2 if len(data.attribute_names)/2 <= MAX_DEPTH else MAX_DEPTH
         
         # Root splitting node.
         # This can be traversed via [name1][value1][name2][value2]...
@@ -1738,14 +1738,14 @@ class Tree(object):
 
     def incremental_training_Driver(self):
         logging.info("[in incremental training driver...]")
-        for leaf in self.leaves_list:
+        for index,leaf in enumerate(self.leaves_list):
             attrs = leaf.leaf_attributes
             leaf_data = leaf.record_list
             logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
-            logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
             label_list = []
             features_list = []
             if leaf_data != []:
+                logging.error("training %s all %s"%(index,len(self.leaves_list)))
                 for item in leaf_data:
                     label_list.append(item[self.data.class_attribute_name])
                     features_list.append([value for key,value in item.items() if key in attrs])

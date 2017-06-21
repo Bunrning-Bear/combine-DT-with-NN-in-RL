@@ -197,4 +197,75 @@ def Incremental_Training_Driver(self,Node,Data):
    3. 需要绑定一个神经网络模型，在神经网络中进行训练
 
 
+todo
 
+当前的代码，是不能支持数据集中有离散属性的，我需要解决这个问题
+
+```python
+def _read_header(self):
+
+    """
+    When a CSV file is given, extracts header information the file.
+    Otherwise, this header data must be explicitly given when the object
+    is instantiated.
+    """
+    if not self.filename or self.header_types:
+        return
+    rows = csv.reader(open(self.filename))
+    #header = rows.next()
+    header = next(rows)
+    self.header_types = {} # {attr_name:type}
+    self._class_attr_name = None
+    self.header_order = [] # [attr_name,...]
+    for el in header:
+        matches = ATTR_HEADER_PATTERN.findall(el)
+        assert matches, "Invalid header element: %s" % (el,)
+        el_name, el_type, el_mode = matches[0]
+        logging.info(matches[0])
+        el_name = el_name.strip()
+        self.header_order.append(el_name)
+        self.header_types[el_name] = el_type
+        if el_mode == ATTR_MODE_CLASS:
+
+            assert self._class_attr_name is None, \
+                "Multiple class attributes are not supported."
+            self._class_attr_name = el_name
+        else:
+            # [todo]to support continuous attributes
+            assert self.header_types[el_name] != ATTR_TYPE_CONTINUOUS, \
+                "Non-class continuous attributes are not supported."
+    assert self._class_attr_name, "A class attribute must be specified."
+```
+相关板块：
+
+- node._get_attribute_value_for_node
+
+
+
+源代码有很多重复计算的模块，应该删掉，一次计算就备份起来！
+
+- unique,每次需要遍历一整个数据集，删掉
+
+源项目的决策树没法适应连续属性，需要加上这个功能
+
+
+
+空属性问题：
+
+理论上讲，我们应该随机划分到某一个深度之后停止划分
+
+
+
+max和min的取值现在直接来自第一批数据，实际上应该手动标定
+
+
+
+对于连续属性，我们简单的二分会不会效果不太好？是不是可以考虑增加分支数
+
+
+
+树的规模会不会太大？
+
+
+
+热启动效果不是特别好

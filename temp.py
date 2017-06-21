@@ -132,6 +132,8 @@ INFO:root:{'fnlwgt': [28887.0, 544091.0], 'age': [19.0, 59.0], 'education': [0, 
 INFO:root:the values of this best attributes:[[186791, 9999999999]]
 INFO:root:now we choose value (186791),from [fnlwgt]
 INFO:root:now we choose value (9999999999),from [fnlwgt]
+
+
 INFO:root:now we choose value (5),from [workclass]
 INFO:root:best attribute is education
 INFO:root:the values of this best attributes:[set([0, 1, 2, 3, 5, 7, 8, 10, 13])]

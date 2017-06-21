@@ -14,10 +14,10 @@ import numpy as np
 import random
 import csv
 import logging
-
-train_data = Data('cdata6')
+train_data = Data('dataset/uci_adult/delete_adult.data')
+# train_data = Data('cdata6')
 # train_data = Data('dataset/mnist/new_strain.csv')
-test_data = Data('cdata5')
+# test_data = Data('cdata5')
 # print train_data.attribute_names
 # print "attribute test %s",%train_data.get_attribute_type('pixel317')
 # uni = unique([record['pixel317'] for record in train_data])
@@ -25,7 +25,7 @@ test_data = Data('cdata5')
 
 
 
-class_name = 'cls'
+class_name = 'label'
 print "listing..."
 ori = list(train_data)
 # print ori
@@ -50,24 +50,29 @@ ori = list(train_data)
 # size = len(res_data)
 # print "data size is %s"%size
 
-
+size = len(ori)
 # Tree.build(train_data)
 tree = Tree.build(train_data)
 tree.set_missing_value_policy(USE_NEAREST)
-print "----------------------------"
-for item in ori:
+print "distributing----------------------------"
+for item in ori[1:size/10]:
     logging.info("distributing: %s"%item)
     tree.distribute(item)
-print "----------------------------"
+print "training----------------------------"
 tree.incremental_training_Driver()
-prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})
+# prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})
 
-right_amount = 0
-for item in test_data:
-    pre = tree.predict(item)
-    if pre[0] ==item[class_name]:
-        right_amount = right_amount + 1
-print float(right_amount)/len(test_data)
+# right_amount = 0
+# use_amount = 0
+# for item in test_data:
+#     if use_amount < size/10:
+#         use_amount+=1
+#         continue
+#     pre = tree.predict(item)
+#     if pre[0] ==item[class_name]:
+#         right_amount = right_amount + 1
+
+# print float(right_amount)/len(test_data)
 # result = tree.test(test_data)
 # print 'Accuracy:',result.mean
 # prediction = tree.predict({'a':1,'b':1,'c':1,'d':3})
@@ -85,8 +90,12 @@ print float(right_amount)/len(test_data)
 # clf = MLPClassifier(hidden_layer_sizes=(250,), max_iter=30, alpha=1e-4,
 #                     solver='sgd', verbose=10, tol=1e-4, random_state=1,
 #                     learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
-# print "fitting..."
-# split = size*3/5
+# # print "fitting..."
+# # split = size*3/5
+# f=[[' Federal-gov', ' Own-child', 24.0, ' Male', ' White', ' United-States', 9.0, 0.0, ' HS-grad', 191073.0], [' Federal-gov', ' Not-in-family', 29.0, ' Male', ' Black', ' United-States', 10.0, 0.0, ' Some-college', 301010.0]]
+# l = [' <=50K', ' <=50K']
+# f= [[' Federal-gov', ' Own-child'],[' Federal-gov', ' Not-in-family']]
+# clf.fit(f,l)
 # clf.fit(res_data[split:],res_label[split:])
 # right_amount = 0
 # for item in zip(res_data,res_label):

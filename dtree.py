@@ -18,7 +18,7 @@ import unittest
 import random
 import logging
 import json
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 import six
 from six.moves import cPickle as pickle
@@ -550,7 +550,8 @@ def split_values(data, attr):
     including a random value in the attribute range of data set and a MAX VALUE
     """
     extr_value = data.extre_attri_value
-    selected_val = random.randint(extr_value[0],extr_value[1])
+    logging.info(extr_value)
+    selected_val = random.randint(extr_value[attr][0],extr_value[attr][1])
     return [selected_val, MAX_VALUE]
 
 def choose_attribute(data, attributes, class_attr, fitness, method):
@@ -662,7 +663,6 @@ def create_decision_tree(data, attributes, class_attr, fitness_func, wrapper,cur
         node = Node(tree=wrapper, attr_name=best)
         logging.info("best attribute is %s"%best)
         # [question] n is data amount in current node. 
-        node.n += len(data)
         node.leaf_attributes = [attr for attr in attributes if attr != best]
         node.father_node = father_node
         # Create a new decision tree/sub-node for each of the values in the
@@ -871,6 +871,7 @@ class Data(object):
         self.header_order = [] # [attr_name,...]
         for el in header:
             matches = ATTR_HEADER_PATTERN.findall(el)
+            logging.info("match is %s"%matches)
             assert matches, "Invalid header element: %s" % (el,)
             el_name, el_type, el_mode = matches[0]
             # logging.info(matches[0])
@@ -884,8 +885,9 @@ class Data(object):
                 self._class_attr_name = el_name
             else:
                 # [todo]to support continuous attributes
-                assert self.header_types[el_name] != ATTR_TYPE_CONTINUOUS, \
-                    "Non-class continuous attributes are not supported."
+                # assert self.header_types[el_name] != ATTR_TYPE_CONTINUOUS, \
+                #     "Non-class continuous attributes are not supported."
+                pass
         assert self._class_attr_name, "A class attribute must be specified."
 
     def validate_row(self, row):
@@ -901,13 +903,15 @@ class Data(object):
         else:
             assert isinstance(row, dict)
             itr = iteritems(row)
+        # logging.error(itr)
         for el_name, el_value in itr:
             if self.header_types[el_name] == ATTR_TYPE_DISCRETE:
                 clean_row[el_name] = int(el_value)
             elif self.header_types[el_name] == ATTR_TYPE_CONTINUOUS:
                 clean_row[el_name] = float(el_value)
-            else:
-                clean_row[el_name] = el_value
+            elif self.header_types[el_name] == ATTR_TYPE_NOMINAL:
+                assert el_value.isdigit(),"you should transform nominal type into number instead of raw string."
+                clean_row[el_name] = int(el_value)
         return clean_row
 
     def _get_iterator(self):
@@ -1018,7 +1022,7 @@ class Node(object):
         self._branches = {} # {v:Node}
         self.father_node = None
         self.base_model = MLPClassifier(hidden_layer_sizes=(10,), max_iter=70, alpha=1e-4,
-                    solver='sgd', verbose=10, tol=1e-4, random_state=1,
+                    solver='sgd', verbose=False, tol=1e-4, random_state=1,
                     learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
     
     def __getitem__(self, attr_name):
@@ -1280,6 +1284,7 @@ class Node(object):
         attr_value = self._get_attribute_value_for_node(record)
         logging.info("attribute:[%s]"%self.attr_name)
         logging.info("attribute value:[%s]"%attr_value)
+        self.n += 1
         if self.attr_name == None:
             # arrived at leaf node
             self.record_list.append(record)
@@ -1670,30 +1675,65 @@ class Tree(object):
         logging.info("[in incremental training driver...]")
         non_data_index = []
         for index, leaf in enumerate(self.leaves_list):
+            logging.error("training %s all %s"%(index,len(self.leaves_list)))
             attrs = leaf.leaf_attributes
             leaf_data = leaf.record_list
-            logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
-            logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
             label_list = []
             features_list = []
-            if leaf_data == []:
-                logging.info("[empty node]")
-                fn = leaf.father_node
-                for key,other_leaf in fn._branches.items():
-                    other_leaf_data = other_leaf.record_list
-                    if other_leaf_data != []:
-                        for item in other_leaf_data:
-                            label_list.append(item[self.data.class_attribute_name])
-                            features_list.append([value for key,value in item.items() if key in attrs])
-            else:
-                logging.info("[not empty node]")
-                for item in leaf_data:
-                    label_list.append(item[self.data.class_attribute_name])
-                    features_list.append([value for key,value in item.items() if key in attrs])
+            (features_list,label_list)=self._find_data(leaf,attrs)
+            # logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
+            # logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
+
+            # if leaf.n == 0:
+            #     logging.info("[empty node]")
+            #     fn = leaf.father_node
+            #     for key,other_leaf in fn._branches.items():
+            #         other_leaf_data = other_leaf.record_list
+            #         if other_leaf_data != []:
+            #             for item in other_leaf_data:
+            #                 label_list.append(item[self.data.class_attribute_name])
+            #                 features_list.append([value for key,value in item.items() if key in attrs])
+            # else:
+            #     logging.info("[not empty node]")
+            #     for item in leaf_data:
+            #         label_list.append(item[self.data.class_attribute_name])
+            #         features_list.append([value for key,value in item.items() if key in attrs])
             logging.info("label :%s"%label_list)
             logging.info("features : %s"%features_list)
             leaf.base_model.fit(features_list,label_list)
-            
+    def _find_data(self,node,attrs):
+        """Find data which is the nearest to node. 
+        Args:
+            node: tree node.
+            attrs: attribute you want to get.
+        Returns:
+            features_list
+            label_list
+        """
+        label_list = []
+        features_list = []
+        if node.n == 0:
+            fn = node.father_node
+            (f,l) = self._find_data(fn,attrs)
+            features_list.extend(f)
+            label_list.extend(l)
+        else:
+            if node.attr_name == None:
+                # this is a leaf node with records.
+                leaf_data = node.record_list
+                for item in leaf_data:
+                    label_list.append(item[self.data.class_attribute_name])
+                    features_list.append([value for key,value in item.items() if key in attrs])
+            else:
+                # this is not a leaf node, but some of its children have records.
+                for key,children in node._branches.items():
+                    if children.n == 0:
+                        continue
+                    (f,l) = self._find_data(children,attrs)
+                    features_list.extend(f)
+                    label_list.extend(l)
+        return (features_list,label_list)
+
 
 def _get_defaultdict_cdist():
     return defaultdict(CDist)

@@ -551,7 +551,7 @@ def split_values(data, attr):
     including a random value in the attribute range of data set and a MAX VALUE
     """
     extr_value = data.extre_attri_value
-    logging.info(extr_value)
+    # logging.info(extr_value)
     selected_val = random.randint(extr_value[attr][0],extr_value[attr][1])
     return [selected_val, MAX_VALUE]
 
@@ -675,7 +675,7 @@ def create_decision_tree(attributes, class_attr, fitness_func, wrapper,current_d
         # dictionary object--we'll fill that up next.
 #        tree = {best:{}}
         node = Node(tree=wrapper, attr_name=best)
-        logging.info("best attribute is %s"%best)
+        # logging.info("best attribute is %s"%best)
         # [question] n is data amount in current node. 
         node.leaf_attributes = [attr for attr in attributes if attr != best]
         node.father_node = father_node
@@ -688,11 +688,11 @@ def create_decision_tree(attributes, class_attr, fitness_func, wrapper,current_d
             values = split_values(wrapper.data,best)
         else:
             values = get_values(wrapper.data,best)
-        logging.info("the values of this best attributes:[%s]"%(values))
+        # logging.info("the values of this best attributes:[%s]"%(values))
         for val in values:
             # Create a subtree for the current value under the "best" field
             # [question] for countinus attribute, should we regard it as discrete points. means create a node for each points?
-            logging.info("now we choose value (%s),from [%s]"%(val,best))
+            # logging.info("now we choose value (%s),from [%s]"%(val,best))
             #[delete data]
             #  if is_continuous:
             #     selected_data = [r for r in data if r[best] <= val]
@@ -714,7 +714,7 @@ def create_decision_tree(attributes, class_attr, fitness_func, wrapper,current_d
             if isinstance(subtree, Node):
                 node._branches[val] = subtree
             elif isinstance(subtree, (CDist, DDist)):
-                logging.info("in leaf loop, val is %s"%val)
+                # logging.info("in leaf loop, val is %s"%val)
                 node.set_leaf_dist(attr_value=val, dist=subtree)
                 # [change] add node to leaves list.
             else:
@@ -885,7 +885,7 @@ class Data(object):
         self.header_order = [] # [attr_name,...]
         for el in header:
             matches = ATTR_HEADER_PATTERN.findall(el)
-            logging.info("match is %s"%matches)
+            # logging.info("match is %s"%matches)
             assert matches, "Invalid header element: %s" % (el,)
             el_name, el_type, el_mode = matches[0]
             # logging.info(matches[0])
@@ -1074,7 +1074,7 @@ class Node(object):
         if is_continuous:
             select_value = attr_values[0]
             for critical_value in attr_values:
-                logging.info("compare value %s and critival %s"%(attr_value,critical_value))
+                # logging.info("compare value %s and critival %s"%(attr_value,critical_value))
                 if critical_value > attr_value:
                     select_value = critical_value
                     return select_value
@@ -1248,23 +1248,24 @@ class Node(object):
         record.
         """
         attr_value = self._get_attribute_value_for_node(record)
-        logging.info("attribute:[%s]"%self.attr_name)
-        logging.info("attribute value:[%s]"%attr_value)
+        # logging.info("attribute:[%s]"%self.attr_name)
+        # logging.info("attribute value:[%s]"%attr_value)
         if self.attr_name == None:
             # arrived at leaf node
             sample = [value for key,value in record.items() if key in self.leaf_attributes]
             sample = np.array(sample)
-            logging.info("in predicting ,sample is %s"%sample)
+            # logging.info("in predicting ,sample is %s"%sample)
+            assert (not self.is_continuous_class),"this project can not use in continuous class now!"
             result = self.base_model.predict(sample.reshape(1,-1))
-            logging.info("predict result is %s"%result)
-            return result
+            # logging.info("predict result is %s"%result)
+            return result[0]
         else:
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
             # try:
                 # Propagate decision to leaf node.
                 # assert self.attr_name
-            logging.info("[to next deep]")
+            # logging.info("[to next deep]")
             return self._branches[attr_value].predict(record, depth=depth+1)
 
         # # Check if we're ready to predict.
@@ -1308,8 +1309,8 @@ class Node(object):
 
         # Lookup attribute value.
         attr_value = self._get_attribute_value_for_node(record)
-        logging.info("attribute:[%s]"%self.attr_name)
-        logging.info("attribute value:[%s]"%attr_value)
+        # logging.info("attribute:[%s]"%self.attr_name)
+        # logging.info("attribute value:[%s]"%attr_value)
         self.n += 1
         if self.attr_name == None:
             # arrived at leaf node
@@ -1323,7 +1324,7 @@ class Node(object):
             # try:
                 # Propagate decision to leaf node.
                 # assert self.attr_name
-            logging.info("[to next deep]")
+            # logging.info("[to next deep]")
             self._branches[attr_value].distribute(record, depth=depth+1)
             # [delete] this try-catch not exist.
             # except NodeNotReadyToPredict:
@@ -1704,7 +1705,7 @@ class Tree(object):
         """Initial nerual network after contructure trees.
 
         """
-        logging.info("[in incremental training driver...]")
+        logging.info("[in initial_model...]")
         non_data_index = []
         for index, leaf in enumerate(self.leaves_list):
             logging.error("training %s all %s"%(index,len(self.leaves_list)))
@@ -1730,8 +1731,8 @@ class Tree(object):
             #     for item in leaf_data:
             #         label_list.append(item[self.data.class_attribute_name])
             #         features_list.append([value for key,value in item.items() if key in attrs])
-            logging.info("label :%s"%label_list)
-            logging.info("features : %s"%features_list)
+            # logging.info("label :%s"%label_list)
+            # logging.info("features : %s"%features_list)
             leaf.base_model.fit(features_list,label_list)
         for leaf in self.leaves_list:
             leaf.record_list = []
@@ -1749,10 +1750,12 @@ class Tree(object):
                 for item in leaf_data:
                     label_list.append(item[self.data.class_attribute_name])
                     features_list.append([value for key,value in item.items() if key in attrs])
-                logging.info("label :%s"%label_list)
-                logging.info("features : %s"%features_list)
+                # logging.info("label :%s"%label_list)
+                # logging.info("features : %s"%features_list)
                 leaf.base_model.fit(features_list,label_list)
                 leaf.record_list = []
+            else:
+                logging.info("without data, skip it.")
 
     def _find_data(self,node,attrs):
         """Find data which is the nearest to node. 
@@ -1793,10 +1796,10 @@ def _get_defaultdict_cdist():
 
 class Forest(object):
     
-    def __init__(self, data, tree_kwargs=None, **kwargs):
-        assert isinstance(data, Data)
-        self._data = data
-        
+    def __init__(self,data, tree_kwargs=None,size=10, **kwargs):
+
+        # record the property of data.
+        self._data = data        
         # The population of trees.
         self.trees = []
         
@@ -1808,7 +1811,7 @@ class Forest(object):
             "Growth method %s is not supported." % (self.grow_method,)
         
         # The number of trees in the forest.
-        self.size = kwargs.get('size', 10)
+        self.size = size
         
         # The ratio of training samples given to each tree.
         # The rest are held to test tree accuracy.
@@ -1832,7 +1835,17 @@ class Forest(object):
         # This is a callable that is given a list of all the current trees
         # and returns a list of trees that should be removed.
         self.fell_method = kwargs.get('fell_method', None)
-    
+
+    def _grow_trees(self):
+        """
+        Adds new trees to the forest according to the specified growth method.
+        """
+        if self.grow_method == GROW_AUTO_INCREMENTAL:
+            self.tree_kwargs['auto_grow'] = True
+        
+        while len(self.trees) < self.size:
+            self.trees.append(Tree(data=self.data, **self.tree_kwargs))
+
     def _fell_trees(self):
         """
         Removes trees from the forest according to the specified fell method.
@@ -1888,20 +1901,39 @@ class Forest(object):
         weights = normalize(weights)
         return zip(weights, active_trees)
     
-    def _grow_trees(self):
-        """
-        Adds new trees to the forest according to the specified growth method.
-        """
-        if self.grow_method == GROW_AUTO_INCREMENTAL:
-            self.tree_kwargs['auto_grow'] = True
-        
-        while len(self.trees) < self.size:
-            self.trees.append(Tree(data=self.data, **self.tree_kwargs))
-    
     @property
     def data(self):
         return self._data
         
+    def build(self):
+        """Build forest structure.
+
+        Args:
+            data: Data class object.
+            tree_amount: int, amount of tree.
+        """
+        assert isinstance(self.data, Data)
+        for index in range(0,self.size):
+            logging.info("-------------[build tree index]: %s"%index)
+            tree = Tree.build(self.data)
+            tree.set_missing_value_policy(USE_NEAREST)
+            self.trees.append(tree)
+
+    def distribute(self,record):
+        for index,tree in enumerate(self.trees):
+            logging.info("-------------[distribute tree index]: %s"%index)
+            tree.distribute(record)
+
+    def initial_model(self):
+        for index,tree in enumerate(self.trees):
+            logging.info("-------------[initial_model tree index]: %s"%index)
+            tree.initial_model()  
+
+    def incremental_training_Driver(self):
+        for index,tree in enumerate(self.trees):
+            logging.info("-------------[incremental_training_Driver tree index]: %s"%index)
+            tree.incremental_training_Driver()          
+
     def predict(self, record):
         """
         Attempts to predict the value of the class attribute by aggregating
@@ -1917,35 +1949,42 @@ class Forest(object):
         predictions = {}
         for tree in self.trees:
             _p = tree.predict(record)
-            if _p is None:
-                continue
-            if isinstance(_p, CDist):
-                if _p.mean is None:
-                    continue
-            elif isinstance(_p, DDist):
-                if not _p.count:
-                    continue
-            predictions[tree] = _p
-        if not predictions:
-            return
+            assert _p != None," predict is None, impossible as normal!"
+            # if _p is None:
+            #     continue
+            # if isinstance(_p, CDist):
+            #     if _p.mean is None:
+            #         continue
+            # elif isinstance(_p, DDist):
+            #     if not _p.count:
+            #         continue
+            # predictions[tree] = _p
+            if predictions.has_key(_p):
+                predictions[_p]+=1
+            else:
+                predictions[_p]=1
+        # if not predictions:
+        #     return
 
         # Normalize weights and aggregate final prediction.
-        weights = self.weighting_method(predictions.keys())
-        if not weights:
-            return
+        # weights = self.weighting_method(predictions.keys())
+        # if not weights:
+        #     return
 #        assert sum(weights) == 1.0, "Sum of weights must equal 1."
-        if self.data.is_continuous_class:
+        assert (not self.data.is_continuous_class),"this project can not use in continuous class now!"
             # Merge continuous class predictions.
-            total = sum(w*predictions[tree].mean for w, tree in weights)
-        else:
+            # total = sum(w*predictions[tree].mean for w, tree in weights)
+        # else:
             # Merge discrete class predictions.
-            total = DDist()
-            for weight, tree in weights:
-                prediction = predictions[tree]
-                for cls_value, cls_prob in prediction.probs:
-                    total.add(cls_value, cls_prob*weight)
-        
-        return total
+        # total = DDist()
+        # for weight, tree in weights:
+        #     prediction = predictions[tree]
+        #     for cls_value, cls_prob in prediction.probs:
+        #         total.add(cls_value, cls_prob*weight)
+
+        # return the key with max voting amount.
+        logging.info("predictions is %s"%predictions)
+        return max(predictions)
     
     def set_missing_value_policy(self, policy, target_attr_name=None):
         for tree in self.trees:
@@ -1980,15 +2019,19 @@ class Forest(object):
         """
         Updates the trees with the given training record.
         """
-        self._fell_trees()
-        self._grow_trees()
+        # needn't fell and grow trees.
+        # self._fell_trees()
+        # self._grow_trees() 
         for tree in self.trees:
-            if random.random() < self.sample_ratio:
-                tree.train(record)
-            else:
-                tree.out_of_bag_samples.append(record)
-                while len(tree.out_of_bag_samples) > self.max_out_of_bag_samples:
-                    tree.out_of_bag_samples.pop(0)
+            tree.train(record)
+            # if random.random() < self.sample_ratio:
+                
+            # else:
+            #     tree.out_of_bag_samples.append(record)
+            #     while len(tree.out_of_bag_samples) > self.max_out_of_bag_samples:
+            #         tree.out_of_bag_samples.pop(0)
+
+
 
 class Test(unittest.TestCase):
 

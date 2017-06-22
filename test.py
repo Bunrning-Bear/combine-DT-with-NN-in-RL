@@ -8,13 +8,13 @@
 
 
 
-from dtree import Tree, Data, USE_NEAREST,unique
+from dtree import Tree, Data, USE_NEAREST,unique,Forest
 from sklearn.neural_network import MLPClassifier
 import numpy as np
 import random
 import csv
 import logging
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 train_data = Data('dataset/uci_adult/delete_adult2.data')
 # train_data = Data('dataset/uci_adult/delete_adult.data')
 # train_data = Data('cdata6')
@@ -30,8 +30,11 @@ train_data = Data('dataset/uci_adult/delete_adult2.data')
 class_name = 'cls'
 print "listing..."
 ori = list(train_data)
+
+# training by mlp
+
 # print ori
-# # ori = ori[:len(ori)/3]
+# ori = ori[:len(ori)/3]
 # print "suffuling..."
 # random.shuffle(ori)
 # print "reshaping..."
@@ -46,30 +49,60 @@ ori = list(train_data)
 #             sample_item.append(value)
 #     res_data.append(sample_item)
 # train_data_transformed = zip(res_data,res_label)
-# print train_data_transformed
+# # print train_data_transformed
 # # print res_data
 # # print res_label
 # size = len(res_data)
 # print "data size is %s"%size
+# clf = MLPClassifier(hidden_layer_sizes=(40,), max_iter=70, alpha=1e-4,
+#             solver='sgd', verbose=True, tol=1e-4, random_state=1,
+#             learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
+# # print "fitting..."
+# split = size*8/10
+# # clf.fit(res_data,res_label)
+# clf.fit(res_data[split:],res_label[split:])
+# right_amount = 0
+# for item in zip(res_data[:split],res_label[:split]):
+#     sample = np.array(item[0])
+#     pre = clf.predict(sample.reshape(1,-1))
+#     if pre[0] ==item[1]:
+#         right_amount = right_amount + 1
+# print float(right_amount)/len(train_data)
 
-size = len(ori)
+
+# print "fitting2..."
+# clf.fit(res_data[:split],res_label[:split])
+
+# right_amount = 0
+# for item in zip(res_data[:split],res_label[:split]):
+#     sample = np.array(item[0])
+#     pre = clf.predict(sample.reshape(1,-1))
+#     if pre[0] ==item[1]:
+#         right_amount = right_amount + 1
+# print float(right_amount)/len(train_data)
+# -----------------------------------
+
+# using forest..
+
+size = len(ori)/10
 # Tree.build(train_data)
 print "building-----------"
-tree = Tree.build(train_data)
-tree.set_missing_value_policy(USE_NEAREST)
+forest = Forest(train_data,size=3)
+forest.build()
+# tree.set_missing_value_policy(USE_NEAREST)
 print "distributing----------------------------"
 for item in ori[1:size/10*4]:
     logging.info("distributing: %s"%item)
-    tree.distribute(item)
+    forest.distribute(item)
 print "training----------------------------"
-tree.initial_model()
+forest.initial_model()
 print "testing----------------------------"
 right_amount=0
 test_data = ori[size/10*8:]
 for item in test_data:
-    pre = tree.predict(item)
+    pre = forest.predict(item)
     # print "pre is %s , item is %s"%(pre,item)
-    if pre[0] == item[class_name]:
+    if pre == item[class_name]:
         right_amount = right_amount + 1
 
 print float(right_amount)/len(test_data)
@@ -77,16 +110,56 @@ print "incremental training----------------------------"
 
 for item in ori[size/10*4:size/10*8]:
     logging.info("distributing: %s"%item)
-    tree.distribute(item)
-tree.incremental_training_Driver()
+    forest.distribute(item)
+forest.incremental_training_Driver()
 print "testing2----------------------------"
 right_amount=0
 for item in test_data:
-    pre = tree.predict(item)
-    if pre[0] ==item[class_name]:
+    pre = forest.predict(item)
+    if pre ==item[class_name]:
         right_amount = right_amount + 1
 
 print float(right_amount)/len(test_data)
+
+
+# -----------------------------------
+# using dt 
+# size = len(ori)
+# # Tree.build(train_data)
+# print "building-----------"
+# tree = Tree.build(train_data)
+# tree.set_missing_value_policy(USE_NEAREST)
+# print "distributing----------------------------"
+# for item in ori[1:size/10*4]:
+#     logging.info("distributing: %s"%item)
+#     tree.distribute(item)
+# print "training----------------------------"
+# tree.initial_model()
+# print "testing----------------------------"
+# right_amount=0
+# test_data = ori[size/10*8:]
+# for item in test_data:
+#     pre = tree.predict(item)
+#     # print "pre is %s , item is %s"%(pre,item)
+#     if pre[0] == item[class_name]:
+#         right_amount = right_amount + 1
+
+# print float(right_amount)/len(test_data)
+# print "incremental training----------------------------"
+
+# for item in ori[size/10*4:size/10*8]:
+#     logging.info("distributing: %s"%item)
+#     tree.distribute(item)
+# tree.incremental_training_Driver()
+# print "testing2----------------------------"
+# right_amount=0
+# for item in test_data:
+#     pre = tree.predict(item)
+#     if pre[0] ==item[class_name]:
+#         right_amount = right_amount + 1
+
+# print float(right_amount)/len(test_data)
+
 """
 0.612698412698
 0.792063492063

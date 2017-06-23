@@ -15,18 +15,18 @@
 # Version     :   1.0
 
 import tensorflow as tf
-from dtree import Data
-from dtree import Tree, Data, USE_NEAREST,unique,Forest
+# from dtree import Tree, Data, USE_NEAREST,unique,Forest
 import numpy as np
 import random
 import csv
 import logging
+from base_data_structure import *
 logging.basicConfig(level=logging.INFO)
 
 class Basic_model(object):
 
     def __init__(self,freatures_amount,class_amount,global_flag, 
-        learning_rate=0.01,min_learning_rate=0.00001,tol=0.0001,max_iter=50,
+        learning_rate=0.01,min_learning_rate=0.00001,tol=0.0001,max_iter=4,
         multi_layer=None,hidden_layer=30,
         batch_size=500,
         ):
@@ -142,7 +142,7 @@ class Basic_model(object):
             if self.last_weight !=[]:
                 a = tf.equal(self.last_weight, this_weight)
                 print sess.run(a)
-            print self.saver.save(sess, self.global_flag, global_step=self.incremental_times*self.max_iter)
+            print self.saver.save(sess, self.global_flag)
             print self.saver.last_checkpoints
             self.incremental_times+=1
 
@@ -172,8 +172,8 @@ def main():
     res_label = []
     size = len(ori)
     incre_times = 10
-    batch_size = 4000
-    for list_item in ori[0:size]:
+    batch_size = 200
+    for list_item in ori:
         sample_item = []
         for key,value in list_item.items():
             if key == class_name:

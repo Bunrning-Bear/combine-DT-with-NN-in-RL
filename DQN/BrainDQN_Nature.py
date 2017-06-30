@@ -30,15 +30,18 @@ class BrainDQN:
 		self.epsilon = INITIAL_EPSILON
 		self.actions = actions
 		# init Q network
-		self.stateInput,self.QValue,self.W_conv1,self.b_conv1,self.W_conv2,self.b_conv2,self.W_conv3,self.b_conv3,self.W_fc1,self.b_fc1,self.W_fc2,self.b_fc2 = self.createQNetwork()
+		self.stateInput,self.QValue,self.super_para_dic = self.createQNetwork()
 
 		# init Target Q Network
-		self.stateInputT,self.QValueT,self.W_conv1T,self.b_conv1T,self.W_conv2T,self.b_conv2T,self.W_conv3T,self.b_conv3T,self.W_fc1T,self.b_fc1T,self.W_fc2T,self.b_fc2T = self.createQNetwork()
+		self.stateInputT,self.QValueT,self.super_para_dic_T = self.createQNetwork()
 
-		self.copyTargetQNetworkOperation = [self.W_conv1T.assign(self.W_conv1),self.b_conv1T.assign(self.b_conv1),self.W_conv2T.assign(self.W_conv2),self.b_conv2T.assign(self.b_conv2),self.W_conv3T.assign(self.W_conv3),self.b_conv3T.assign(self.b_conv3),self.W_fc1T.assign(self.W_fc1),self.b_fc1T.assign(self.b_fc1),self.W_fc2T.assign(self.W_fc2),self.b_fc2T.assign(self.b_fc2)]
+		# init copy operation
+		self.copyTargetQNetworkOperation = []
+		for key,value in self.super_para_dic.items():
+			assign_op = self.super_para_dic_T[key].assign(self.super_para_dic[key])
+			self.copyTargetQNetworkOperation.append(assign_op)
 
 		self.createTrainingMethod()
-
 		# saving and loading networks
 		self.saver = tf.train.Saver()
 		self.session = tf.InteractiveSession()
@@ -67,7 +70,18 @@ class BrainDQN:
 
 		W_fc2 = self.weight_variable([512,self.actions])
 		b_fc2 = self.bias_variable([self.actions])
-
+		super_para_dic={
+			'W_conv1':W_conv1,
+			'b_conv1':b_conv1,
+			'W_conv2':W_conv2,
+			'b_conv2':b_conv2,			
+			'W_conv3':W_conv3,
+			'b_conv3':b_conv3,	
+			'W_fc1':W_fc1,
+			'b_fc1':b_fc1,
+			'W_fc2':W_fc2,
+			'b_fc2':b_fc2,			
+		}
 		# input layer
 
 		stateInput = tf.placeholder("float",[None,80,80,4])
@@ -86,7 +100,7 @@ class BrainDQN:
 		# Q Value layer
 		QValue = tf.matmul(h_fc1,W_fc2) + b_fc2
 
-		return stateInput,QValue,W_conv1,b_conv1,W_conv2,b_conv2,W_conv3,b_conv3,W_fc1,b_fc1,W_fc2,b_fc2
+		return stateInput,QValue,super_para_dic
 
 	def copyTargetQNetwork(self):
 		self.session.run(self.copyTargetQNetworkOperation)
@@ -100,8 +114,6 @@ class BrainDQN:
 
 
 	def trainQNetwork(self):
-
-		
 		# Step 1: obtain random minibatch from replay memory
 		minibatch = random.sample(self.replayMemory,BATCH_SIZE)
 		state_batch = [data[0] for data in minibatch]
@@ -132,7 +144,6 @@ class BrainDQN:
 		if self.timeStep % UPDATE_TIME == 0:
 			self.copyTargetQNetwork()
 
-		
 	def setPerception(self,nextObservation,action,reward,terminal):
 		#newState = np.append(nextObservation,self.currentState[:,:,1:],axis = 2)
 		newState = np.append(self.currentState[:,:,1:],nextObservation,axis = 2)
@@ -141,9 +152,6 @@ class BrainDQN:
 			self.replayMemory.popleft()
 		if self.timeStep > OBSERVE:
 			# Train the network
-			self.trainQNetwork()
-
-		# print info
 		state = ""
 		if self.timeStep <= OBSERVE:
 			state = "observe"

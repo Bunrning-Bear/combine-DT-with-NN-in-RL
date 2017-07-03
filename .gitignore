@@ -60,8 +60,11 @@ docs/_build/
 /*.geany
 
 # data set
-/dataset*
+*/dataset*
 
 
 *.pyc
+
+# network
+DQN/saved_networks/*
 

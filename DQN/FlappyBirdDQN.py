@@ -8,7 +8,7 @@ import cv2
 import sys
 sys.path.append("game/")
 import wrapped_flappy_bird as game
-from BrainDQN_Nature import BrainDQN
+from BrainDQN_origin import BrainDQN
 import numpy as np
 
 # preprocess raw image to 80*80 gray image
@@ -34,6 +34,7 @@ def playFlappyBird():
 	# Step 3.2: run the game
 	while 1!= 0:
 		action = brain.getAction()
+		print action
 		nextObservation,reward,terminal = flappyBird.frame_step(action)
 		nextObservation = preprocess(nextObservation)
 		brain.setPerception(nextObservation,action,reward,terminal)

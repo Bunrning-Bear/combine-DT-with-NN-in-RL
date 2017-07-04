@@ -1,0 +1,2307 @@
+RoadRunner-ramDeterministic-v4
+[2017-06-30 13:06:12,072] Making new env: RoadRunner-ramDeterministic-v4
+Box(128,)
+Asteroids-ramDeterministic-v0
+[2017-06-30 13:06:12,743] Making new env: Asteroids-ramDeterministic-v0
+Box(128,)
+Gopher-ramDeterministic-v4
+[2017-06-30 13:06:13,401] Making new env: Gopher-ramDeterministic-v4
+Box(128,)
+RoadRunner-ramDeterministic-v0
+[2017-06-30 13:06:14,135] Making new env: RoadRunner-ramDeterministic-v0
+Box(128,)
+KellyCoinflipGeneralized-v0
+[2017-06-30 13:06:14,866] Making new env: KellyCoinflipGeneralized-v0
+Gopher-ramDeterministic-v0
+[2017-06-30 13:06:15,145] Making new env: Gopher-ramDeterministic-v0
+Box(128,)
+DoubleDunk-ramDeterministic-v4
+[2017-06-30 13:06:15,870] Making new env: DoubleDunk-ramDeterministic-v4
+Box(128,)
+DoubleDunk-ramDeterministic-v0
+[2017-06-30 13:06:16,517] Making new env: DoubleDunk-ramDeterministic-v0
+Box(128,)
+Robotank-ram-v0
+[2017-06-30 13:06:17,184] Making new env: Robotank-ram-v0
+Box(128,)
+CartPole-v0
+[2017-06-30 13:06:17,952] Making new env: CartPole-v0
+Box(4,)
+CartPole-v1
+[2017-06-30 13:06:17,958] Making new env: CartPole-v1
+Box(4,)
+Asteroids-ramDeterministic-v4
+[2017-06-30 13:06:17,962] Making new env: Asteroids-ramDeterministic-v4
+Box(128,)
+Pooyan-ram-v4
+[2017-06-30 13:06:18,842] Making new env: Pooyan-ram-v4
+Box(128,)
+Gopher-ram-v0
+[2017-06-30 13:06:19,670] Making new env: Gopher-ram-v0
+Box(128,)
+Pooyan-ram-v0
+[2017-06-30 13:06:20,290] Making new env: Pooyan-ram-v0
+Box(128,)
+Gopher-ram-v4
+[2017-06-30 13:06:21,084] Making new env: Gopher-ram-v4
+Box(128,)
+Pong-ramNoFrameskip-v0
+[2017-06-30 13:06:21,724] Making new env: Pong-ramNoFrameskip-v0
+Box(128,)
+FrozenLake8x8-v0
+[2017-06-30 13:06:22,556] Making new env: FrozenLake8x8-v0
+Discrete(64)
+YarsRevenge-ramDeterministic-v4
+[2017-06-30 13:06:22,564] Making new env: YarsRevenge-ramDeterministic-v4
+Box(128,)
+CarRacing-v0
+[2017-06-30 13:06:23,206] Making new env: CarRacing-v0
+[2017-06-30 13:06:23,227] Making new env: SpaceInvaders-ram-v0
+SpaceInvaders-ram-v0
+Box(128,)
+YarsRevenge-ramDeterministic-v0
+[2017-06-30 13:06:23,878] Making new env: YarsRevenge-ramDeterministic-v0
+Box(128,)
+SpaceInvadersDeterministic-v0
+[2017-06-30 13:06:24,496] Making new env: SpaceInvadersDeterministic-v0
+Box(210, 160, 3)
+DoubleDunk-ram-v0
+[2017-06-30 13:06:25,208] Making new env: DoubleDunk-ram-v0
+Box(128,)
+SpaceInvadersDeterministic-v4
+[2017-06-30 13:06:25,824] Making new env: SpaceInvadersDeterministic-v4
+Box(210, 160, 3)
+DoubleDunk-ram-v4
+[2017-06-30 13:06:26,462] Making new env: DoubleDunk-ram-v4
+Box(128,)
+VideoPinballDeterministic-v0
+[2017-06-30 13:06:27,085] Making new env: VideoPinballDeterministic-v0
+Box(250, 160, 3)
+Centipede-v0
+[2017-06-30 13:06:27,906] Making new env: Centipede-v0
+Box(250, 160, 3)
+Centipede-v4
+[2017-06-30 13:06:28,595] Making new env: Centipede-v4
+Box(250, 160, 3)
+YarsRevenge-v4
+[2017-06-30 13:06:29,316] Making new env: YarsRevenge-v4
+Box(210, 160, 3)
+Pitfall-ramNoFrameskip-v0
+[2017-06-30 13:06:29,979] Making new env: Pitfall-ramNoFrameskip-v0
+Box(128,)
+Phoenix-ram-v4
+[2017-06-30 13:06:30,597] Making new env: Phoenix-ram-v4
+Box(128,)
+SpaceInvaders-ram-v4
+[2017-06-30 13:06:31,242] Making new env: SpaceInvaders-ram-v4
+Box(128,)
+Pitfall-ramNoFrameskip-v4
+[2017-06-30 13:06:31,984] Making new env: Pitfall-ramNoFrameskip-v4
+Box(128,)
+Frostbite-ramNoFrameskip-v0
+[2017-06-30 13:06:32,980] Making new env: Frostbite-ramNoFrameskip-v0
+Box(128,)
+QbertNoFrameskip-v0
+[2017-06-30 13:06:33,743] Making new env: QbertNoFrameskip-v0
+Box(210, 160, 3)
+AmidarNoFrameskip-v4
+[2017-06-30 13:06:34,466] Making new env: AmidarNoFrameskip-v4
+Box(250, 160, 3)
+QbertNoFrameskip-v4
+[2017-06-30 13:06:35,112] Making new env: QbertNoFrameskip-v4
+Box(210, 160, 3)
+SkiingNoFrameskip-v4
+[2017-06-30 13:06:35,724] Making new env: SkiingNoFrameskip-v4
+Box(250, 160, 3)
+SkiingNoFrameskip-v0
+[2017-06-30 13:06:36,356] Making new env: SkiingNoFrameskip-v0
+Box(250, 160, 3)
+HotterColder-v0
+[2017-06-30 13:06:37,068] Making new env: HotterColder-v0
+Discrete(4)
+YarsRevenge-v0
+[2017-06-30 13:06:37,083] Making new env: YarsRevenge-v0
+Box(210, 160, 3)
+[2017-06-30 13:06:37,715] Making new env: Phoenix-ram-v0
+Phoenix-ram-v0
+Box(128,)
+Berzerk-ramNoFrameskip-v4
+[2017-06-30 13:06:38,262] Making new env: Berzerk-ramNoFrameskip-v4
+Box(128,)
+Berzerk-ramNoFrameskip-v0
+[2017-06-30 13:06:39,053] Making new env: Berzerk-ramNoFrameskip-v0
+Box(128,)
+KungFuMaster-ramNoFrameskip-v0
+[2017-06-30 13:06:39,709] Making new env: KungFuMaster-ramNoFrameskip-v0
+Box(128,)
+AirRaidNoFrameskip-v4
+[2017-06-30 13:06:40,350] Making new env: AirRaidNoFrameskip-v4
+Box(250, 160, 3)
+AirRaidDeterministic-v0
+[2017-06-30 13:06:41,084] Making new env: AirRaidDeterministic-v0
+Box(250, 160, 3)
+ChopperCommandDeterministic-v4
+[2017-06-30 13:06:41,712] Making new env: ChopperCommandDeterministic-v4
+Box(210, 160, 3)
+AirRaidNoFrameskip-v0
+[2017-06-30 13:06:42,335] Making new env: AirRaidNoFrameskip-v0
+Box(250, 160, 3)[2017-06-30 13:06:43,176] Making new env: AirRaidDeterministic-v4
+
+AirRaidDeterministic-v4
+Box(250, 160, 3)
+ChopperCommandDeterministic-v0
+[2017-06-30 13:06:43,916] Making new env: ChopperCommandDeterministic-v0
+Box(210, 160, 3)
+Asteroids-ram-v0
+[2017-06-30 13:06:44,619] Making new env: Asteroids-ram-v0
+Box(128,)
+Asteroids-ram-v4
+[2017-06-30 13:06:45,237] Making new env: Asteroids-ram-v4
+Box(128,)
+TutankhamDeterministic-v0
+[2017-06-30 13:06:45,848] Making new env: TutankhamDeterministic-v0
+Box(250, 160, 3)
+KrullDeterministic-v0
+[2017-06-30 13:06:46,435] Making new env: KrullDeterministic-v0
+Box(210, 160, 3)
+MsPacman-ramNoFrameskip-v0
+[2017-06-30 13:06:47,038] Making new env: MsPacman-ramNoFrameskip-v0
+Box(128,)
+Atlantis-ramDeterministic-v0
+[2017-06-30 13:06:47,627] Making new env: Atlantis-ramDeterministic-v0
+Box(128,)
+KrullDeterministic-v4
+[2017-06-30 13:06:48,471] Making new env: KrullDeterministic-v4
+Box(210, 160, 3)
+MsPacman-ramNoFrameskip-v4
+[2017-06-30 13:06:49,102] Making new env: MsPacman-ramNoFrameskip-v4
+Box(128,)[2017-06-30 13:06:49,748] Making new env: Atlantis-ramDeterministic-v4
+
+Atlantis-ramDeterministic-v4
+Box(128,)
+PhoenixNoFrameskip-v4
+[2017-06-30 13:06:50,490] Making new env: PhoenixNoFrameskip-v4
+Box(210, 160, 3)
+PitfallDeterministic-v0
+[2017-06-30 13:06:51,173] Making new env: PitfallDeterministic-v0
+Box(210, 160, 3)
+Solaris-ram-v0
+[2017-06-30 13:06:52,028] Making new env: Solaris-ram-v0
+Box(128,)
+Solaris-ram-v4
+[2017-06-30 13:06:52,881] Making new env: Solaris-ram-v4
+Box(128,)
+Solaris-ramNoFrameskip-v4
+[2017-06-30 13:06:53,497] Making new env: Solaris-ramNoFrameskip-v4
+Box(128,)
+FishingDerbyNoFrameskip-v4[2017-06-30 13:06:54,132] Making new env: FishingDerbyNoFrameskip-v4
+
+Box(210, 160, 3)
+VentureDeterministic-v4
+[2017-06-30 13:06:54,861] Making new env: VentureDeterministic-v4
+Box(210, 160, 3)
+FishingDerbyNoFrameskip-v0
+[2017-06-30 13:06:55,625] Making new env: FishingDerbyNoFrameskip-v0
+Box(210, 160, 3)
+VentureDeterministic-v0
+[2017-06-30 13:06:56,316] Making new env: VentureDeterministic-v0
+Box(210, 160, 3)
+PhoenixNoFrameskip-v0
+[2017-06-30 13:06:57,117] Making new env: PhoenixNoFrameskip-v0
+Box(210, 160, 3)
+Zaxxon-ramDeterministic-v0
+[2017-06-30 13:06:57,742] Making new env: Zaxxon-ramDeterministic-v0
+Box(128,)
+Qbert-v4
+[2017-06-30 13:06:58,378] Making new env: Qbert-v4
+Box(210, 160, 3)
+ReversedAddition-v0
+[2017-06-30 13:06:59,112] Making new env: ReversedAddition-v0
+Discrete(4)
+Qbert-v0
+[2017-06-30 13:06:59,129] Making new env: Qbert-v0
+Box(210, 160, 3)
+Robotank-ram-v4
+[2017-06-30 13:06:59,845] Making new env: Robotank-ram-v4
+Box(128,)
+Pitfall-v0
+[2017-06-30 13:07:00,534] Making new env: Pitfall-v0
+Box(210, 160, 3)
+Pitfall-v4
+[2017-06-30 13:07:01,361] Making new env: Pitfall-v4
+Box(210, 160, 3)
+BipedalWalkerHardcore-v2
+[2017-06-30 13:07:02,056] Making new env: BipedalWalkerHardcore-v2
+Venture-ram-v4
+[2017-06-30 13:07:02,065] Making new env: Venture-ram-v4
+Box(128,)
+Venture-ram-v0
+[2017-06-30 13:07:02,845] Making new env: Venture-ram-v0
+Box(128,)
+MontezumaRevenge-ramNoFrameskip-v4
+[2017-06-30 13:07:03,652] Making new env: MontezumaRevenge-ramNoFrameskip-v4
+Box(128,)
+MontezumaRevenge-ramNoFrameskip-v0
+[2017-06-30 13:07:04,363] Making new env: MontezumaRevenge-ramNoFrameskip-v0
+Box(128,)
+Phoenix-ramNoFrameskip-v0
+[2017-06-30 13:07:04,996] Making new env: Phoenix-ramNoFrameskip-v0
+Box(128,)
+Go9x9-v0
+[2017-06-30 13:07:05,700] Making new env: Go9x9-v0
+MountainCarContinuous-v0
+[2017-06-30 13:07:05,712] Making new env: MountainCarContinuous-v0
+Box(2,)
+SemisuperPendulumNoise-v0
+[2017-06-30 13:07:05,724] Making new env: SemisuperPendulumNoise-v0
+Box(3,)
+Reacher-v1
+[2017-06-30 13:07:05,747] Making new env: Reacher-v1
+ChopperCommand-ramNoFrameskip-v0
+[2017-06-30 13:07:05,761] Making new env: ChopperCommand-ramNoFrameskip-v0
+Box(128,)
+ChopperCommand-ramNoFrameskip-v4
+[2017-06-30 13:07:06,474] Making new env: ChopperCommand-ramNoFrameskip-v4
+Box(128,)
+Taxi-v2
+[2017-06-30 13:07:07,104] Making new env: Taxi-v2
+Discrete(500)
+ZaxxonDeterministic-v0
+[2017-06-30 13:07:07,131] Making new env: ZaxxonDeterministic-v0
+Box(210, 160, 3)[2017-06-30 13:07:07,772] Making new env: Pong-v0
+
+Pong-v0
+Box(210, 160, 3)
+Enduro-v4
+[2017-06-30 13:07:08,548] Making new env: Enduro-v4
+Box(210, 160, 3)
+Tutankham-ramDeterministic-v4
+[2017-06-30 13:07:09,241] Making new env: Tutankham-ramDeterministic-v4
+Box(128,)
+Enduro-v0
+[2017-06-30 13:07:09,888] Making new env: Enduro-v0
+Box(210, 160, 3)
+Tutankham-ramDeterministic-v0
+[2017-06-30 13:07:10,542] Making new env: Tutankham-ramDeterministic-v0
+Box(128,)
+Krull-ramNoFrameskip-v0
+[2017-06-30 13:07:11,314] Making new env: Krull-ramNoFrameskip-v0
+Box(128,)
+Krull-ramNoFrameskip-v4
+[2017-06-30 13:07:12,056] Making new env: Krull-ramNoFrameskip-v4
+Box(128,)
+Freeway-ramNoFrameskip-v4
+[2017-06-30 13:07:12,843] Making new env: Freeway-ramNoFrameskip-v4
+Box(128,)
+ElevatorAction-ramNoFrameskip-v0
+[2017-06-30 13:07:13,499] Making new env: ElevatorAction-ramNoFrameskip-v0
+Box(128,)
+ElevatorAction-ramNoFrameskip-v4
+[2017-06-30 13:07:14,087] Making new env: ElevatorAction-ramNoFrameskip-v4
+Box(128,)
+StarGunner-ramNoFrameskip-v0
+[2017-06-30 13:07:14,912] Making new env: StarGunner-ramNoFrameskip-v0
+Box(128,)
+AsteroidsDeterministic-v4
+[2017-06-30 13:07:15,570] Making new env: AsteroidsDeterministic-v4
+Box(210, 160, 3)
+StarGunner-ramNoFrameskip-v4
+[2017-06-30 13:07:16,133] Making new env: StarGunner-ramNoFrameskip-v4
+Box(128,)
+Breakout-ram-v0
+[2017-06-30 13:07:16,677] Making new env: Breakout-ram-v0
+Box(128,)
+Skiing-ram-v4
+[2017-06-30 13:07:17,362] Making new env: Skiing-ram-v4
+Box(128,)
+Breakout-ram-v4
+[2017-06-30 13:07:18,009] Making new env: Breakout-ram-v4
+Box(128,)
+Freeway-ram-v4
+[2017-06-30 13:07:18,925] Making new env: Freeway-ram-v4
+Box(128,)
+Bowling-v0
+[2017-06-30 13:07:19,599] Making new env: Bowling-v0
+Box(210, 160, 3)
+BattleZoneDeterministic-v4
+[2017-06-30 13:07:20,242] Making new env: BattleZoneDeterministic-v4
+Box(210, 160, 3)
+Bowling-v4
+[2017-06-30 13:07:20,874] Making new env: Bowling-v4
+Box(210, 160, 3)
+BattleZoneDeterministic-v0
+[2017-06-30 13:07:21,468] Making new env: BattleZoneDeterministic-v0
+Box(210, 160, 3)
+AirRaid-ramDeterministic-v4
+[2017-06-30 13:07:22,080] Making new env: AirRaid-ramDeterministic-v4
+Box(128,)
+AirRaid-ramDeterministic-v0
+[2017-06-30 13:07:22,635] Making new env: AirRaid-ramDeterministic-v0
+Box(128,)
+CentipedeNoFrameskip-v0
+[2017-06-30 13:07:23,273] Making new env: CentipedeNoFrameskip-v0
+Box(250, 160, 3)
+Skiing-ram-v0
+[2017-06-30 13:07:24,070] Making new env: Skiing-ram-v0
+Box(128,)
+CentipedeNoFrameskip-v4
+[2017-06-30 13:07:24,812] Making new env: CentipedeNoFrameskip-v4
+Box(250, 160, 3)
+Freeway-ram-v0
+[2017-06-30 13:07:25,426] Making new env: Freeway-ram-v0
+Box(128,)
+Riverraid-ramNoFrameskip-v4
+[2017-06-30 13:07:26,070] Making new env: Riverraid-ramNoFrameskip-v4
+Box(128,)
+ConvergenceControl-v0
+[2017-06-30 13:07:26,888] Making new env: ConvergenceControl-v0
+Riverraid-ramNoFrameskip-v0
+[2017-06-30 13:07:26,902] Making new env: Riverraid-ramNoFrameskip-v0
+Box(128,)
+Pooyan-v4
+[2017-06-30 13:07:27,759] Making new env: Pooyan-v4
+Box(250, 160, 3)
+TimePilot-ramDeterministic-v4
+[2017-06-30 13:07:28,539] Making new env: TimePilot-ramDeterministic-v4
+Box(128,)
+ChopperCommand-v0
+[2017-06-30 13:07:29,245] Making new env: ChopperCommand-v0
+Box(210, 160, 3)
+Pooyan-v0
+[2017-06-30 13:07:29,829] Making new env: Pooyan-v0
+Box(250, 160, 3)
+ChopperCommand-v4
+[2017-06-30 13:07:30,398] Making new env: ChopperCommand-v4
+Box(210, 160, 3)
+BattleZoneNoFrameskip-v0
+[2017-06-30 13:07:30,994] Making new env: BattleZoneNoFrameskip-v0
+Box(210, 160, 3)
+Alien-ramNoFrameskip-v4
+[2017-06-30 13:07:31,592] Making new env: Alien-ramNoFrameskip-v4
+Box(128,)
+PrivateEye-v0
+[2017-06-30 13:07:32,256] Making new env: PrivateEye-v0
+Box(210, 160, 3)
+BattleZoneNoFrameskip-v4
+[2017-06-30 13:07:32,921] Making new env: BattleZoneNoFrameskip-v4
+Box(210, 160, 3)
+Alien-ramNoFrameskip-v0
+[2017-06-30 13:07:33,554] Making new env: Alien-ramNoFrameskip-v0
+Box(128,)
+PrivateEye-v4
+[2017-06-30 13:07:34,320] Making new env: PrivateEye-v4
+Box(210, 160, 3)
+TimePilot-ramDeterministic-v0
+[2017-06-30 13:07:34,949] Making new env: TimePilot-ramDeterministic-v0
+Box(128,)
+UpNDown-ramDeterministic-v4
+[2017-06-30 13:07:35,593] Making new env: UpNDown-ramDeterministic-v4
+Box(128,)
+LunarLanderContinuous-v2
+[2017-06-30 13:07:36,337] Making new env: LunarLanderContinuous-v2
+TutankhamDeterministic-v4
+[2017-06-30 13:07:36,342] Making new env: TutankhamDeterministic-v4
+Box(250, 160, 3)
+UpNDown-ramDeterministic-v0
+[2017-06-30 13:07:36,962] Making new env: UpNDown-ramDeterministic-v0
+Box(128,)
+Phoenix-ramNoFrameskip-v4
+[2017-06-30 13:07:37,721] Making new env: Phoenix-ramNoFrameskip-v4
+Box(128,)
+Freeway-ramNoFrameskip-v0
+[2017-06-30 13:07:38,694] Making new env: Freeway-ramNoFrameskip-v0
+Box(128,)
+KungFuMaster-ram-v4
+[2017-06-30 13:07:39,497] Making new env: KungFuMaster-ram-v4
+Box(128,)
+Asterix-ram-v0
+[2017-06-30 13:07:40,265] Making new env: Asterix-ram-v0
+Box(128,)
+Jamesbond-ramNoFrameskip-v4
+[2017-06-30 13:07:40,953] Making new env: Jamesbond-ramNoFrameskip-v4
+Box(128,)
+Asterix-ram-v4
+[2017-06-30 13:07:41,597] Making new env: Asterix-ram-v4
+Box(128,)
+Jamesbond-ramNoFrameskip-v0
+[2017-06-30 13:07:42,311] Making new env: Jamesbond-ramNoFrameskip-v0
+Box(128,)
+JourneyEscape-v0
+[2017-06-30 13:07:42,916] Making new env: JourneyEscape-v0
+Box(230, 160, 3)
+CrazyClimberDeterministic-v4
+[2017-06-30 13:07:43,543] Making new env: CrazyClimberDeterministic-v4
+Box(210, 160, 3)
+SpaceInvaders-ramDeterministic-v4
+[2017-06-30 13:07:44,172] Making new env: SpaceInvaders-ramDeterministic-v4
+Box(128,)
+BipedalWalker-v2
+[2017-06-30 13:07:44,892] Making new env: BipedalWalker-v2
+CrazyClimberDeterministic-v0
+[2017-06-30 13:07:44,896] Making new env: CrazyClimberDeterministic-v0
+Box(210, 160, 3)
+QbertDeterministic-v0
+[2017-06-30 13:07:45,616] Making new env: QbertDeterministic-v0
+Box(210, 160, 3)
+QbertDeterministic-v4
+[2017-06-30 13:07:46,494] Making new env: QbertDeterministic-v4
+Box(210, 160, 3)
+KungFuMaster-ram-v0
+[2017-06-30 13:07:47,259] Making new env: KungFuMaster-ram-v0
+Box(128,)
+SolarisDeterministic-v0
+[2017-06-30 13:07:48,025] Making new env: SolarisDeterministic-v0
+Box(210, 160, 3)
+SolarisDeterministic-v4
+[2017-06-30 13:07:48,717] Making new env: SolarisDeterministic-v4
+Box(210, 160, 3)
+YarsRevengeDeterministic-v0
+[2017-06-30 13:07:49,472] Making new env: YarsRevengeDeterministic-v0
+Box(210, 160, 3)
+SpaceInvaders-ramDeterministic-v0
+[2017-06-30 13:07:50,192] Making new env: SpaceInvaders-ramDeterministic-v0
+Box(128,)
+YarsRevengeDeterministic-v4
+[2017-06-30 13:07:50,845] Making new env: YarsRevengeDeterministic-v4
+Box(210, 160, 3)
+TwoRoundDeterministicReward-v0
+[2017-06-30 13:07:51,597] Making new env: TwoRoundDeterministicReward-v0
+Discrete(3)
+Bowling-ramNoFrameskip-v0
+[2017-06-30 13:07:51,613] Making new env: Bowling-ramNoFrameskip-v0
+Box(128,)
+Bowling-ramNoFrameskip-v4
+[2017-06-30 13:07:52,302] Making new env: Bowling-ramNoFrameskip-v4
+Box(128,)
+TimePilotNoFrameskip-v4
+[2017-06-30 13:07:53,118] Making new env: TimePilotNoFrameskip-v4
+Box(210, 160, 3)
+AmidarNoFrameskip-v0
+[2017-06-30 13:07:53,818] Making new env: AmidarNoFrameskip-v0
+Box(250, 160, 3)
+Seaquest-v0
+[2017-06-30 13:07:54,532] Making new env: Seaquest-v0
+Box(210, 160, 3)
+TimePilotNoFrameskip-v0
+[2017-06-30 13:07:55,408] Making new env: TimePilotNoFrameskip-v0
+Box(210, 160, 3)
+MsPacmanDeterministic-v0
+[2017-06-30 13:07:56,192] Making new env: MsPacmanDeterministic-v0
+Box(210, 160, 3)
+Pooyan-ramDeterministic-v4
+[2017-06-30 13:07:56,865] Making new env: Pooyan-ramDeterministic-v4
+Box(128,)
+Pooyan-ramDeterministic-v0
+[2017-06-30 13:07:57,635] Making new env: Pooyan-ramDeterministic-v0
+Box(128,)
+PhoenixDeterministic-v4
+[2017-06-30 13:07:58,368] Making new env: PhoenixDeterministic-v4
+Box(210, 160, 3)
+PhoenixDeterministic-v0
+[2017-06-30 13:07:59,109] Making new env: PhoenixDeterministic-v0
+Box(210, 160, 3)
+CrazyClimber-ram-v0
+[2017-06-30 13:07:59,704] Making new env: CrazyClimber-ram-v0
+Box(128,)
+Frostbite-ramNoFrameskip-v4
+[2017-06-30 13:08:00,302] Making new env: Frostbite-ramNoFrameskip-v4
+Box(128,)
+PredictActionsCartpole-v0
+[2017-06-30 13:08:00,886] Making new env: PredictActionsCartpole-v0
+Box(4,)
+CrazyClimber-ram-v4
+[2017-06-30 13:08:00,889] Making new env: CrazyClimber-ram-v4
+Box(128,)
+MontezumaRevenge-ram-v4
+[2017-06-30 13:08:01,491] Making new env: MontezumaRevenge-ram-v4
+Box(128,)
+MsPacmanDeterministic-v4
+[2017-06-30 13:08:02,072] Making new env: MsPacmanDeterministic-v4
+Box(210, 160, 3)
+BeamRider-ramDeterministic-v4[2017-06-30 13:08:02,647] Making new env: BeamRider-ramDeterministic-v4
+
+Box(128,)
+Centipede-ramNoFrameskip-v0
+[2017-06-30 13:08:03,302] Making new env: Centipede-ramNoFrameskip-v0
+Box(128,)
+BeamRider-ramDeterministic-v0
+[2017-06-30 13:08:04,037] Making new env: BeamRider-ramDeterministic-v0
+Box(128,)
+Centipede-ramNoFrameskip-v4
+[2017-06-30 13:08:04,752] Making new env: Centipede-ramNoFrameskip-v4
+Box(128,)
+KungFuMaster-v0
+[2017-06-30 13:08:05,463] Making new env: KungFuMaster-v0
+Box(210, 160, 3)
+OffSwitchCartpole-v0
+[2017-06-30 13:08:06,107] Making new env: OffSwitchCartpole-v0
+Tuple(Discrete(2), Box(4,))
+KungFuMaster-v4
+[2017-06-30 13:08:06,117] Making new env: KungFuMaster-v4
+Box(210, 160, 3)
+Jamesbond-ramDeterministic-v4
+[2017-06-30 13:08:06,728] Making new env: Jamesbond-ramDeterministic-v4
+Box(128,)
+Tennis-ramDeterministic-v4
+[2017-06-30 13:08:07,391] Making new env: Tennis-ramDeterministic-v4
+Box(128,)
+BreakoutDeterministic-v4
+[2017-06-30 13:08:08,090] Making new env: BreakoutDeterministic-v4
+Box(210, 160, 3)
+Jamesbond-ramDeterministic-v0
+[2017-06-30 13:08:08,773] Making new env: Jamesbond-ramDeterministic-v0
+Box(128,)
+Tennis-ramDeterministic-v0
+[2017-06-30 13:08:09,437] Making new env: Tennis-ramDeterministic-v0
+Box(128,)
+BreakoutDeterministic-v0
+[2017-06-30 13:08:10,075] Making new env: BreakoutDeterministic-v0
+Box(210, 160, 3)
+IceHockey-v0
+[2017-06-30 13:08:10,798] Making new env: IceHockey-v0
+Box(210, 160, 3)
+IceHockey-v4
+[2017-06-30 13:08:11,587] Making new env: IceHockey-v4
+Box(210, 160, 3)
+Pitfall-ramDeterministic-v4
+[2017-06-30 13:08:12,318] Making new env: Pitfall-ramDeterministic-v4
+Box(128,)
+Venture-ramDeterministic-v0
+[2017-06-30 13:08:13,080] Making new env: Venture-ramDeterministic-v0
+Box(128,)
+RobotankDeterministic-v4
+[2017-06-30 13:08:13,697] Making new env: RobotankDeterministic-v4
+Box(210, 160, 3)
+PongDeterministic-v4
+[2017-06-30 13:08:14,328] Making new env: PongDeterministic-v4
+Box(210, 160, 3)
+Venture-ramDeterministic-v4
+[2017-06-30 13:08:14,949] Making new env: Venture-ramDeterministic-v4
+Box(128,)
+RobotankDeterministic-v0
+[2017-06-30 13:08:15,605] Making new env: RobotankDeterministic-v0
+Box(210, 160, 3)
+PongDeterministic-v0
+[2017-06-30 13:08:16,346] Making new env: PongDeterministic-v0
+Box(210, 160, 3)
+Pong-ramDeterministic-v0
+[2017-06-30 13:08:16,881] Making new env: Pong-ramDeterministic-v0
+Box(128,)
+SeaquestNoFrameskip-v0
+[2017-06-30 13:08:17,433] Making new env: SeaquestNoFrameskip-v0
+Box(210, 160, 3)
+Pong-ramDeterministic-v4
+[2017-06-30 13:08:18,100] Making new env: Pong-ramDeterministic-v4
+Box(128,)
+SeaquestNoFrameskip-v4
+[2017-06-30 13:08:18,824] Making new env: SeaquestNoFrameskip-v4
+Box(210, 160, 3)
+NameThisGame-ramNoFrameskip-v0
+[2017-06-30 13:08:19,526] Making new env: NameThisGame-ramNoFrameskip-v0
+Box(128,)
+Berzerk-v4[2017-06-30 13:08:20,291] Making new env: Berzerk-v4
+
+Box(210, 160, 3)
+Berzerk-v0
+[2017-06-30 13:08:20,879] Making new env: Berzerk-v0
+Box(210, 160, 3)
+MontezumaRevenge-v4
+[2017-06-30 13:08:21,450] Making new env: MontezumaRevenge-v4
+Box(210, 160, 3)
+TwoRoundNondeterministicReward-v0
+[2017-06-30 13:08:22,166] Making new env: TwoRoundNondeterministicReward-v0
+Discrete(3)
+JourneyEscape-ramDeterministic-v4
+[2017-06-30 13:08:22,167] Making new env: JourneyEscape-ramDeterministic-v4
+Box(128,)
+MontezumaRevenge-v0
+[2017-06-30 13:08:22,866] Making new env: MontezumaRevenge-v0
+Box(210, 160, 3)
+JourneyEscape-ramDeterministic-v0
+[2017-06-30 13:08:23,626] Making new env: JourneyEscape-ramDeterministic-v0
+Box(128,)
+AirRaid-ram-v0
+[2017-06-30 13:08:24,325] Making new env: AirRaid-ram-v0
+Box(128,)
+Carnival-ram-v0
+[2017-06-30 13:08:25,014] Making new env: Carnival-ram-v0
+Box(128,)
+AirRaid-ram-v4
+[2017-06-30 13:08:25,717] Making new env: AirRaid-ram-v4
+Box(128,)
+Zaxxon-v0
+[2017-06-30 13:08:26,451] Making new env: Zaxxon-v0
+Box(210, 160, 3)
+KellyCoinflip-v0
+[2017-06-30 13:08:27,317] Making new env: KellyCoinflip-v0
+Tuple(Box(1,), Discrete(301))
+Carnival-ram-v4
+[2017-06-30 13:08:27,324] Making new env: Carnival-ram-v4
+Box(128,)
+YarsRevenge-ramNoFrameskip-v0
+[2017-06-30 13:08:27,912] Making new env: YarsRevenge-ramNoFrameskip-v0
+Box(128,)
+BeamRiderDeterministic-v0
+[2017-06-30 13:08:28,764] Making new env: BeamRiderDeterministic-v0
+Box(210, 160, 3)
+YarsRevenge-ramNoFrameskip-v4
+[2017-06-30 13:08:29,431] Making new env: YarsRevenge-ramNoFrameskip-v4
+Box(128,)
+BeamRiderDeterministic-v4
+[2017-06-30 13:08:29,993] Making new env: BeamRiderDeterministic-v4
+Box(210, 160, 3)
+JourneyEscape-v4
+[2017-06-30 13:08:30,572] Making new env: JourneyEscape-v4
+Box(230, 160, 3)
+Phoenix-ramDeterministic-v0
+[2017-06-30 13:08:31,342] Making new env: Phoenix-ramDeterministic-v0
+Box(128,)
+Phoenix-ramDeterministic-v4
+[2017-06-30 13:08:32,012] Making new env: Phoenix-ramDeterministic-v4
+Box(128,)
+Skiing-v4
+[2017-06-30 13:08:32,730] Making new env: Skiing-v4
+Box(250, 160, 3)
+Skiing-v0
+[2017-06-30 13:08:33,327] Making new env: Skiing-v0
+Box(250, 160, 3)
+Boxing-ramDeterministic-v4
+[2017-06-30 13:08:34,040] Making new env: Boxing-ramDeterministic-v4
+Box(128,)
+Boxing-ramDeterministic-v0
+[2017-06-30 13:08:34,701] Making new env: Boxing-ramDeterministic-v0
+Box(128,)
+YarsRevenge-ram-v0
+[2017-06-30 13:08:35,302] Making new env: YarsRevenge-ram-v0
+Box(128,)
+PrivateEye-ram-v4
+[2017-06-30 13:08:35,870] Making new env: PrivateEye-ram-v4
+Box(128,)
+PrivateEye-ram-v0
+[2017-06-30 13:08:36,580] Making new env: PrivateEye-ram-v0
+Box(128,)
+Centipede-ramDeterministic-v0
+[2017-06-30 13:08:37,324] Making new env: Centipede-ramDeterministic-v0
+Box(128,)
+JourneyEscapeNoFrameskip-v4
+[2017-06-30 13:08:38,116] Making new env: JourneyEscapeNoFrameskip-v4
+Box(230, 160, 3)
+Centipede-ramDeterministic-v4
+[2017-06-30 13:08:38,812] Making new env: Centipede-ramDeterministic-v4
+Box(128,)
+JourneyEscapeNoFrameskip-v0
+[2017-06-30 13:08:39,399] Making new env: JourneyEscapeNoFrameskip-v0
+Box(230, 160, 3)
+BattleZone-ramDeterministic-v0
+[2017-06-30 13:08:40,073] Making new env: BattleZone-ramDeterministic-v0
+Box(128,)
+NameThisGameNoFrameskip-v4
+[2017-06-30 13:08:40,642] Making new env: NameThisGameNoFrameskip-v4
+Box(210, 160, 3)
+Thrower-v0
+[2017-06-30 13:08:41,220] Making new env: Thrower-v0
+BattleZone-ramDeterministic-v4
+[2017-06-30 13:08:41,222] Making new env: BattleZone-ramDeterministic-v4
+Box(128,)
+NameThisGameNoFrameskip-v0
+[2017-06-30 13:08:41,821] Making new env: NameThisGameNoFrameskip-v0
+Box(210, 160, 3)
+YarsRevenge-ram-v4
+[2017-06-30 13:08:42,599] Making new env: YarsRevenge-ram-v4
+Box(128,)
+Seaquest-ram-v0
+[2017-06-30 13:08:43,277] Making new env: Seaquest-ram-v0
+Box(128,)
+AsteroidsDeterministic-v0
+[2017-06-30 13:08:44,079] Making new env: AsteroidsDeterministic-v0
+Box(210, 160, 3)
+ElevatorAction-ram-v4
+[2017-06-30 13:08:44,841] Making new env: ElevatorAction-ram-v4
+Box(128,)
+Robotank-ramDeterministic-v0
+[2017-06-30 13:08:45,526] Making new env: Robotank-ramDeterministic-v0
+Box(128,)
+ElevatorAction-ram-v0
+[2017-06-30 13:08:46,293] Making new env: ElevatorAction-ram-v0
+Box(128,)
+ChopperCommand-ramDeterministic-v0
+[2017-06-30 13:08:46,954] Making new env: ChopperCommand-ramDeterministic-v0
+Box(128,)
+Krull-ramDeterministic-v4
+[2017-06-30 13:08:47,815] Making new env: Krull-ramDeterministic-v4
+Box(128,)
+ChopperCommand-ramDeterministic-v4
+[2017-06-30 13:08:48,402] Making new env: ChopperCommand-ramDeterministic-v4
+Box(128,)
+Krull-ramDeterministic-v0
+[2017-06-30 13:08:49,077] Making new env: Krull-ramDeterministic-v0
+Box(128,)
+BankHeistDeterministic-v0
+[2017-06-30 13:08:49,759] Making new env: BankHeistDeterministic-v0
+Box(250, 160, 3)
+Frostbite-ram-v0
+[2017-06-30 13:08:50,435] Making new env: Frostbite-ram-v0
+Box(128,)
+BankHeistDeterministic-v4
+[2017-06-30 13:08:51,136] Making new env: BankHeistDeterministic-v4
+Box(250, 160, 3)
+Frostbite-ram-v4
+[2017-06-30 13:08:51,976] Making new env: Frostbite-ram-v4
+Box(128,)
+Reverse-v0
+[2017-06-30 13:08:52,688] Making new env: Reverse-v0
+Discrete(3)
+SeaquestDeterministic-v4
+[2017-06-30 13:08:52,704] Making new env: SeaquestDeterministic-v4
+Box(210, 160, 3)
+Venture-ramNoFrameskip-v0
+[2017-06-30 13:08:53,489] Making new env: Venture-ramNoFrameskip-v0
+Box(128,)
+SeaquestDeterministic-v0
+[2017-06-30 13:08:54,417] Making new env: SeaquestDeterministic-v0
+Box(210, 160, 3)
+Robotank-ramDeterministic-v4
+[2017-06-30 13:08:55,096] Making new env: Robotank-ramDeterministic-v4
+Box(128,)
+JourneyEscape-ram-v0
+[2017-06-30 13:08:56,101] Making new env: JourneyEscape-ram-v0
+Box(128,)
+JourneyEscape-ram-v4
+[2017-06-30 13:08:56,755] Making new env: JourneyEscape-ram-v4
+Box(128,)
+VentureNoFrameskip-v4
+[2017-06-30 13:08:57,388] Making new env: VentureNoFrameskip-v4
+Box(210, 160, 3)
+BerzerkDeterministic-v4
+[2017-06-30 13:08:58,205] Making new env: BerzerkDeterministic-v4
+Box(210, 160, 3)
+VentureNoFrameskip-v0
+[2017-06-30 13:08:58,789] Making new env: VentureNoFrameskip-v0
+Box(210, 160, 3)
+BerzerkDeterministic-v0
+[2017-06-30 13:08:59,565] Making new env: BerzerkDeterministic-v0
+Box(210, 160, 3)
+AssaultNoFrameskip-v0
+[2017-06-30 13:09:00,164] Making new env: AssaultNoFrameskip-v0
+Box(250, 160, 3)
+Enduro-ramDeterministic-v0
+[2017-06-30 13:09:00,844] Making new env: Enduro-ramDeterministic-v0
+Box(128,)
+Tennis-ramNoFrameskip-v0
+[2017-06-30 13:09:01,684] Making new env: Tennis-ramNoFrameskip-v0
+Box(128,)
+Zaxxon-ramNoFrameskip-v4
+[2017-06-30 13:09:02,448] Making new env: Zaxxon-ramNoFrameskip-v4
+Box(128,)
+AssaultNoFrameskip-v4
+[2017-06-30 13:09:03,119] Making new env: AssaultNoFrameskip-v4
+Box(250, 160, 3)
+Enduro-ramDeterministic-v4
+[2017-06-30 13:09:03,805] Making new env: Enduro-ramDeterministic-v4
+Box(128,)
+Tennis-ramNoFrameskip-v4
+[2017-06-30 13:09:04,497] Making new env: Tennis-ramNoFrameskip-v4
+Box(128,)
+Gopher-ramNoFrameskip-v0
+[2017-06-30 13:09:05,191] Making new env: Gopher-ramNoFrameskip-v0
+Box(128,)
+IceHockey-ramDeterministic-v0
+[2017-06-30 13:09:05,920] Making new env: IceHockey-ramDeterministic-v0
+Box(128,)
+Gopher-ramNoFrameskip-v4
+[2017-06-30 13:09:06,693] Making new env: Gopher-ramNoFrameskip-v4
+Box(128,)
+IceHockey-ramDeterministic-v4
+[2017-06-30 13:09:07,419] Making new env: IceHockey-ramDeterministic-v4
+Box(128,)
+Humanoid-v1
+[2017-06-30 13:09:08,094] Making new env: Humanoid-v1
+StarGunner-ramDeterministic-v0
+[2017-06-30 13:09:08,096] Making new env: StarGunner-ramDeterministic-v0
+Box(128,)
+NameThisGame-ram-v4
+[2017-06-30 13:09:08,764] Making new env: NameThisGame-ram-v4
+Box(128,)
+Tutankham-ramNoFrameskip-v4
+[2017-06-30 13:09:09,514] Making new env: Tutankham-ramNoFrameskip-v4
+Box(128,)
+NameThisGame-ram-v0
+[2017-06-30 13:09:10,296] Making new env: NameThisGame-ram-v0
+Box(128,)
+Tutankham-ramNoFrameskip-v0
+[2017-06-30 13:09:10,922] Making new env: Tutankham-ramNoFrameskip-v0
+Box(128,)
+SemisuperPendulumRandom-v0
+[2017-06-30 13:09:11,637] Making new env: SemisuperPendulumRandom-v0
+Box(3,)
+Assault-ramDeterministic-v4
+[2017-06-30 13:09:11,641] Making new env: Assault-ramDeterministic-v4
+Box(128,)
+Atlantis-ramNoFrameskip-v4
+[2017-06-30 13:09:12,230] Making new env: Atlantis-ramNoFrameskip-v4
+Box(128,)
+EnduroDeterministic-v4
+[2017-06-30 13:09:12,916] Making new env: EnduroDeterministic-v4
+Box(210, 160, 3)
+Assault-ramDeterministic-v0
+[2017-06-30 13:09:13,552] Making new env: Assault-ramDeterministic-v0
+Box(128,)
+Atlantis-ramNoFrameskip-v0
+[2017-06-30 13:09:14,234] Making new env: Atlantis-ramNoFrameskip-v0
+Box(128,)
+EnduroDeterministic-v0
+[2017-06-30 13:09:14,838] Making new env: EnduroDeterministic-v0
+Box(210, 160, 3)
+BreakoutNoFrameskip-v0
+[2017-06-30 13:09:15,787] Making new env: BreakoutNoFrameskip-v0
+Box(210, 160, 3)
+BreakoutNoFrameskip-v4
+[2017-06-30 13:09:16,588] Making new env: BreakoutNoFrameskip-v4
+Box(210, 160, 3)
+OffSwitchCartpoleProb-v0
+[2017-06-30 13:09:17,268] Making new env: OffSwitchCartpoleProb-v0
+Tuple(Discrete(2), Box(4,))
+NameThisGame-ramDeterministic-v4
+[2017-06-30 13:09:17,283] Making new env: NameThisGame-ramDeterministic-v4
+Box(128,)
+RoadRunner-ramNoFrameskip-v4
+[2017-06-30 13:09:17,833] Making new env: RoadRunner-ramNoFrameskip-v4
+Box(128,)
+NameThisGame-ramDeterministic-v0
+[2017-06-30 13:09:18,452] Making new env: NameThisGame-ramDeterministic-v0
+Box(128,)
+Frostbite-ramDeterministic-v4[2017-06-30 13:09:19,018] Making new env: Frostbite-ramDeterministic-v4
+
+Box(128,)
+Frostbite-ramDeterministic-v0
+[2017-06-30 13:09:19,668] Making new env: Frostbite-ramDeterministic-v0
+Box(128,)
+BankHeist-ramNoFrameskip-v4
+[2017-06-30 13:09:20,474] Making new env: BankHeist-ramNoFrameskip-v4
+Box(128,)
+BankHeist-ramNoFrameskip-v0
+[2017-06-30 13:09:21,141] Making new env: BankHeist-ramNoFrameskip-v0
+Box(128,)
+Qbert-ramNoFrameskip-v0
+[2017-06-30 13:09:21,850] Making new env: Qbert-ramNoFrameskip-v0
+Box(128,)
+Ant-v1[2017-06-30 13:09:22,605] Making new env: Ant-v1
+
+RoadRunner-ramNoFrameskip-v0
+[2017-06-30 13:09:22,610] Making new env: RoadRunner-ramNoFrameskip-v0
+Box(128,)
+Qbert-ramNoFrameskip-v4
+[2017-06-30 13:09:23,313] Making new env: Qbert-ramNoFrameskip-v4
+Box(128,)[2017-06-30 13:09:23,897] Making new env: Hero-ramNoFrameskip-v4
+
+Hero-ramNoFrameskip-v4
+Box(128,)
+Go19x19-v0
+[2017-06-30 13:09:24,552] Making new env: Go19x19-v0
+Hero-ramNoFrameskip-v0
+[2017-06-30 13:09:24,554] Making new env: Hero-ramNoFrameskip-v0
+Box(128,)
+Tennis-v0
+[2017-06-30 13:09:25,131] Making new env: Tennis-v0
+Box(250, 160, 3)
+BeamRiderNoFrameskip-v4
+[2017-06-30 13:09:25,745] Making new env: BeamRiderNoFrameskip-v4
+Box(210, 160, 3)
+FishingDerby-ram-v0
+[2017-06-30 13:09:26,341] Making new env: FishingDerby-ram-v0
+Box(128,)
+Enduro-ramNoFrameskip-v4
+[2017-06-30 13:09:26,939] Making new env: Enduro-ramNoFrameskip-v4
+Box(128,)
+FrostbiteNoFrameskip-v0
+[2017-06-30 13:09:27,604] Making new env: FrostbiteNoFrameskip-v0
+Box(210, 160, 3)
+BeamRiderNoFrameskip-v0
+[2017-06-30 13:09:28,191] Making new env: BeamRiderNoFrameskip-v0
+Box(210, 160, 3)
+FishingDerby-ram-v4
+[2017-06-30 13:09:28,765] Making new env: FishingDerby-ram-v4
+Box(128,)
+Enduro-ramNoFrameskip-v0
+[2017-06-30 13:09:29,368] Making new env: Enduro-ramNoFrameskip-v0
+Box(128,)
+FrostbiteNoFrameskip-v4
+[2017-06-30 13:09:30,138] Making new env: FrostbiteNoFrameskip-v4
+Box(210, 160, 3)
+Gravitar-ramNoFrameskip-v4
+[2017-06-30 13:09:30,724] Making new env: Gravitar-ramNoFrameskip-v4
+Box(128,)
+Skiing-ramNoFrameskip-v4
+[2017-06-30 13:09:31,287] Making new env: Skiing-ramNoFrameskip-v4
+Box(128,)
+CentipedeDeterministic-v4
+[2017-06-30 13:09:32,017] Making new env: CentipedeDeterministic-v4
+Box(250, 160, 3)
+ReversedAddition3-v0
+[2017-06-30 13:09:32,655] Making new env: ReversedAddition3-v0
+Discrete(4)
+Gravitar-ramNoFrameskip-v0
+[2017-06-30 13:09:32,664] Making new env: Gravitar-ramNoFrameskip-v0
+Box(128,)
+Skiing-ramNoFrameskip-v0
+[2017-06-30 13:09:33,512] Making new env: Skiing-ramNoFrameskip-v0
+Box(128,)
+CentipedeDeterministic-v0
+[2017-06-30 13:09:34,216] Making new env: CentipedeDeterministic-v0
+Box(250, 160, 3)
+Kangaroo-ram-v4
+[2017-06-30 13:09:34,982] Making new env: Kangaroo-ram-v4
+Box(128,)
+Kangaroo-ram-v0
+[2017-06-30 13:09:35,661] Making new env: Kangaroo-ram-v0
+Box(128,)
+VideoPinball-ramNoFrameskip-v0
+[2017-06-30 13:09:36,396] Making new env: VideoPinball-ramNoFrameskip-v0
+Box(128,)
+VideoPinball-ramNoFrameskip-v4
+[2017-06-30 13:09:37,037] Making new env: VideoPinball-ramNoFrameskip-v4
+Box(128,)
+Atlantis-ram-v4
+[2017-06-30 13:09:37,924] Making new env: Atlantis-ram-v4
+Box(128,)
+PongNoFrameskip-v4
+[2017-06-30 13:09:38,753] Making new env: PongNoFrameskip-v4
+Box(210, 160, 3)
+StarGunnerDeterministic-v0
+[2017-06-30 13:09:39,501] Making new env: StarGunnerDeterministic-v0
+Box(210, 160, 3)
+PongNoFrameskip-v0
+[2017-06-30 13:09:40,107] Making new env: PongNoFrameskip-v0
+Box(210, 160, 3)
+StarGunnerDeterministic-v4[2017-06-30 13:09:40,734] Making new env: StarGunnerDeterministic-v4
+
+Box(210, 160, 3)
+TimePilotDeterministic-v0
+[2017-06-30 13:09:41,462] Making new env: TimePilotDeterministic-v0
+Box(210, 160, 3)
+CNNClassifierTraining-v0
+[2017-06-30 13:09:42,234] Making new env: CNNClassifierTraining-v0
+TimePilotDeterministic-v4
+[2017-06-30 13:09:42,239] Making new env: TimePilotDeterministic-v4
+Box(210, 160, 3)
+Boxing-ram-v0
+[2017-06-30 13:09:42,979] Making new env: Boxing-ram-v0
+Box(128,)
+Boxing-ram-v4
+[2017-06-30 13:09:43,796] Making new env: Boxing-ram-v4
+Box(128,)
+Jamesbond-v4
+[2017-06-30 13:09:44,553] Making new env: Jamesbond-v4
+Box(210, 160, 3)
+StarGunner-v0
+[2017-06-30 13:09:45,215] Making new env: StarGunner-v0
+Box(210, 160, 3)
+StarGunner-v4
+[2017-06-30 13:09:45,785] Making new env: StarGunner-v4
+Box(210, 160, 3)
+DemonAttackNoFrameskip-v0
+[2017-06-30 13:09:46,358] Making new env: DemonAttackNoFrameskip-v0
+Box(210, 160, 3)
+DemonAttackNoFrameskip-v4
+[2017-06-30 13:09:47,093] Making new env: DemonAttackNoFrameskip-v4
+Box(210, 160, 3)
+PooyanDeterministic-v0
+[2017-06-30 13:09:47,839] Making new env: PooyanDeterministic-v0
+Box(250, 160, 3)
+Amidar-ram-v4
+[2017-06-30 13:09:48,553] Making new env: Amidar-ram-v4
+Box(128,)
+Jamesbond-v0
+[2017-06-30 13:09:49,118] Making new env: Jamesbond-v0
+Box(210, 160, 3)
+Amidar-ram-v0
+[2017-06-30 13:09:49,704] Making new env: Amidar-ram-v0
+Box(128,)
+ChopperCommandNoFrameskip-v0
+[2017-06-30 13:09:50,483] Making new env: ChopperCommandNoFrameskip-v0
+Box(210, 160, 3)
+ChopperCommandNoFrameskip-v4
+[2017-06-30 13:09:51,068] Making new env: ChopperCommandNoFrameskip-v4
+Box(210, 160, 3)
+Solaris-ramDeterministic-v4
+[2017-06-30 13:09:51,657] Making new env: Solaris-ramDeterministic-v4
+Box(128,)
+ElevatorActionDeterministic-v4
+[2017-06-30 13:09:52,339] Making new env: ElevatorActionDeterministic-v4
+Box(210, 160, 3)
+Solaris-ramDeterministic-v0
+[2017-06-30 13:09:52,926] Making new env: Solaris-ramDeterministic-v0
+Box(128,)
+ElevatorActionDeterministic-v0
+[2017-06-30 13:09:53,581] Making new env: ElevatorActionDeterministic-v0
+Box(210, 160, 3)
+Riverraid-ram-v0
+[2017-06-30 13:09:54,356] Making new env: Riverraid-ram-v0
+Box(128,)
+Riverraid-ram-v4
+[2017-06-30 13:09:55,098] Making new env: Riverraid-ram-v4
+Box(128,)
+Bowling-ramDeterministic-v0
+[2017-06-30 13:09:55,870] Making new env: Bowling-ramDeterministic-v0
+Box(128,)
+BattleZone-v0
+[2017-06-30 13:09:56,594] Making new env: BattleZone-v0
+Box(210, 160, 3)
+BattleZone-v4
+[2017-06-30 13:09:57,316] Making new env: BattleZone-v4
+Box(210, 160, 3)
+MsPacmanNoFrameskip-v0[2017-06-30 13:09:58,102] Making new env: MsPacmanNoFrameskip-v0
+
+Box(210, 160, 3)
+MsPacmanNoFrameskip-v4
+[2017-06-30 13:09:58,762] Making new env: MsPacmanNoFrameskip-v4
+Box(210, 160, 3)
+Bowling-ramDeterministic-v4
+[2017-06-30 13:09:59,487] Making new env: Bowling-ramDeterministic-v4
+Box(128,)
+Breakout-ramDeterministic-v0
+[2017-06-30 13:10:00,287] Making new env: Breakout-ramDeterministic-v0
+Box(128,)
+SolarisNoFrameskip-v0[2017-06-30 13:10:00,883] Making new env: SolarisNoFrameskip-v0
+
+Box(210, 160, 3)
+VideoPinballNoFrameskip-v0
+[2017-06-30 13:10:01,698] Making new env: VideoPinballNoFrameskip-v0
+Box(250, 160, 3)
+Breakout-ramDeterministic-v4
+[2017-06-30 13:10:02,446] Making new env: Breakout-ramDeterministic-v4
+Box(128,)
+SolarisNoFrameskip-v4
+[2017-06-30 13:10:03,279] Making new env: SolarisNoFrameskip-v4
+Box(210, 160, 3)
+VideoPinballNoFrameskip-v4
+[2017-06-30 13:10:04,093] Making new env: VideoPinballNoFrameskip-v4
+Box(250, 160, 3)
+PrivateEye-ramDeterministic-v0
+[2017-06-30 13:10:04,869] Making new env: PrivateEye-ramDeterministic-v0
+Box(128,)
+WizardOfWor-ram-v0
+[2017-06-30 13:10:05,616] Making new env: WizardOfWor-ram-v0
+Box(128,)
+PrivateEye-ramDeterministic-v4
+[2017-06-30 13:10:06,306] Making new env: PrivateEye-ramDeterministic-v4
+Box(128,)
+WizardOfWor-ram-v4
+[2017-06-30 13:10:07,009] Making new env: WizardOfWor-ram-v4
+Box(128,)
+Gravitar-v4
+[2017-06-30 13:10:07,547] Making new env: Gravitar-v4
+Box(210, 160, 3)
+RoadRunner-v4
+[2017-06-30 13:10:08,201] Making new env: RoadRunner-v4
+Box(210, 160, 3)
+Gravitar-v0
+[2017-06-30 13:10:08,865] Making new env: Gravitar-v0
+Box(210, 160, 3)
+RoadRunner-v0
+[2017-06-30 13:10:09,478] Making new env: RoadRunner-v0
+Box(210, 160, 3)
+MsPacman-ram-v4
+[2017-06-30 13:10:10,117] Making new env: MsPacman-ram-v4
+Box(128,)
+RoadRunner-ram-v0
+[2017-06-30 13:10:10,797] Making new env: RoadRunner-ram-v0
+Box(128,)
+MsPacman-ram-v0
+[2017-06-30 13:10:11,397] Making new env: MsPacman-ram-v0
+Box(128,)
+RoadRunner-ram-v4
+[2017-06-30 13:10:12,058] Making new env: RoadRunner-ram-v4
+Box(128,)
+Riverraid-ramDeterministic-v0
+[2017-06-30 13:10:12,798] Making new env: Riverraid-ramDeterministic-v0
+Box(128,)
+Jamesbond-ram-v0
+[2017-06-30 13:10:13,727] Making new env: Jamesbond-ram-v0
+Box(128,)
+Riverraid-ramDeterministic-v4
+[2017-06-30 13:10:14,357] Making new env: Riverraid-ramDeterministic-v4
+Box(128,)
+VideoPinball-ram-v0
+[2017-06-30 13:10:15,224] Making new env: VideoPinball-ram-v0
+Box(128,)
+UpNDownNoFrameskip-v0
+[2017-06-30 13:10:15,979] Making new env: UpNDownNoFrameskip-v0
+Box(210, 160, 3)
+VideoPinball-ram-v4
+[2017-06-30 13:10:16,600] Making new env: VideoPinball-ram-v4
+Box(128,)
+OneRoundDeterministicReward-v0
+[2017-06-30 13:10:17,193] Making new env: OneRoundDeterministicReward-v0
+Discrete(1)
+FreewayNoFrameskip-v4
+[2017-06-30 13:10:17,195] Making new env: FreewayNoFrameskip-v4
+Box(210, 160, 3)
+WizardOfWorNoFrameskip-v0
+[2017-06-30 13:10:17,835] Making new env: WizardOfWorNoFrameskip-v0
+Box(250, 160, 3)
+FreewayNoFrameskip-v0
+[2017-06-30 13:10:18,527] Making new env: FreewayNoFrameskip-v0
+Box(210, 160, 3)
+WizardOfWorNoFrameskip-v4
+[2017-06-30 13:10:19,284] Making new env: WizardOfWorNoFrameskip-v4
+Box(250, 160, 3)
+Asterix-ramNoFrameskip-v0
+[2017-06-30 13:10:20,036] Making new env: Asterix-ramNoFrameskip-v0
+Box(128,)
+AlienNoFrameskip-v4
+[2017-06-30 13:10:20,701] Making new env: AlienNoFrameskip-v4
+Box(210, 160, 3)
+Jamesbond-ram-v4
+[2017-06-30 13:10:21,375] Making new env: Jamesbond-ram-v4
+Box(128,)
+Asterix-ramNoFrameskip-v4
+[2017-06-30 13:10:22,110] Making new env: Asterix-ramNoFrameskip-v4
+Box(128,)
+AlienNoFrameskip-v0
+[2017-06-30 13:10:22,748] Making new env: AlienNoFrameskip-v0
+Box(210, 160, 3)
+BankHeist-ramDeterministic-v4
+[2017-06-30 13:10:23,706] Making new env: BankHeist-ramDeterministic-v4
+Box(128,)
+UpNDownNoFrameskip-v4
+[2017-06-30 13:10:24,481] Making new env: UpNDownNoFrameskip-v4
+Box(210, 160, 3)
+BankHeist-ramDeterministic-v0
+[2017-06-30 13:10:25,307] Making new env: BankHeist-ramDeterministic-v0
+Box(128,)[2017-06-30 13:10:26,074] Making new env: InvertedDoublePendulum-v1
+
+InvertedDoublePendulum-v1
+AsteroidsNoFrameskip-v4
+[2017-06-30 13:10:26,102] Making new env: AsteroidsNoFrameskip-v4
+Box(210, 160, 3)
+TimePilot-v4
+[2017-06-30 13:10:26,744] Making new env: TimePilot-v4
+Box(210, 160, 3)
+Asterix-v0
+[2017-06-30 13:10:27,371] Making new env: Asterix-v0
+Box(210, 160, 3)
+AsteroidsNoFrameskip-v0
+[2017-06-30 13:10:28,267] Making new env: AsteroidsNoFrameskip-v0
+Box(210, 160, 3)
+TimePilot-v0
+[2017-06-30 13:10:28,898] Making new env: TimePilot-v0
+Box(210, 160, 3)
+Asterix-v4
+[2017-06-30 13:10:29,629] Making new env: Asterix-v4
+Box(210, 160, 3)
+HeroDeterministic-v4
+[2017-06-30 13:10:30,354] Making new env: HeroDeterministic-v4
+Box(210, 160, 3)
+ZaxxonDeterministic-v4
+[2017-06-30 13:10:31,092] Making new env: ZaxxonDeterministic-v4
+Box(210, 160, 3)
+HeroDeterministic-v0
+[2017-06-30 13:10:31,900] Making new env: HeroDeterministic-v0
+Box(210, 160, 3)
+RiverraidNoFrameskip-v4
+[2017-06-30 13:10:32,827] Making new env: RiverraidNoFrameskip-v4
+Box(210, 160, 3)
+WizardOfWor-ramNoFrameskip-v4
+[2017-06-30 13:10:33,389] Making new env: WizardOfWor-ramNoFrameskip-v4
+Box(128,)
+ChopperCommand-ram-v4
+[2017-06-30 13:10:34,000] Making new env: ChopperCommand-ram-v4
+Box(128,)
+ChopperCommand-ram-v0
+[2017-06-30 13:10:34,602] Making new env: ChopperCommand-ram-v0
+Box(128,)
+SpaceInvaders-ramNoFrameskip-v0
+[2017-06-30 13:10:35,229] Making new env: SpaceInvaders-ramNoFrameskip-v0
+Box(128,)
+BowlingDeterministic-v4
+[2017-06-30 13:10:35,824] Making new env: BowlingDeterministic-v4
+Box(210, 160, 3)
+JamesbondDeterministic-v0
+[2017-06-30 13:10:36,397] Making new env: JamesbondDeterministic-v0
+Box(210, 160, 3)
+SpaceInvaders-ramNoFrameskip-v4
+[2017-06-30 13:10:37,052] Making new env: SpaceInvaders-ramNoFrameskip-v4
+Box(128,)
+[2017-06-30 13:10:37,667] Making new env: BowlingDeterministic-v0
+BowlingDeterministic-v0
+Box(210, 160, 3)
+BankHeist-v0
+[2017-06-30 13:10:38,346] Making new env: BankHeist-v0
+Box(250, 160, 3)
+WizardOfWor-ramDeterministic-v0
+[2017-06-30 13:10:39,030] Making new env: WizardOfWor-ramDeterministic-v0
+Box(128,)
+BankHeist-v4
+[2017-06-30 13:10:39,792] Making new env: BankHeist-v4
+Box(250, 160, 3)
+MsPacman-ramDeterministic-v4
+[2017-06-30 13:10:40,515] Making new env: MsPacman-ramDeterministic-v4
+Box(128,)
+RiverraidNoFrameskip-v0
+[2017-06-30 13:10:41,239] Making new env: RiverraidNoFrameskip-v0
+Box(210, 160, 3)
+NChain-v0
+[2017-06-30 13:10:41,911] Making new env: NChain-v0
+Discrete(5)
+FishingDerby-ramDeterministic-v0
+[2017-06-30 13:10:41,916] Making new env: FishingDerby-ramDeterministic-v0
+Box(128,)
+PredictObsCartpole-v0
+[2017-06-30 13:10:42,535] Making new env: PredictObsCartpole-v0
+Box(4,)
+FishingDerby-ramDeterministic-v4
+[2017-06-30 13:10:42,538] Making new env: FishingDerby-ramDeterministic-v4
+Box(128,)
+CrazyClimber-v4
+[2017-06-30 13:10:43,222] Making new env: CrazyClimber-v4
+Box(210, 160, 3)
+CrazyClimber-ramNoFrameskip-v0
+[2017-06-30 13:10:43,827] Making new env: CrazyClimber-ramNoFrameskip-v0
+Box(128,)
+JamesbondDeterministic-v4
+[2017-06-30 13:10:44,515] Making new env: JamesbondDeterministic-v4
+Box(210, 160, 3)
+CrazyClimber-v0
+[2017-06-30 13:10:45,155] Making new env: CrazyClimber-v0
+Box(210, 160, 3)
+CrazyClimber-ramNoFrameskip-v4
+[2017-06-30 13:10:45,941] Making new env: CrazyClimber-ramNoFrameskip-v4
+Box(128,)
+Seaquest-v4
+[2017-06-30 13:10:46,586] Making new env: Seaquest-v4
+Box(210, 160, 3)
+Enduro-ram-v4
+[2017-06-30 13:10:47,406] Making new env: Enduro-ram-v4
+Box(128,)
+Pitfall-ramDeterministic-v0
+[2017-06-30 13:10:48,284] Making new env: Pitfall-ramDeterministic-v0
+Box(128,)
+Enduro-ram-v0
+[2017-06-30 13:10:49,027] Making new env: Enduro-ram-v0
+Box(128,)
+MsPacman-ramDeterministic-v0
+[2017-06-30 13:10:49,874] Making new env: MsPacman-ramDeterministic-v0
+Box(128,)
+StarGunnerNoFrameskip-v4
+[2017-06-30 13:10:50,619] Making new env: StarGunnerNoFrameskip-v4
+Box(210, 160, 3)
+GravitarDeterministic-v4
+[2017-06-30 13:10:51,254] Making new env: GravitarDeterministic-v4
+Box(210, 160, 3)
+GravitarDeterministic-v0
+[2017-06-30 13:10:52,080] Making new env: GravitarDeterministic-v0
+Box(210, 160, 3)
+Swimmer-v1
+[2017-06-30 13:10:52,928] Making new env: Swimmer-v1
+GravitarNoFrameskip-v4
+[2017-06-30 13:10:52,938] Making new env: GravitarNoFrameskip-v4
+Box(210, 160, 3)[2017-06-30 13:10:53,632] Making new env: Alien-ram-v0
+
+Alien-ram-v0
+Box(128,)
+Breakout-ramNoFrameskip-v0
+[2017-06-30 13:10:54,351] Making new env: Breakout-ramNoFrameskip-v0
+Box(128,)
+GravitarNoFrameskip-v0
+[2017-06-30 13:10:55,003] Making new env: GravitarNoFrameskip-v0
+Box(210, 160, 3)
+AsterixDeterministic-v4
+[2017-06-30 13:10:55,817] Making new env: AsterixDeterministic-v4
+Box(210, 160, 3)
+AsterixDeterministic-v0
+[2017-06-30 13:10:56,510] Making new env: AsterixDeterministic-v0
+Box(210, 160, 3)
+AlienDeterministic-v0
+[2017-06-30 13:10:57,092] Making new env: AlienDeterministic-v0
+Box(210, 160, 3)
+AlienDeterministic-v4
+[2017-06-30 13:10:57,803] Making new env: AlienDeterministic-v4
+Box(210, 160, 3)
+RoadRunnerDeterministic-v0
+[2017-06-30 13:10:58,497] Making new env: RoadRunnerDeterministic-v0
+Box(210, 160, 3)
+Breakout-ramNoFrameskip-v4
+[2017-06-30 13:10:59,072] Making new env: Breakout-ramNoFrameskip-v4
+Box(128,)
+RoadRunnerDeterministic-v4
+[2017-06-30 13:10:59,809] Making new env: RoadRunnerDeterministic-v4
+Box(210, 160, 3)
+RepeatCopy-v0
+[2017-06-30 13:11:00,592] Making new env: RepeatCopy-v0
+Discrete(6)
+FrostbiteDeterministic-v0
+[2017-06-30 13:11:00,600] Making new env: FrostbiteDeterministic-v0
+Box(210, 160, 3)
+TennisNoFrameskip-v4
+[2017-06-30 13:11:01,375] Making new env: TennisNoFrameskip-v4
+Box(250, 160, 3)
+Carnival-ramDeterministic-v4
+[2017-06-30 13:11:02,041] Making new env: Carnival-ramDeterministic-v4
+Box(128,)
+EnduroNoFrameskip-v4
+[2017-06-30 13:11:02,792] Making new env: EnduroNoFrameskip-v4
+Box(210, 160, 3)
+KungFuMasterNoFrameskip-v0
+[2017-06-30 13:11:03,491] Making new env: KungFuMasterNoFrameskip-v0
+Box(210, 160, 3)
+Carnival-ramDeterministic-v0
+[2017-06-30 13:11:04,150] Making new env: Carnival-ramDeterministic-v0
+Box(128,)
+EnduroNoFrameskip-v0
+[2017-06-30 13:11:04,749] Making new env: EnduroNoFrameskip-v0
+Box(210, 160, 3)
+KungFuMasterNoFrameskip-v4
+[2017-06-30 13:11:05,355] Making new env: KungFuMasterNoFrameskip-v4
+Box(210, 160, 3)
+Tennis-v4
+[2017-06-30 13:11:06,220] Making new env: Tennis-v4
+Box(250, 160, 3)
+Asteroids-ramNoFrameskip-v4
+[2017-06-30 13:11:06,977] Making new env: Asteroids-ramNoFrameskip-v4
+Box(128,)
+Asteroids-ramNoFrameskip-v0
+[2017-06-30 13:11:07,614] Making new env: Asteroids-ramNoFrameskip-v0
+Box(128,)
+TennisNoFrameskip-v0
+[2017-06-30 13:11:08,285] Making new env: TennisNoFrameskip-v0
+Box(250, 160, 3)
+FrostbiteDeterministic-v4
+[2017-06-30 13:11:09,011] Making new env: FrostbiteDeterministic-v4
+Box(210, 160, 3)
+DemonAttackDeterministic-v0
+[2017-06-30 13:11:09,789] Making new env: DemonAttackDeterministic-v0
+Box(210, 160, 3)
+DemonAttackDeterministic-v4
+[2017-06-30 13:11:10,544] Making new env: DemonAttackDeterministic-v4
+Box(210, 160, 3)
+UpNDown-v4
+[2017-06-30 13:11:11,106] Making new env: UpNDown-v4
+Box(210, 160, 3)
+BankHeistNoFrameskip-v4
+[2017-06-30 13:11:11,764] Making new env: BankHeistNoFrameskip-v4
+Box(250, 160, 3)
+DemonAttack-ram-v0
+[2017-06-30 13:11:12,352] Making new env: DemonAttack-ram-v0
+Box(128,)
+UpNDown-v0
+[2017-06-30 13:11:12,946] Making new env: UpNDown-v0
+Box(210, 160, 3)
+BankHeistNoFrameskip-v0
+[2017-06-30 13:11:13,619] Making new env: BankHeistNoFrameskip-v0
+Box(250, 160, 3)
+DemonAttack-ram-v4
+[2017-06-30 13:11:14,251] Making new env: DemonAttack-ram-v4
+Box(128,)
+PooyanDeterministic-v4
+[2017-06-30 13:11:14,972] Making new env: PooyanDeterministic-v4
+Box(250, 160, 3)
+Kangaroo-ramDeterministic-v0
+[2017-06-30 13:11:15,720] Making new env: Kangaroo-ramDeterministic-v0
+Box(128,)
+Kangaroo-ramDeterministic-v4
+[2017-06-30 13:11:16,556] Making new env: Kangaroo-ramDeterministic-v4
+Box(128,)
+SemisuperPendulumDecay-v0
+[2017-06-30 13:11:17,141] Making new env: SemisuperPendulumDecay-v0
+Box(3,)
+WizardOfWor-ramDeterministic-v4
+[2017-06-30 13:11:17,159] Making new env: WizardOfWor-ramDeterministic-v4
+Box(128,)
+RobotankNoFrameskip-v4
+[2017-06-30 13:11:17,828] Making new env: RobotankNoFrameskip-v4
+Box(210, 160, 3)
+Assault-ram-v4
+[2017-06-30 13:11:18,708] Making new env: Assault-ram-v4
+Box(128,)
+TutankhamNoFrameskip-v4
+[2017-06-30 13:11:19,393] Making new env: TutankhamNoFrameskip-v4
+Box(250, 160, 3)
+RobotankNoFrameskip-v0
+[2017-06-30 13:11:20,200] Making new env: RobotankNoFrameskip-v0
+Box(210, 160, 3)
+WizardOfWor-v0
+[2017-06-30 13:11:20,909] Making new env: WizardOfWor-v0
+Box(250, 160, 3)
+Hopper-v1
+[2017-06-30 13:11:21,583] Making new env: Hopper-v1
+WizardOfWor-v4
+[2017-06-30 13:11:21,585] Making new env: WizardOfWor-v4
+Box(250, 160, 3)
+Pooyan-ramNoFrameskip-v4
+[2017-06-30 13:11:22,291] Making new env: Pooyan-ramNoFrameskip-v4
+Box(128,)
+BattleZone-ramNoFrameskip-v0
+[2017-06-30 13:11:23,114] Making new env: BattleZone-ramNoFrameskip-v0
+Box(128,)
+Pooyan-ramNoFrameskip-v0
+[2017-06-30 13:11:23,833] Making new env: Pooyan-ramNoFrameskip-v0
+Box(128,)
+Asterix-ramDeterministic-v4
+[2017-06-30 13:11:24,548] Making new env: Asterix-ramDeterministic-v4
+Box(128,)
+ElevatorActionNoFrameskip-v0
+[2017-06-30 13:11:25,385] Making new env: ElevatorActionNoFrameskip-v0
+Box(210, 160, 3)
+FrozenLake-v0
+[2017-06-30 13:11:25,991] Making new env: FrozenLake-v0
+Discrete(16)
+ElevatorActionNoFrameskip-v4
+[2017-06-30 13:11:25,996] Making new env: ElevatorActionNoFrameskip-v4
+Box(210, 160, 3)
+TutankhamNoFrameskip-v0
+[2017-06-30 13:11:26,599] Making new env: TutankhamNoFrameskip-v0
+Box(250, 160, 3)
+JamesbondNoFrameskip-v4
+[2017-06-30 13:11:27,367] Making new env: JamesbondNoFrameskip-v4
+Box(210, 160, 3)
+Hero-ramDeterministic-v0
+[2017-06-30 13:11:28,019] Making new env: Hero-ramDeterministic-v0
+Box(128,)
+JamesbondNoFrameskip-v0
+[2017-06-30 13:11:28,562] Making new env: JamesbondNoFrameskip-v0
+Box(210, 160, 3)
+Hero-ramDeterministic-v4
+[2017-06-30 13:11:29,194] Making new env: Hero-ramDeterministic-v4
+Box(128,)
+HumanoidStandup-v1
+[2017-06-30 13:11:29,961] Making new env: HumanoidStandup-v1
+KungFuMaster-ramDeterministic-v4
+[2017-06-30 13:11:29,971] Making new env: KungFuMaster-ramDeterministic-v4
+Box(128,)
+KungFuMaster-ramDeterministic-v0
+[2017-06-30 13:11:30,598] Making new env: KungFuMaster-ramDeterministic-v0
+Box(128,)
+Amidar-v0
+[2017-06-30 13:11:31,194] Making new env: Amidar-v0
+Box(250, 160, 3)
+Amidar-v4
+[2017-06-30 13:11:31,880] Making new env: Amidar-v4
+Box(250, 160, 3)
+BerzerkNoFrameskip-v4
+[2017-06-30 13:11:32,565] Making new env: BerzerkNoFrameskip-v4
+Box(210, 160, 3)
+BerzerkNoFrameskip-v0
+[2017-06-30 13:11:33,220] Making new env: BerzerkNoFrameskip-v0
+Box(210, 160, 3)
+Amidar-ramNoFrameskip-v0
+[2017-06-30 13:11:33,944] Making new env: Amidar-ramNoFrameskip-v0
+Box(128,)
+Amidar-ramNoFrameskip-v4
+[2017-06-30 13:11:34,686] Making new env: Amidar-ramNoFrameskip-v4
+Box(128,)
+Striker-v0
+[2017-06-30 13:11:35,293] Making new env: Striker-v0
+Gravitar-ramDeterministic-v0
+[2017-06-30 13:11:35,305] Making new env: Gravitar-ramDeterministic-v0
+Box(128,)
+Asterix-ramDeterministic-v0
+[2017-06-30 13:11:35,887] Making new env: Asterix-ramDeterministic-v0
+Box(128,)
+Gravitar-ramDeterministic-v4
+[2017-06-30 13:11:36,490] Making new env: Gravitar-ramDeterministic-v4
+Box(128,)
+BattleZone-ram-v4
+[2017-06-30 13:11:37,304] Making new env: BattleZone-ram-v4
+Box(128,)
+BattleZone-ram-v0
+[2017-06-30 13:11:37,993] Making new env: BattleZone-ram-v0
+Box(128,)
+IceHockey-ram-v0
+[2017-06-30 13:11:38,791] Making new env: IceHockey-ram-v0
+Box(128,)
+IceHockey-ram-v4
+[2017-06-30 13:11:39,601] Making new env: IceHockey-ram-v4
+Box(128,)
+BattleZone-ramNoFrameskip-v4
+[2017-06-30 13:11:40,382] Making new env: BattleZone-ramNoFrameskip-v4
+Box(128,)
+MountainCar-v0
+[2017-06-30 13:11:41,072] Making new env: MountainCar-v0
+Box(2,)
+BeamRider-ramNoFrameskip-v4
+[2017-06-30 13:11:41,085] Making new env: BeamRider-ramNoFrameskip-v4
+Box(128,)
+Qbert-ramDeterministic-v0
+[2017-06-30 13:11:41,736] Making new env: Qbert-ramDeterministic-v0
+Box(128,)
+IceHockeyNoFrameskip-v4
+[2017-06-30 13:11:42,547] Making new env: IceHockeyNoFrameskip-v4
+Box(210, 160, 3)
+Carnival-v0
+[2017-06-30 13:11:43,244] Making new env: Carnival-v0
+Box(250, 160, 3)
+IceHockeyNoFrameskip-v0
+[2017-06-30 13:11:43,827] Making new env: IceHockeyNoFrameskip-v0
+Box(210, 160, 3)
+Carnival-v4
+[2017-06-30 13:11:44,448] Making new env: Carnival-v4
+Box(250, 160, 3)
+NameThisGameDeterministic-v0
+[2017-06-30 13:11:45,041] Making new env: NameThisGameDeterministic-v0
+Box(210, 160, 3)
+BeamRider-ramNoFrameskip-v0
+[2017-06-30 13:11:45,701] Making new env: BeamRider-ramNoFrameskip-v0
+Box(128,)
+NameThisGameDeterministic-v4
+[2017-06-30 13:11:46,296] Making new env: NameThisGameDeterministic-v4
+Box(210, 160, 3)
+DoubleDunk-ramNoFrameskip-v0
+[2017-06-30 13:11:46,886] Making new env: DoubleDunk-ramNoFrameskip-v0
+Box(128,)
+Solaris-v4
+[2017-06-30 13:11:47,539] Making new env: Solaris-v4
+Box(210, 160, 3)
+IceHockey-ramNoFrameskip-v4
+[2017-06-30 13:11:48,110] Making new env: IceHockey-ramNoFrameskip-v4
+Box(128,)
+Frostbite-v4
+[2017-06-30 13:11:48,714] Making new env: Frostbite-v4
+Box(210, 160, 3)
+DoubleDunk-ramNoFrameskip-v4
+[2017-06-30 13:11:49,306] Making new env: DoubleDunk-ramNoFrameskip-v4
+Box(128,)
+IceHockey-ramNoFrameskip-v0
+[2017-06-30 13:11:50,011] Making new env: IceHockey-ramNoFrameskip-v0
+Box(128,)
+MsPacman-v0
+[2017-06-30 13:11:50,631] Making new env: MsPacman-v0
+Box(210, 160, 3)
+Solaris-ramNoFrameskip-v0
+[2017-06-30 13:11:51,229] Making new env: Solaris-ramNoFrameskip-v0
+Box(128,)
+Gopher-v4
+[2017-06-30 13:11:51,811] Making new env: Gopher-v4
+Box(250, 160, 3)
+MsPacman-v4
+[2017-06-30 13:11:52,360] Making new env: MsPacman-v4
+Box(210, 160, 3)[2017-06-30 13:11:52,904] Making new env: Walker2d-v1
+
+Walker2d-v1
+Gopher-v0
+[2017-06-30 13:11:52,911] Making new env: Gopher-v0
+Box(250, 160, 3)
+Hero-ram-v0
+[2017-06-30 13:11:53,579] Making new env: Hero-ram-v0
+Box(128,)
+Zaxxon-ram-v4
+[2017-06-30 13:11:54,244] Making new env: Zaxxon-ram-v4
+Box(128,)
+Hero-ram-v4
+[2017-06-30 13:11:54,956] Making new env: Hero-ram-v4
+Box(128,)
+Zaxxon-ram-v0
+[2017-06-30 13:11:55,583] Making new env: Zaxxon-ram-v0
+Box(128,)
+DoubleDunkDeterministic-v0
+[2017-06-30 13:11:56,214] Making new env: DoubleDunkDeterministic-v0
+Box(250, 160, 3)
+Solaris-v0
+[2017-06-30 13:11:56,953] Making new env: Solaris-v0
+Box(210, 160, 3)
+PooyanNoFrameskip-v4
+[2017-06-30 13:11:57,583] Making new env: PooyanNoFrameskip-v4
+Box(250, 160, 3)
+Frostbite-v0
+[2017-06-30 13:11:58,409] Making new env: Frostbite-v0
+Box(210, 160, 3)
+DoubleDunkDeterministic-v4
+[2017-06-30 13:11:59,043] Making new env: DoubleDunkDeterministic-v4
+Box(250, 160, 3)
+Pong-v4
+[2017-06-30 13:11:59,611] Making new env: Pong-v4
+Box(210, 160, 3)
+PooyanNoFrameskip-v0
+[2017-06-30 13:12:00,186] Making new env: PooyanNoFrameskip-v0
+Box(250, 160, 3)
+Seaquest-ramNoFrameskip-v0
+[2017-06-30 13:12:00,783] Making new env: Seaquest-ramNoFrameskip-v0
+Box(128,)
+FreewayDeterministic-v4
+[2017-06-30 13:12:01,367] Making new env: FreewayDeterministic-v4
+Box(210, 160, 3)
+Seaquest-ramNoFrameskip-v4
+[2017-06-30 13:12:01,967] Making new env: Seaquest-ramNoFrameskip-v4
+Box(128,)
+FreewayDeterministic-v0
+[2017-06-30 13:12:02,550] Making new env: FreewayDeterministic-v0
+Box(210, 160, 3)
+Zaxxon-ramDeterministic-v4
+[2017-06-30 13:12:03,181] Making new env: Zaxxon-ramDeterministic-v4
+Box(128,)
+Blackjack-v0
+[2017-06-30 13:12:03,856] Making new env: Blackjack-v0
+Tuple(Discrete(32), Discrete(11), Discrete(2))
+TennisDeterministic-v0
+[2017-06-30 13:12:03,862] Making new env: TennisDeterministic-v0
+[2017-06-30 13:12:04,592] Making new env: TennisDeterministic-v4
+Box(250, 160, 3)
+TennisDeterministic-v4
+Box(250, 160, 3)
+Atlantis-v4
+[2017-06-30 13:12:05,421] Making new env: Atlantis-v4
+Box(210, 160, 3)
+Assault-ram-v0
+[2017-06-30 13:12:06,205] Making new env: Assault-ram-v0
+Box(128,)
+Atlantis-v0
+[2017-06-30 13:12:06,797] Making new env: Atlantis-v0
+Box(210, 160, 3)
+GuessingGame-v0
+[2017-06-30 13:12:07,584] Making new env: GuessingGame-v0
+Discrete(4)
+Copy-v0
+[2017-06-30 13:12:07,588] Making new env: Copy-v0
+Discrete(6)
+UpNDownDeterministic-v0
+[2017-06-30 13:12:07,605] Making new env: UpNDownDeterministic-v0
+Box(210, 160, 3)
+CrazyClimber-ramDeterministic-v0
+[2017-06-30 13:12:08,299] Making new env: CrazyClimber-ramDeterministic-v0
+Box(128,)
+Phoenix-v4
+[2017-06-30 13:12:09,065] Making new env: Phoenix-v4
+Box(210, 160, 3)
+CrazyClimber-ramDeterministic-v4
+[2017-06-30 13:12:09,638] Making new env: CrazyClimber-ramDeterministic-v4
+Box(128,)
+Phoenix-v0
+[2017-06-30 13:12:10,357] Making new env: Phoenix-v0
+Box(210, 160, 3)
+PitfallDeterministic-v4
+[2017-06-30 13:12:11,055] Making new env: PitfallDeterministic-v4
+Box(210, 160, 3)
+StarGunner-ram-v0
+[2017-06-30 13:12:11,801] Making new env: StarGunner-ram-v0
+Box(128,)
+Asteroids-v0
+[2017-06-30 13:12:12,484] Making new env: Asteroids-v0
+Box(210, 160, 3)
+CarnivalDeterministic-v0
+[2017-06-30 13:12:13,084] Making new env: CarnivalDeterministic-v0
+Box(250, 160, 3)
+StarGunner-ram-v4
+[2017-06-30 13:12:13,731] Making new env: StarGunner-ram-v4
+Box(128,)
+Asteroids-v4
+[2017-06-30 13:12:14,349] Making new env: Asteroids-v4
+Box(210, 160, 3)
+CarnivalDeterministic-v4
+[2017-06-30 13:12:15,058] Making new env: CarnivalDeterministic-v4
+Box(250, 160, 3)
+IceHockeyDeterministic-v4
+[2017-06-30 13:12:15,760] Making new env: IceHockeyDeterministic-v4
+Box(210, 160, 3)
+OneRoundNondeterministicReward-v0
+[2017-06-30 13:12:16,452] Making new env: OneRoundNondeterministicReward-v0
+Discrete(1)
+IceHockeyDeterministic-v0
+[2017-06-30 13:12:16,457] Making new env: IceHockeyDeterministic-v0
+Box(210, 160, 3)
+FishingDerby-ramNoFrameskip-v4
+[2017-06-30 13:12:17,041] Making new env: FishingDerby-ramNoFrameskip-v4
+Box(128,)
+Qbert-ramDeterministic-v4
+[2017-06-30 13:12:17,772] Making new env: Qbert-ramDeterministic-v4
+Box(128,)
+Centipede-ram-v4
+[2017-06-30 13:12:18,606] Making new env: Centipede-ram-v4
+Box(128,)
+PrivateEyeDeterministic-v4
+[2017-06-30 13:12:19,259] Making new env: PrivateEyeDeterministic-v4
+Box(210, 160, 3)
+FishingDerby-ramNoFrameskip-v0
+[2017-06-30 13:12:19,939] Making new env: FishingDerby-ramNoFrameskip-v0
+Box(128,)
+PrivateEyeDeterministic-v0
+[2017-06-30 13:12:20,671] Making new env: PrivateEyeDeterministic-v0
+Box(210, 160, 3)
+Centipede-ram-v0
+[2017-06-30 13:12:21,428] Making new env: Centipede-ram-v0
+Box(128,)
+HeroNoFrameskip-v0
+[2017-06-30 13:12:22,140] Making new env: HeroNoFrameskip-v0
+Box(210, 160, 3)
+Tennis-ram-v0
+[2017-06-30 13:12:22,853] Making new env: Tennis-ram-v0
+Box(128,)
+Assault-v0
+[2017-06-30 13:12:23,747] Making new env: Assault-v0
+Box(250, 160, 3)
+Tennis-ram-v4
+[2017-06-30 13:12:24,374] Making new env: Tennis-ram-v4
+Box(128,)
+Assault-v4
+[2017-06-30 13:12:25,076] Making new env: Assault-v4
+Box(250, 160, 3)
+UpNDownDeterministic-v4
+[2017-06-30 13:12:25,800] Making new env: UpNDownDeterministic-v4
+Box(210, 160, 3)
+VideoPinball-ramDeterministic-v4
+[2017-06-30 13:12:26,735] Making new env: VideoPinball-ramDeterministic-v4
+Box(128,)
+HalfCheetah-v1
+[2017-06-30 13:12:27,453] Making new env: HalfCheetah-v1
+PrivateEye-ramNoFrameskip-v4
+[2017-06-30 13:12:27,464] Making new env: PrivateEye-ramNoFrameskip-v4
+Box(128,)
+WizardOfWor-ramNoFrameskip-v0
+[2017-06-30 13:12:28,116] Making new env: WizardOfWor-ramNoFrameskip-v0
+Box(128,)
+WizardOfWorDeterministic-v4
+[2017-06-30 13:12:28,843] Making new env: WizardOfWorDeterministic-v4
+Box(250, 160, 3)
+GopherNoFrameskip-v0
+[2017-06-30 13:12:29,422] Making new env: GopherNoFrameskip-v0
+Box(250, 160, 3)
+WizardOfWorDeterministic-v0
+[2017-06-30 13:12:30,145] Making new env: WizardOfWorDeterministic-v0
+Box(250, 160, 3)
+GopherNoFrameskip-v4
+[2017-06-30 13:12:30,937] Making new env: GopherNoFrameskip-v4
+Box(250, 160, 3)
+DoubleDunk-v4
+[2017-06-30 13:12:31,527] Making new env: DoubleDunk-v4
+Box(250, 160, 3)
+DoubleDunk-v0
+[2017-06-30 13:12:32,104] Making new env: DoubleDunk-v0
+Box(250, 160, 3)
+Tutankham-v0
+[2017-06-30 13:12:32,677] Making new env: Tutankham-v0
+Box(250, 160, 3)
+LunarLander-v2
+[2017-06-30 13:12:33,257] Making new env: LunarLander-v2
+BeamRider-v4
+[2017-06-30 13:12:33,263] Making new env: BeamRider-v4
+Box(210, 160, 3)
+Tutankham-v4
+[2017-06-30 13:12:33,850] Making new env: Tutankham-v4
+Box(250, 160, 3)
+BeamRider-v0
+[2017-06-30 13:12:34,505] Making new env: BeamRider-v0
+Box(210, 160, 3)
+CarnivalNoFrameskip-v0
+[2017-06-30 13:12:35,232] Making new env: CarnivalNoFrameskip-v0
+Box(250, 160, 3)
+BoxingDeterministic-v0
+[2017-06-30 13:12:35,885] Making new env: BoxingDeterministic-v0
+Box(210, 160, 3)
+TimePilot-ram-v0
+[2017-06-30 13:12:36,770] Making new env: TimePilot-ram-v0
+Box(128,)
+CarnivalNoFrameskip-v4
+[2017-06-30 13:12:37,430] Making new env: CarnivalNoFrameskip-v4
+Box(250, 160, 3)
+BoxingDeterministic-v4
+[2017-06-30 13:12:38,021] Making new env: BoxingDeterministic-v4
+Box(210, 160, 3)
+Hex9x9-v0
+[2017-06-30 13:12:38,676] Making new env: Hex9x9-v0
+Alien-v0
+[2017-06-30 13:12:38,687] Making new env: Alien-v0
+Box(210, 160, 3)
+Berzerk-ram-v4
+[2017-06-30 13:12:39,345] Making new env: Berzerk-ram-v4
+Box(128,)
+Alien-v4
+[2017-06-30 13:12:39,954] Making new env: Alien-v4
+Box(210, 160, 3)
+Berzerk-ram-v0
+[2017-06-30 13:12:40,639] Making new env: Berzerk-ram-v0
+Box(128,)
+Robotank-v4
+[2017-06-30 13:12:41,574] Making new env: Robotank-v4
+Box(210, 160, 3)
+AmidarDeterministic-v4
+[2017-06-30 13:12:42,315] Making new env: AmidarDeterministic-v4
+Box(250, 160, 3)
+Robotank-v0
+[2017-06-30 13:12:42,917] Making new env: Robotank-v0
+Box(210, 160, 3)
+AmidarDeterministic-v0
+[2017-06-30 13:12:43,590] Making new env: AmidarDeterministic-v0
+Box(250, 160, 3)
+TimePilot-ram-v4
+[2017-06-30 13:12:44,285] Making new env: TimePilot-ram-v4
+Box(128,)
+Gravitar-ram-v0
+[2017-06-30 13:12:45,036] Making new env: Gravitar-ram-v0
+Box(128,)
+Venture-v4
+[2017-06-30 13:12:45,763] Making new env: Venture-v4
+Box(210, 160, 3)
+AssaultDeterministic-v0
+[2017-06-30 13:12:46,368] Making new env: AssaultDeterministic-v0
+Box(250, 160, 3)
+Gravitar-ram-v4
+[2017-06-30 13:12:47,103] Making new env: Gravitar-ram-v4
+Box(128,)
+Venture-v0
+[2017-06-30 13:12:47,728] Making new env: Venture-v0
+Box(210, 160, 3)
+AssaultDeterministic-v4
+[2017-06-30 13:12:48,316] Making new env: AssaultDeterministic-v4
+Box(250, 160, 3)
+Acrobot-v1
+[2017-06-30 13:12:48,895] Making new env: Acrobot-v1
+Box(6,)
+Boxing-v0
+[2017-06-30 13:12:48,902] Making new env: Boxing-v0
+Box(210, 160, 3)
+Boxing-v4
+[2017-06-30 13:12:49,515] Making new env: Boxing-v4
+Box(210, 160, 3)
+ZaxxonNoFrameskip-v0
+[2017-06-30 13:12:50,121] Making new env: ZaxxonNoFrameskip-v0
+Box(210, 160, 3)
+DemonAttack-v0
+[2017-06-30 13:12:50,811] Making new env: DemonAttack-v0
+Box(210, 160, 3)
+ZaxxonNoFrameskip-v4
+[2017-06-30 13:12:51,438] Making new env: ZaxxonNoFrameskip-v4
+Box(210, 160, 3)
+DemonAttack-v4
+[2017-06-30 13:12:52,105] Making new env: DemonAttack-v4
+Box(210, 160, 3)
+Freeway-v0
+[2017-06-30 13:12:52,872] Making new env: Freeway-v0
+Box(210, 160, 3)
+NameThisGame-v0
+[2017-06-30 13:12:53,627] Making new env: NameThisGame-v0
+Box(210, 160, 3)
+Freeway-v4
+[2017-06-30 13:12:54,280] Making new env: Freeway-v4
+Box(210, 160, 3)
+NameThisGame-v4
+[2017-06-30 13:12:55,162] Making new env: NameThisGame-v4
+Box(210, 160, 3)
+RoadRunnerNoFrameskip-v4
+[2017-06-30 13:12:56,002] Making new env: RoadRunnerNoFrameskip-v4
+Box(210, 160, 3)
+KungFuMasterDeterministic-v0
+[2017-06-30 13:12:56,977] Making new env: KungFuMasterDeterministic-v0
+Box(210, 160, 3)
+RoadRunnerNoFrameskip-v0
+[2017-06-30 13:12:58,063] Making new env: RoadRunnerNoFrameskip-v0
+Box(210, 160, 3)
+KungFuMasterDeterministic-v4
+[2017-06-30 13:12:58,802] Making new env: KungFuMasterDeterministic-v4
+Box(210, 160, 3)
+Bowling-ram-v4
+[2017-06-30 13:12:59,426] Making new env: Bowling-ram-v4
+Box(128,)
+Bowling-ram-v0
+[2017-06-30 13:12:59,995] Making new env: Bowling-ram-v0
+Box(128,)
+Krull-ram-v0
+[2017-06-30 13:13:00,688] Making new env: Krull-ram-v0
+Box(128,)
+Seaquest-ramDeterministic-v0
+[2017-06-30 13:13:01,479] Making new env: Seaquest-ramDeterministic-v0
+Box(128,)
+Krull-ram-v4
+[2017-06-30 13:13:02,198] Making new env: Krull-ram-v4
+Box(128,)
+Seaquest-ramDeterministic-v4
+[2017-06-30 13:13:02,861] Making new env: Seaquest-ramDeterministic-v4
+Box(128,)
+TimePilot-ramNoFrameskip-v4
+[2017-06-30 13:13:03,454] Making new env: TimePilot-ramNoFrameskip-v4
+Box(128,)
+TimePilot-ramNoFrameskip-v0
+[2017-06-30 13:13:04,074] Making new env: TimePilot-ramNoFrameskip-v0
+Box(128,)
+BowlingNoFrameskip-v0
+[2017-06-30 13:13:04,687] Making new env: BowlingNoFrameskip-v0
+Box(210, 160, 3)
+BowlingNoFrameskip-v4
+[2017-06-30 13:13:05,225] Making new env: BowlingNoFrameskip-v4
+Box(210, 160, 3)
+VideoPinballDeterministic-v4
+[2017-06-30 13:13:05,861] Making new env: VideoPinballDeterministic-v4
+Box(250, 160, 3)
+UpNDown-ramNoFrameskip-v0
+[2017-06-30 13:13:06,684] Making new env: UpNDown-ramNoFrameskip-v0
+Box(128,)
+UpNDown-ramNoFrameskip-v4
+[2017-06-30 13:13:07,482] Making new env: UpNDown-ramNoFrameskip-v4
+Box(128,)
+Assault-ramNoFrameskip-v0
+[2017-06-30 13:13:08,360] Making new env: Assault-ramNoFrameskip-v0
+Box(128,)[2017-06-30 13:13:09,040] Making new env: Assault-ramNoFrameskip-v4
+
+Assault-ramNoFrameskip-v4
+Box(128,)
+CliffWalking-v0
+[2017-06-30 13:13:09,648] Making new env: CliffWalking-v0
+Discrete(48)
+KungFuMaster-ramNoFrameskip-v4
+[2017-06-30 13:13:09,670] Making new env: KungFuMaster-ramNoFrameskip-v4
+Box(128,)
+BankHeist-ram-v0
+[2017-06-30 13:13:10,225] Making new env: BankHeist-ram-v0
+Box(128,)
+PrivateEye-ramNoFrameskip-v0
+[2017-06-30 13:13:10,845] Making new env: PrivateEye-ramNoFrameskip-v0
+Box(128,)
+BankHeist-ram-v4
+[2017-06-30 13:13:11,626] Making new env: BankHeist-ram-v4
+Box(128,)
+Venture-ramNoFrameskip-v4
+[2017-06-30 13:13:12,407] Making new env: Venture-ramNoFrameskip-v4
+Box(128,)
+YarsRevengeNoFrameskip-v0
+[2017-06-30 13:13:13,020] Making new env: YarsRevengeNoFrameskip-v0
+Box(210, 160, 3)
+YarsRevengeNoFrameskip-v4
+[2017-06-30 13:13:13,579] Making new env: YarsRevengeNoFrameskip-v4
+Box(210, 160, 3)
+DemonAttack-ramDeterministic-v4
+[2017-06-30 13:13:14,358] Making new env: DemonAttack-ramDeterministic-v4
+Box(128,)
+ElevatorAction-v0
+[2017-06-30 13:13:15,086] Making new env: ElevatorAction-v0
+Box(210, 160, 3)
+DemonAttack-ramDeterministic-v0
+[2017-06-30 13:13:15,721] Making new env: DemonAttack-ramDeterministic-v0
+Box(128,)
+ElevatorAction-v4
+[2017-06-30 13:13:16,566] Making new env: ElevatorAction-v4
+Box(210, 160, 3)
+FishingDerby-v4
+[2017-06-30 13:13:17,303] Making new env: FishingDerby-v4
+Box(210, 160, 3)
+Carnival-ramNoFrameskip-v0
+[2017-06-30 13:13:18,055] Making new env: Carnival-ramNoFrameskip-v0
+Box(128,)
+FishingDerby-v0
+[2017-06-30 13:13:18,751] Making new env: FishingDerby-v0
+Box(210, 160, 3)
+Carnival-ramNoFrameskip-v4
+[2017-06-30 13:13:19,372] Making new env: Carnival-ramNoFrameskip-v4
+Box(128,)
+MontezumaRevengeDeterministic-v4
+[2017-06-30 13:13:20,025] Making new env: MontezumaRevengeDeterministic-v4
+Box(210, 160, 3)
+MontezumaRevengeDeterministic-v0
+[2017-06-30 13:13:20,631] Making new env: MontezumaRevengeDeterministic-v0
+Box(210, 160, 3)
+PitfallNoFrameskip-v0
+[2017-06-30 13:13:21,230] Making new env: PitfallNoFrameskip-v0
+Box(210, 160, 3)
+DoubleDunkNoFrameskip-v0
+[2017-06-30 13:13:21,832] Making new env: DoubleDunkNoFrameskip-v0
+Box(250, 160, 3)
+DoubleDunkNoFrameskip-v4
+[2017-06-30 13:13:22,405] Making new env: DoubleDunkNoFrameskip-v4
+Box(250, 160, 3)
+AsterixNoFrameskip-v0
+[2017-06-30 13:13:23,159] Making new env: AsterixNoFrameskip-v0
+Box(210, 160, 3)
+AsterixNoFrameskip-v4
+[2017-06-30 13:13:23,928] Making new env: AsterixNoFrameskip-v4
+Box(210, 160, 3)
+PitfallNoFrameskip-v4
+[2017-06-30 13:13:24,528] Making new env: PitfallNoFrameskip-v4
+Box(210, 160, 3)
+StarGunner-ramDeterministic-v4
+[2017-06-30 13:13:25,209] Making new env: StarGunner-ramDeterministic-v4
+Box(128,)
+HeroNoFrameskip-v4
+[2017-06-30 13:13:25,882] Making new env: HeroNoFrameskip-v4
+Box(210, 160, 3)
+Amidar-ramDeterministic-v0
+[2017-06-30 13:13:26,597] Making new env: Amidar-ramDeterministic-v0
+Box(128,)
+Pong-ram-v4
+[2017-06-30 13:13:27,280] Making new env: Pong-ram-v4
+Box(128,)
+Amidar-ramDeterministic-v4
+[2017-06-30 13:13:28,036] Making new env: Amidar-ramDeterministic-v4
+Box(128,)
+Pong-ram-v0
+[2017-06-30 13:13:28,815] Making new env: Pong-ram-v0
+Box(128,)
+ElevatorAction-ramDeterministic-v0
+[2017-06-30 13:13:29,604] Making new env: ElevatorAction-ramDeterministic-v0
+Box(128,)
+JourneyEscapeDeterministic-v0
+[2017-06-30 13:13:30,198] Making new env: JourneyEscapeDeterministic-v0
+Box(230, 160, 3)
+Pendulum-v0
+[2017-06-30 13:13:30,759] Making new env: Pendulum-v0
+Box(3,)
+ElevatorAction-ramDeterministic-v4
+[2017-06-30 13:13:30,764] Making new env: ElevatorAction-ramDeterministic-v4
+Box(128,)
+JourneyEscapeDeterministic-v4
+[2017-06-30 13:13:31,378] Making new env: JourneyEscapeDeterministic-v4
+Box(230, 160, 3)
+Breakout-v4
+[2017-06-30 13:13:31,970] Making new env: Breakout-v4
+Box(210, 160, 3)
+Freeway-ramDeterministic-v0
+[2017-06-30 13:13:32,907] Making new env: Freeway-ramDeterministic-v0
+Box(128,)
+Breakout-v0
+[2017-06-30 13:13:33,591] Making new env: Breakout-v0
+Box(210, 160, 3)
+Freeway-ramDeterministic-v4
+[2017-06-30 13:13:34,166] Making new env: Freeway-ramDeterministic-v4
+Box(128,)
+NameThisGame-ramNoFrameskip-v4
+[2017-06-30 13:13:34,818] Making new env: NameThisGame-ramNoFrameskip-v4
+Box(128,)
+Hero-v4
+[2017-06-30 13:13:35,404] Making new env: Hero-v4
+Box(210, 160, 3)
+Hero-v0
+[2017-06-30 13:13:36,077] Making new env: Hero-v0
+Box(210, 160, 3)
+InvertedPendulum-v1
+[2017-06-30 13:13:36,804] Making new env: InvertedPendulum-v1
+BeamRider-ram-v0
+[2017-06-30 13:13:36,810] Making new env: BeamRider-ram-v0
+Box(128,)
+Zaxxon-v4
+[2017-06-30 13:13:37,541] Making new env: Zaxxon-v4
+Box(210, 160, 3)
+BeamRider-ram-v4
+[2017-06-30 13:13:38,264] Making new env: BeamRider-ram-v4
+Box(128,)
+VideoPinball-v0
+[2017-06-30 13:13:38,981] Making new env: VideoPinball-v0
+Box(250, 160, 3)
+VideoPinball-v4
+[2017-06-30 13:13:39,719] Making new env: VideoPinball-v4
+Box(250, 160, 3)
+PrivateEyeNoFrameskip-v0
+[2017-06-30 13:13:40,519] Making new env: PrivateEyeNoFrameskip-v0
+Box(210, 160, 3)
+AtlantisDeterministic-v4
+[2017-06-30 13:13:41,125] Making new env: AtlantisDeterministic-v4
+Box(210, 160, 3)
+PrivateEyeNoFrameskip-v4
+[2017-06-30 13:13:41,956] Making new env: PrivateEyeNoFrameskip-v4
+Box(210, 160, 3)
+AtlantisDeterministic-v0
+[2017-06-30 13:13:42,724] Making new env: AtlantisDeterministic-v0
+Box(210, 160, 3)
+Berzerk-ramDeterministic-v0
+[2017-06-30 13:13:43,411] Making new env: Berzerk-ramDeterministic-v0
+Box(128,)
+UpNDown-ram-v4
+[2017-06-30 13:13:44,132] Making new env: UpNDown-ram-v4
+Box(128,)
+AirRaid-ramNoFrameskip-v4
+[2017-06-30 13:13:44,932] Making new env: AirRaid-ramNoFrameskip-v4
+Box(128,)
+Berzerk-ramDeterministic-v4
+[2017-06-30 13:13:45,532] Making new env: Berzerk-ramDeterministic-v4
+Box(128,)
+Seaquest-ram-v4
+[2017-06-30 13:13:46,144] Making new env: Seaquest-ram-v4
+Box(128,)
+AirRaid-ramNoFrameskip-v0
+[2017-06-30 13:13:46,846] Making new env: AirRaid-ramNoFrameskip-v0
+Box(128,)
+MontezumaRevenge-ram-v0
+[2017-06-30 13:13:47,497] Making new env: MontezumaRevenge-ram-v0
+Box(128,)
+Roulette-v0
+[2017-06-30 13:13:48,210] Making new env: Roulette-v0
+Discrete(1)
+MontezumaRevengeNoFrameskip-v0
+[2017-06-30 13:13:48,214] Making new env: MontezumaRevengeNoFrameskip-v0
+Box(210, 160, 3)
+Riverraid-v4
+[2017-06-30 13:13:49,097] Making new env: Riverraid-v4
+Box(210, 160, 3)
+Atlantis-ram-v0
+[2017-06-30 13:13:50,042] Making new env: Atlantis-ram-v0
+Box(128,)
+Alien-ram-v4
+[2017-06-30 13:13:50,697] Making new env: Alien-ram-v4
+Box(128,)
+Boxing-ramNoFrameskip-v0
+[2017-06-30 13:13:51,499] Making new env: Boxing-ramNoFrameskip-v0
+Box(128,)
+Boxing-ramNoFrameskip-v4
+[2017-06-30 13:13:52,120] Making new env: Boxing-ramNoFrameskip-v4
+Box(128,)
+SpaceInvaders-v4
+[2017-06-30 13:13:52,817] Making new env: SpaceInvaders-v4
+Box(210, 160, 3)
+Pitfall-ram-v4
+[2017-06-30 13:13:53,561] Making new env: Pitfall-ram-v4
+Box(128,)
+Skiing-ramDeterministic-v0
+[2017-06-30 13:13:54,109] Making new env: Skiing-ramDeterministic-v0
+Box(128,)
+RiverraidDeterministic-v4
+[2017-06-30 13:13:54,831] Making new env: RiverraidDeterministic-v4
+Box(210, 160, 3)
+KangarooNoFrameskip-v4
+[2017-06-30 13:13:55,424] Making new env: KangarooNoFrameskip-v4
+Box(210, 160, 3)
+CrazyClimberNoFrameskip-v0
+[2017-06-30 13:13:56,116] Making new env: CrazyClimberNoFrameskip-v0
+Box(210, 160, 3)
+AtlantisNoFrameskip-v4[2017-06-30 13:13:57,048] Making new env: AtlantisNoFrameskip-v4
+
+Box(210, 160, 3)
+KangarooNoFrameskip-v0
+[2017-06-30 13:13:57,793] Making new env: KangarooNoFrameskip-v0
+Box(210, 160, 3)
+CrazyClimberNoFrameskip-v4
+[2017-06-30 13:13:58,493] Making new env: CrazyClimberNoFrameskip-v4
+Box(210, 160, 3)
+AtlantisNoFrameskip-v0
+[2017-06-30 13:13:59,201] Making new env: AtlantisNoFrameskip-v0
+Box(210, 160, 3)
+SpaceInvaders-v0
+[2017-06-30 13:13:59,860] Making new env: SpaceInvaders-v0
+Box(210, 160, 3)
+Skiing-ramDeterministic-v4
+[2017-06-30 13:14:00,518] Making new env: Skiing-ramDeterministic-v4
+Box(128,)
+StarGunnerNoFrameskip-v0
+[2017-06-30 13:14:01,168] Making new env: StarGunnerNoFrameskip-v0
+Box(210, 160, 3)
+Kangaroo-ramNoFrameskip-v4
+[2017-06-30 13:14:01,749] Making new env: Kangaroo-ramNoFrameskip-v4
+Box(128,)
+RiverraidDeterministic-v0
+[2017-06-30 13:14:02,433] Making new env: RiverraidDeterministic-v0
+Box(210, 160, 3)
+Kangaroo-ramNoFrameskip-v0
+[2017-06-30 13:14:03,023] Making new env: Kangaroo-ramNoFrameskip-v0
+Box(128,)
+SpaceInvadersNoFrameskip-v0
+[2017-06-30 13:14:03,855] Making new env: SpaceInvadersNoFrameskip-v0
+Box(210, 160, 3)
+DuplicatedInput-v0
+[2017-06-30 13:14:04,516] Making new env: DuplicatedInput-v0
+Discrete(6)
+Robotank-ramNoFrameskip-v4
+[2017-06-30 13:14:04,522] Making new env: Robotank-ramNoFrameskip-v4
+Box(128,)
+Robotank-ramNoFrameskip-v0
+[2017-06-30 13:14:05,188] Making new env: Robotank-ramNoFrameskip-v0
+Box(128,)
+Zaxxon-ramNoFrameskip-v0
+[2017-06-30 13:14:05,837] Making new env: Zaxxon-ramNoFrameskip-v0
+Box(128,)
+SpaceInvadersNoFrameskip-v4
+[2017-06-30 13:14:06,557] Making new env: SpaceInvadersNoFrameskip-v4
+Box(210, 160, 3)
+DemonAttack-ramNoFrameskip-v0
+[2017-06-30 13:14:07,217] Making new env: DemonAttack-ramNoFrameskip-v0
+Box(128,)
+DemonAttack-ramNoFrameskip-v4
+[2017-06-30 13:14:07,972] Making new env: DemonAttack-ramNoFrameskip-v4
+Box(128,)
+GopherDeterministic-v0
+[2017-06-30 13:14:08,658] Making new env: GopherDeterministic-v0
+Box(250, 160, 3)
+FishingDerbyDeterministic-v4
+[2017-06-30 13:14:09,356] Making new env: FishingDerbyDeterministic-v4
+Box(210, 160, 3)
+Alien-ramDeterministic-v4
+[2017-06-30 13:14:10,007] Making new env: Alien-ramDeterministic-v4
+Box(128,)
+GopherDeterministic-v4
+[2017-06-30 13:14:10,604] Making new env: GopherDeterministic-v4
+Box(250, 160, 3)
+FishingDerbyDeterministic-v0
+[2017-06-30 13:14:11,170] Making new env: FishingDerbyDeterministic-v0
+Box(210, 160, 3)
+Alien-ramDeterministic-v0
+[2017-06-30 13:14:11,907] Making new env: Alien-ramDeterministic-v0
+Box(128,)
+VideoPinball-ramDeterministic-v0
+[2017-06-30 13:14:12,595] Making new env: VideoPinball-ramDeterministic-v0
+Box(128,)
+Qbert-ram-v0
+[2017-06-30 13:14:13,348] Making new env: Qbert-ram-v0
+Box(128,)
+Tutankham-ram-v0
+[2017-06-30 13:14:14,020] Making new env: Tutankham-ram-v0
+Box(128,)
+Pong-ramNoFrameskip-v4
+[2017-06-30 13:14:14,676] Making new env: Pong-ramNoFrameskip-v4
+Box(128,)
+Qbert-ram-v4
+[2017-06-30 13:14:15,312] Making new env: Qbert-ram-v4
+Box(128,)
+Pitfall-ram-v0
+[2017-06-30 13:14:15,963] Making new env: Pitfall-ram-v0
+Box(128,)
+Tutankham-ram-v4
+[2017-06-30 13:14:16,601] Making new env: Tutankham-ram-v4
+Box(128,)
+AirRaid-v4
+[2017-06-30 13:14:17,265] Making new env: AirRaid-v4
+Box(250, 160, 3)
+KangarooDeterministic-v4
+[2017-06-30 13:14:17,970] Making new env: KangarooDeterministic-v4
+Box(210, 160, 3)
+AirRaid-v0
+[2017-06-30 13:14:18,875] Making new env: AirRaid-v0
+Box(250, 160, 3)
+KangarooDeterministic-v0
+[2017-06-30 13:14:19,624] Making new env: KangarooDeterministic-v0
+Box(210, 160, 3)
+JourneyEscape-ramNoFrameskip-v4
+[2017-06-30 13:14:20,251] Making new env: JourneyEscape-ramNoFrameskip-v4
+Box(128,)
+Krull-v4
+[2017-06-30 13:14:21,045] Making new env: Krull-v4
+Box(210, 160, 3)
+JourneyEscape-ramNoFrameskip-v0
+[2017-06-30 13:14:21,700] Making new env: JourneyEscape-ramNoFrameskip-v0
+Box(128,)
+Krull-v0
+[2017-06-30 13:14:22,435] Making new env: Krull-v0
+Box(210, 160, 3)
+Riverraid-v0
+[2017-06-30 13:14:23,025] Making new env: Riverraid-v0
+Box(210, 160, 3)
+KrullNoFrameskip-v0
+[2017-06-30 13:14:23,892] Making new env: KrullNoFrameskip-v0
+Box(210, 160, 3)
+MontezumaRevengeNoFrameskip-v4
+[2017-06-30 13:14:24,736] Making new env: MontezumaRevengeNoFrameskip-v4
+Box(210, 160, 3)
+KrullNoFrameskip-v4
+[2017-06-30 13:14:25,421] Making new env: KrullNoFrameskip-v4
+Box(210, 160, 3)
+MontezumaRevenge-ramDeterministic-v0
+[2017-06-30 13:14:26,103] Making new env: MontezumaRevenge-ramDeterministic-v0
+Box(128,)
+MontezumaRevenge-ramDeterministic-v4
+[2017-06-30 13:14:26,758] Making new env: MontezumaRevenge-ramDeterministic-v4
+Box(128,)
+Pusher-v0
+[2017-06-30 13:14:27,620] Making new env: Pusher-v0
+BoxingNoFrameskip-v0
+[2017-06-30 13:14:27,622] Making new env: BoxingNoFrameskip-v0
+Box(210, 160, 3)
+SkiingDeterministic-v4
+[2017-06-30 13:14:28,382] Making new env: SkiingDeterministic-v4
+Box(250, 160, 3)
+BoxingNoFrameskip-v4
+[2017-06-30 13:14:29,070] Making new env: BoxingNoFrameskip-v4
+Box(210, 160, 3)
+SkiingDeterministic-v0
+[2017-06-30 13:14:29,718] Making new env: SkiingDeterministic-v0
+Box(250, 160, 3)
+UpNDown-ram-v0
+[2017-06-30 13:14:30,411] Making new env: UpNDown-ram-v0
+Box(128,)
+Kangaroo-v4
+[2017-06-30 13:14:31,146] Making new env: Kangaroo-v4
+Box(210, 160, 3)
+Kangaroo-v0
+[2017-06-30 13:14:31,693] Making new env: Kangaroo-v0
+Box(210, 160, 3)

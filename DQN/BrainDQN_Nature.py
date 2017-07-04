@@ -10,8 +10,8 @@
 import tensorflow as tf 
 import numpy as np 
 import random
-from collections import deque 
-    
+from collections import deque
+import logging
 # Hyper Parameters:
 FRAME_PER_ACTION = 1
 GAMMA = 0.99 # decay rate of past observations
@@ -173,6 +173,7 @@ class BrainDQN(object):
 
     def trainQNetwork(self):
         # Step 1: obtain random minibatch from replay memory
+        l
         minibatch = random.sample(self.replayMemory,BATCH_SIZE)
         state_batch = [data[0] for data in minibatch]
         action_batch = [data[1] for data in minibatch]
@@ -252,9 +253,10 @@ class BrainDQN(object):
             state = "explore"
         else:
             state = "train"
+
         if self.timeStep % 100 == 0:
-            print "TIMESTEP", self.timeStep, "/ STATE", state, \
-                "/ EPSILON", self.epsilon
+            logging.debug("TIMESTEP", self.timeStep, "/ STATE", state, \
+                "/ EPSILON", self.epsilon)
 
         self.currentState = newState
         self.timeStep += 1

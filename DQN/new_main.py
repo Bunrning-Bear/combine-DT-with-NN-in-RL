@@ -6,22 +6,24 @@
 # Modified    :   2017.6.30
 # Version     :   1.0
 
-
-# -------------------------
-# Project: Deep Q-Learning on Flappy Bird
-# Author: Flood Sung
-# Date: 2016.3.21
-# -------------------------
-
 import cv2
 import sys
 # sys.path.append("game/")
 # import wrapped_flappy_bird as game
 # from BrainDQN_origin import BrainDQN
+
+# import logging
+# logging.basicConfig(level=logging.INFO)
+import mylogger
+import logging
+logging.basicConfig(level=logging.INFO)
 import gym
+gym.undo_logger_setup()
 from BrainDQN_Nature import BrainDQN
 import time 
 import numpy as np
+# from mylogger import Logger
+# logging = Logger.get_logger()
 
 # preprocess raw image to 80*80 gray image
 def preprocess(observation):
@@ -30,6 +32,7 @@ def preprocess(observation):
     return np.reshape(observation,(80,80,1))
 
 def playFlappyBird():
+
     # Step 1: init BrainDQN
     actions = 2
     # brain = BrainDQN(actions)
@@ -45,6 +48,7 @@ def playFlappyBird():
     # observation0, reward0, terminal = flappyBird.frame_step(action0)
     # observation0 = cv2.cvtColor(cv2.resize(observation0, (80, 80)), cv2.COLOR_BGR2GRAY)
     # ret, observation0 = cv2.threshold(observation0,1,255,cv2.THRESH_BINARY)
+
     brain = BrainDQN(actions.n, observations.shape[0], BrainDQN.SIMPLE_OB,agent_name='CartPole-v0')
 
     observation = env.reset()
@@ -52,8 +56,6 @@ def playFlappyBird():
     env.render()
     # action = env.action_space.sample()
     # observation, reward, done, info = env.step(action)
-
-
     # Step 3.2: run the game
     time_count = 0
     end_times = 0
@@ -85,12 +87,12 @@ def playFlappyBird():
                 accumlate_amount = accumlate_amount + 1.
                 ave = (time_count)/100.0
                 accumlate_time = accumlate_time * (accumlate_amount - 1.) / accumlate_amount + ave / accumlate_amount
-                print "[end game] time_count : %s,accumlate_time :%s accumlate_amount %s max times %s"%(ave,accumlate_time, accumlate_amount,max_times)
+                logging.debug("[end game] time_count : %s,accumlate_time :%s accumlate_amount %s max times %s"%(ave,accumlate_time, accumlate_amount,max_times))
                 max_times  = 0
                 time_count = 0
             if end_times % 2000 == 0:
                 accumlate_time_list.append(accumlate_time)
-                print "accumlate_time_list %s"%accumlate_time_list[-10:]
+                logging.debug("accumlate_time_list %s"%accumlate_time_list[-10:])
                 accumlate_time_list = accumlate_time_list[-10:]
                 accumlate_time = 0
                 accumlate_amount = 0
@@ -105,4 +107,5 @@ def main():
     playFlappyBird()
 
 if __name__ == '__main__':
+    logging.debug("start")
     main()

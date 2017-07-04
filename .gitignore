@@ -64,11 +64,16 @@ dataset/*
 dtree/dataset/*
 *.csv
 
-*.pyc
 
 # network
 DQN/saved_networks/*
 
 # ide
 .idea*
+
+# python
+*.swp
+*.pyc
+*.py~
+
 

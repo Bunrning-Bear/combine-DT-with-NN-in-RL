@@ -60,11 +60,15 @@ docs/_build/
 /*.geany
 
 # data set
-*/dataset*
-
+dataset/*
+dtree/dataset/*
+*.csv
 
 *.pyc
 
 # network
 DQN/saved_networks/*
+
+# ide
+.idea*
 

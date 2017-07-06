@@ -175,7 +175,7 @@ def build_train(session, make_obs_ph, q_func, num_actions, optimizer, grad_norm_
     debug: {str: function}
         a bunch of functions to print debug data like q_values.
     """
-    act_f = build_act(session,make_obs_ph, q_func, num_actions, scope=scope, reuse=reuse)
+    act_f = build_act(session, make_obs_ph, q_func, num_actions, scope=scope, reuse=reuse)
 
     with tf.variable_scope(scope, reuse=reuse):
         # set up placeholders

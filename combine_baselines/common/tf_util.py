@@ -241,7 +241,7 @@ class MultiSession(object):
     def initialize(self):
         """Initialize all the uninitialized variables in the global scope."""
         new_variables = set(tf.global_variables()) - self.ALREADY_INITIALIZED
-        self.sess.run(tf.variables_initializer(new_variables))
+        self.sess.run(tf.variables_initializer(new_variables)) 
         self.ALREADY_INITIALIZED.update(new_variables)
 
     def eval(self, expr, feed_dict=None):
@@ -257,6 +257,8 @@ class MultiSession(object):
             set_op = v.assign(set_endpoint)
             self.VALUE_SETTERS[v] = (set_op, set_endpoint)
         self.sess.run(set_op, feed_dict={set_endpoint: val})
+    def init_saver(self,max_to_keep=3):
+        self.saver = tf.train.Saver(max_to_keep=max_to_keep)
 
 
 # ================================================================
@@ -265,14 +267,21 @@ class MultiSession(object):
 
 
     def load_state(self, fname):
-        saver = tf.train.Saver()
-        saver.restore(self.sess, fname)
+        checkpoint = tf.train.get_checkpoint_state(fname)
+        if checkpoint and checkpoint.model_checkpoint_path:
+            print(checkpoint)
+            if checkpoint.model_checkpoint_path.find(fname+'/model') != -1: 
+                self.saver.restore(self.sess, checkpoint.model_checkpoint_path)
+                print("Successfully loaded:", checkpoint.model_checkpoint_path)
+            else:
+                print("match failed")
+        else:
+            print("Could not find old network weights")
 
 
-    def save_state(self, fname):
+    def save_state(self, fname, time_step):
         os.makedirs(os.path.dirname(fname), exist_ok=True)
-        saver = tf.train.Saver()
-        saver.save(self.sess, fname)
+        self.saver.save(self.sess, fname+'/model',global_step=time_step)
 
 
 

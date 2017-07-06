@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 action = act(obs[None], update_eps=exploration.value(t))[0]
                 new_obs, rew, done, _ = env.step(action)
                 # Store transition in the replay buffer.
-                replay_buffer.add(obs, action, rew, new_obs, float(done))
+                replay_buffer.add(obs, action, rew, new_obs, float(done),obs)
                 obs = new_obs
 
                 episode_rewards[-1] += rew
@@ -90,14 +90,31 @@ if __name__ == '__main__':
                     obs = env.reset()
                     episode_rewards.append(0)
 
-                is_solved = t > 100 and np.mean(episode_rewards[-101:-1]) >= 200
+                is_solved = t > 100 and np.mean(episode_rewards[-101:-1]) >= 400
                 if is_solved:
                     # Show off the result
                     env.render()
                 else:
                     # Minimize the error in Bellman's equation on a batch sampled from replay buffer.
                     if t > 1000:
-                        obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(32)
+                        data_list = replay_buffer.sample(32)
+                        # distribute
+
+                        obses_t, actions, rewards, obses_tp1, dones = [], [], [], [], []
+                        for data in data_list:
+                            # sample distribute completed
+                            obs_t, action, reward, obs_tp1, done, features = data
+                            obses_t.append(np.array(obs_t, copy=False))
+                            actions.append(np.array(action, copy=False))
+                            rewards.append(reward)
+                            obses_tp1.append(np.array(obs_tp1, copy=False))
+                            dones.append(done)
+                        # total distribute completed, before train.
+                        np.array(obses_t)
+                        np.array(actions)
+                        np.array(rewards)
+                        np.array(obses_tp1)
+                        np.array(dones)
                         train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
                     # Update target network periodically.
                     if t % 1000 == 0:

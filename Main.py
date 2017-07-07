@@ -64,29 +64,23 @@ def main():
             ACTION: data[ACTION]
         }
         forest_agent.set_replay_buffer(record)
-    forest_agent.initial_model()
-    # list_data = list(sample_data)
-    # size = len(list_data)/10*4
-    # for item in list_data[1:size]:
-    #     logging.info("distributing: %s"%item)
-    #     forest_agent.distribute(item)
-    # # initial env and agent
+    # initial env and agent
 
-    # observation = game_engine.reset()
-    # forest_agent.setInitState(observation)
-    # game_engine.render()
+    observation = game_engine.reset()
+    forest_agent.setInitState(observation)
+    game_engine.render()
 
-    # time_count = 0
-    # end_times = 0
-    # accumlate_amount = 0
-    # accumlate_time = 0.
-    # accumlate_time_list =[]
-    # max_times=0
-    # current_times = 0
-    # while 1!= 0:
-    #     game_engine.render()
-    #     action = forest_agent.predict()
-    #     nextObservation,reward,terminal,info = game_engine.step(action)
+    time_count = 0
+    end_times = 0
+    accumlate_amount = 0
+    accumlate_time = 0.
+    accumlate_time_list =[]
+    max_times=0
+    current_times = 0
+    while 1!= 0:
+        game_engine.render()
+        action = forest_agent.predict()
+        nextObservation,reward,terminal,info = game_engine.step(action)
     #     record={
     #         'observation': nextObservation,
     #         'feature': list_to_dic(nextObservation),

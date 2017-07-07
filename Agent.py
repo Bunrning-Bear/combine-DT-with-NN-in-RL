@@ -101,7 +101,7 @@ class ForestAgent(object):
         for tree in self.trees:
             sample = [self.current_state, self.current_feature]
             _p = tree.predict(sample)
-            assert type(_p)==list," predict is not a list, it is %s, type %s, impossible as normal!"%(_p,type(_p))
+            assert type(_p)!=list," predict is a list, it is %s, type %s, impossible as normal!"%(_p,type(_p))
             # if _p is None:
             #     continue
             # if isinstance(_p, CDist):
@@ -111,7 +111,8 @@ class ForestAgent(object):
             #     if not _p.count:
             #         continue
             # predictions[tree] = _p
-            max_index = _p.index(max(_p))
+            max_index = _p
+            # max_index = _p.index(max(_p))
             if max_index in predictions:
                 predictions[max_index]+=1
             else:
@@ -784,8 +785,10 @@ class Node(object):
             state = np.array(state)# the first element is 'state'
             # logging.info("in predicting ,sample is %s"%sample)
             # assert (not self.is_continuous_class),"this project can not use in continuous class now!"
-            result = self.base_model.getAction(state)
-            return list(result)
+            action = self.act(state[None], update_eps=self.exploration.value(self.time_step))[0]
+            print("predict Action is %s"%action)
+            # result = self.base_model.getAction(state)
+            return action
         else:
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
@@ -806,6 +809,7 @@ class Node(object):
         self.train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
         # self.base_model.trainQNetwork(self.sample_list)
         self.sample_list = sample_list_reset()
+        self.time_step += 1
 
     def clear_node_sample_number(self):
         self.n = 0

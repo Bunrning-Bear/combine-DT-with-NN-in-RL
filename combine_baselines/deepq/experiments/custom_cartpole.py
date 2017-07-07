@@ -28,20 +28,20 @@ from combine_baselines import logger
 from combine_baselines import deepq
 from combine_baselines.deepq.replay_buffer import ReplayBuffer
 from combine_baselines.common.schedules import LinearSchedule
+from combine_baselines.deepq.models import model
 
-
-def model(inpt, num_actions, scope, reuse=False):
-    """This model takes as input an observation and returns values of all actions."""
-    with tf.variable_scope(scope, reuse=reuse):
-        out = inpt
-        out = layers.fully_connected(out, num_outputs=64, activation_fn=tf.nn.tanh)
-        out = layers.fully_connected(out, num_outputs=24, activation_fn=tf.nn.tanh)
-        out = layers.fully_connected(out, num_outputs=num_actions, activation_fn=None)
-        return out
+# def model(inpt, num_actions, scope, reuse=False):
+#     """This model takes as input an observation and returns values of all actions."""
+#     with tf.variable_scope(scope, reuse=reuse):
+#         out = inpt
+#         out = layers.fully_connected(out, num_outputs=64, activation_fn=tf.nn.tanh)
+#         out = layers.fully_connected(out, num_outputs=24, activation_fn=tf.nn.tanh)
+#         out = layers.fully_connected(out, num_outputs=num_actions, activation_fn=None)
+#         return out
 
 
 if __name__ == '__main__':
-    game_name = "AirRaid-ram-v0"
+    game_name = "CartPole-v0"
     agent_name = 'agent_test'
     session = U.MultiSession(agent_name)
     path = 'saved_networks/'+game_name+'-'+agent_name
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     # with U.make_session(8):
     g = tf.Graph()
     with g.as_default():
-        session.make_session(g,2)
+        session.make_session(g,4)
         # a = tf.Variable(2)
         # session.initialize()
         # session.init_saver()
@@ -79,7 +79,7 @@ if __name__ == '__main__':
         replay_buffer = ReplayBuffer(50000)
         # # Create the schedule for exploration starting from 1 (every action is random) down to
         # # 0.02 (98% of actions are selected according to values predicted by the model).
-        exploration = LinearSchedule(schedule_timesteps=300000, initial_p=1.0, final_p=0.02)
+        exploration = LinearSchedule(schedule_timesteps=20000, initial_p=1.0, final_p=0.02)
 
         t_val = tf.Variable(0)    
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
                 obs = env.reset()
                 episode_rewards.append(0)
 
-            is_solved = np.mean(episode_rewards[-101:-1]) >= 3000
+            is_solved = np.mean(episode_rewards[-101:-1]) >= 200
             
             if is_solved:
                 # Show off the result
@@ -116,7 +116,7 @@ if __name__ == '__main__':
             else:
                 # Minimize the error in Bellman's equation on a batch sampled from replay buffer.
                 if t > 1000:
-                    data_list = replay_buffer.sample(640)
+                    data_list = replay_buffer.sample(64)
                     # distribute
 
                     obses_t, actions, rewards, obses_tp1, dones = [], [], [], [], []

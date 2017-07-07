@@ -31,7 +31,7 @@ from combine_baselines.common.schedules import LinearSchedule
 # dtree
 from Global_Variables import MAX_DEPTH, ATTR_TYPE_CONTINUOUS, MAX_VALUE, MODEL_NAME
 # network
-from Global_Variables import REPLAY_MEMORY, OBSERVE, BATCH_SIZE, EXPLORE, CPU_NUM
+from Global_Variables import REPLAY_MEMORY, OBSERVE, BATCH_SIZE, EXPLORE, CPU_NUM, SAVE_MODEL_INTERVAL, UPDATE_TARGET_INTERVAL
 from Global_Function import dic_to_list,list_to_dic
 from Global_Variables import ACTION
 
@@ -58,7 +58,7 @@ class ForestAgent(object):
         """
         assert isinstance(self.data, DataFeature)
         for index in range(0,self.size):
-            logging.info("-------------[build tree index]: %s"%index)
+            # logging.info("-------------[build tree index]: %s"%index)
             tree = Tree.build(self.data,index)
             # [todo] delete this!
             # tree.set_missing_value_policy(USE_NEAREST)
@@ -84,7 +84,7 @@ class ForestAgent(object):
 
     def distribute(self,sample):
         for index,tree in enumerate(self.trees):
-            logging.info("-------------[distribute tree index]: %s"%index)
+            # logging.info("-------------[distribute tree index]: %s"%index)
             tree.distribute(sample)
 
     def predict(self):
@@ -137,8 +137,7 @@ class ForestAgent(object):
         #         total.add(cls_value, cls_prob*weight)
 
         # return the key with max voting amount.
-        logging.info("predictions is %s selected %s"%(predictions,max(predictions)))
-
+        # logging.info("predictions is %s selected %s"%(predictions,max(predictions)))
         return max(predictions)
 
     def set_replay_buffer(self,record):
@@ -163,27 +162,31 @@ class ForestAgent(object):
         
         """
         # print info
-        state = ""
-        if len(self.replayMemory) <= OBSERVE:
-            state = "observe"
-        elif len(self.replayMemory) > OBSERVE and self.timeStep <= OBSERVE + EXPLORE:
-            state = "explore"
-        else:
-            state = "train"
+        # state = ""
+        # if len(self.replayMemory) <= OBSERVE:
+        #     state = "observe"
+        # elif len(self.replayMemory) > OBSERVE and self.timeStep <= OBSERVE + EXPLORE:
+        #     state = "explore"
+        # else:
+        #     state = "train"
 
-        print("TIMESTEP", self.timeStep, "/ STATE", state)
+        # print("TIMESTEP", self.timeStep, "/ STATE", state)
 
         if self.timeStep > OBSERVE:
             # Step 1: obtain random minibatch from replay memory
-            minibatch = random.sample(self.replayMemory, BATCH_SIZE)
+            # logging.info("in sampling")
+            minibatch = self.replay_buffer.sample(BATCH_SIZE)
             # Step 2: distribute
+            # logging.info("in distributing")
             for data in minibatch:
                 self.distribute(data)
             # Step 3: update
+            # logging.info("in training")
             for tree in self.trees:
+                # logging.info("total activated node are %s"%len(tree.activated))
                 for activated_node in tree.activated:
                     activated_node.train_driver(activated_node.sample_list)
-
+            # logging.info(" training completed")
             # step4 clear state.
             self.clear_activated_node()
 
@@ -196,18 +199,18 @@ class ForestAgent(object):
             self.distribute(sample)
         # step2: training all of node.
         for index,tree in enumerate(self.trees):
-            logging.info("-------------[initial model training]: %s"%index)
+            # logging.info("-------------[initial model training]: %s"%index)
             tree.initial_model()
         # step3: clear state.
         for index,tree in enumerate(self.trees):
-            logging.info("-------------[initial model clearning]: %s"%index)
+            # logging.info("-------------[initial model clearning]: %s"%index)
             tree.clear_leaf_sample()
             tree._tree.clear_node_sample_number()
         self.clear_activated_node()
 
     def clear_activated_node(self):
         for tree in self.trees:
-            tree.activated = []
+            tree.activated = set()
 
     # def initial_model(self):
     #     """Initial nerual network after contructure trees.
@@ -287,7 +290,8 @@ def split_values(data, attr):
     # logging.info(attr)
     min_value = extr_value[0] if extr_value[0] > range_value[0] + 1 else range_value[0] + 1
     max_value = extr_value[1] if extr_value[1] < range_value[1] - 1 else range_value[1] - 1
-    selected_val = random.randint(min_value,max_value)
+    # print("split_values [min: %s, max: %s]"%(min_value,max_value))
+    selected_val = random.randint(int(min_value),int(max_value))
     return [selected_val, MAX_VALUE]
 
 def random_choose_attribute(data, attributes):
@@ -654,7 +658,7 @@ class Node(object):
             # [todo] now assump
             # self.base_model  = DqnAgent(actions,observations,DqnAgent.SIMPLE_OB, node_name)
             self.session = U.MultiSession(agent_name)
-            path = 'saved_networks/'+agent_name
+            self.path = 'saved_networks/'+agent_name
             g = tf.Graph()
             with g.as_default():
                 with tf.variable_scope(agent_name):
@@ -667,12 +671,12 @@ class Node(object):
                         num_actions=actions,
                         optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
                     )
-                    self.exploration = LinearSchedule(schedule_timesteps=30000, initial_p=1.0, final_p=0.005)
+                    self.exploration = LinearSchedule(schedule_timesteps=20000, initial_p=1.0, final_p=0.02)
                     self.t_val = tf.Variable(0)
                     self.session.initialize()
                     self.session.init_saver()
                     self.update_target()
-                    self.session.load_state(path)
+                    self.session.load_state(self.path)
                     self.time_step = self.session.sess.run(self.t_val)
         else:
             self.base_model = None
@@ -786,7 +790,7 @@ class Node(object):
             # logging.info("in predicting ,sample is %s"%sample)
             # assert (not self.is_continuous_class),"this project can not use in continuous class now!"
             action = self.act(state[None], update_eps=self.exploration.value(self.time_step))[0]
-            print("predict Action is %s"%action)
+            # print("predict Action is %s"%action)
             # result = self.base_model.getAction(state)
             return action
         else:
@@ -810,6 +814,13 @@ class Node(object):
         # self.base_model.trainQNetwork(self.sample_list)
         self.sample_list = sample_list_reset()
         self.time_step += 1
+        if self.time_step % UPDATE_TARGET_INTERVAL == 0:
+            print("update target")
+            self.update_target()
+        if self.time_step % SAVE_MODEL_INTERVAL == 0:
+            print("save model")
+            self.session.sess.run(tf.assign(self.t_val,self.time_step))
+            self.session.save_state(self.path, self.time_step)
 
     def clear_node_sample_number(self):
         self.n = 0

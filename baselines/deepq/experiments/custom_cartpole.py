@@ -55,7 +55,7 @@ if __name__ == '__main__':
         replay_buffer = ReplayBuffer(50000)
         # Create the schedule for exploration starting from 1 (every action is random) down to
         # 0.02 (98% of actions are selected according to values predicted by the model).
-        exploration = LinearSchedule(schedule_timesteps=10000, initial_p=1.0, final_p=0.02)
+        exploration = LinearSchedule(schedule_timesteps=20000, initial_p=1.0, final_p=0.02)
 
         # Initialize the parameters and copy them to the target network.
         U.initialize()
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         for t in itertools.count():
             # Take action and update exploration to the newest value
             action = act(obs[None], update_eps=exploration.value(t))[0]
-            print("action select is %s"%action)
+            # print("action select is %s"%action)
             new_obs, rew, done, _ = env.step(action)
             # Store transition in the replay buffer.
             replay_buffer.add(obs, action, rew, new_obs, float(done))

@@ -11,17 +11,20 @@ import cv2
 import sys
 import os
 import logging
+import numpy as np
+
 logging.basicConfig(level=logging.INFO)
 # sys.path.append("DQN/game/")
 import gym
 gym.undo_logger_setup()
-import numpy as np
+
 from Global_Function import list_to_dic, dic_to_list
 from Global_Variables import GAME_NAME, FOREST_SIZE, REWARD,ACTION,TERMINAL
 from Base_Data_Structure import DataFeature
 from Data_Sample import simple_sampling, get_features_from_origin_sample
 from Agent import ForestAgent
 
+from combine_baselines import logger
 # preprocess raw image to 80*80 gray image
 def preprocess(observation):
     observation = cv2.cvtColor(cv2.resize(observation, (80, 80)), cv2.COLOR_BGR2GRAY)
@@ -48,48 +51,70 @@ def main():
     
     forest_agent.build()
 
-    data_iter = iter(sample_data)
-    first_origin_sample = data_iter.__next__()
-    feature = get_features_from_origin_sample(first_origin_sample)
-    observation = dic_to_list(feature)
-    forest_agent.setInitState(observation)
-    for data in data_iter:
-        feature = get_features_from_origin_sample(data)
-        observation = dic_to_list(feature)
-        record={
-            'observation': observation,
-            'feature': feature,
-            REWARD: data[REWARD],
-            TERMINAL: data[TERMINAL],
-            ACTION: data[ACTION]
-        }
-        forest_agent.set_replay_buffer(record)
+    # initial model
+    
+    # data_iter = iter(sample_data)
+    # first_origin_sample = data_iter.__next__()
+    # feature = get_features_from_origin_sample(first_origin_sample)
+    # observation = dic_to_list(feature)
+    # forest_agent.setInitState(observation)
+    # for data in data_iter:
+    #     feature = get_features_from_origin_sample(data)
+    #     observation = dic_to_list(feature)
+    #     record={
+    #         'observation': observation,
+    #         'feature': feature,
+    #         REWARD: data[REWARD],
+    #         TERMINAL: data[TERMINAL],
+    #         ACTION: data[ACTION]
+    #     }
+    #     forest_agent.set_replay_buffer(record)
     # initial env and agent
 
     observation = game_engine.reset()
     forest_agent.setInitState(observation)
     game_engine.render()
 
-    time_count = 0
+    t = 0
     end_times = 0
     accumlate_amount = 0
     accumlate_time = 0.
     accumlate_time_list =[]
     max_times=0
     current_times = 0
+    episode_rewards = [0.0]
     while 1!= 0:
-        game_engine.render()
+        # game_engine.render()
         action = forest_agent.predict()
         nextObservation,reward,terminal,info = game_engine.step(action)
-    #     record={
-    #         'observation': nextObservation,
-    #         'feature': list_to_dic(nextObservation),
-    #         REWARD: reward,
-    #         TERMINAL: terminal,
-    #         ACTION: action
-    #     }
-    #     forest_agent.set_replay_buffer(record)
-    #     forest_agent.update_model()
+
+        episode_rewards[-1] += reward # calculate total reward in single episode
+        if terminal:
+            observation = game_engine.reset()
+            episode_rewards.append(0)
+            forest_agent.setInitState(observation)
+        is_solved = np.mean(episode_rewards[-101:-1]) >= 200
+        if is_solved:
+            # Show off the result
+            game_engine.render()
+        else:
+            record={
+                'observation': nextObservation,
+                'feature': list_to_dic(nextObservation),
+                REWARD: reward,
+                TERMINAL: terminal,
+                ACTION: action
+            }
+            forest_agent.set_replay_buffer(record)
+            forest_agent.update_model()
+
+        if terminal and len(episode_rewards) % 2 == 0:
+            # show table to console
+            logger.record_tabular("steps", t)
+            logger.record_tabular("episodes", len(episode_rewards))
+            logger.record_tabular("mean episode reward", round(np.mean(episode_rewards[-101:-1]), 1))
+            logger.dump_tabular()
+        t = t + 1
     #     # nextObservation = preprocess(nextObservation)
         
     #     # brain.setPerception(nextObservation,action,reward,terminal)

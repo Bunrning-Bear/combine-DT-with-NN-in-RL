@@ -68,6 +68,7 @@ dtree/dataset/*
 # network
 DQN/saved_networks/*
 /combine_baselines/deepq/experiments/saved_networks/*
+saved_networks/*
 
 # ide
 .idea*

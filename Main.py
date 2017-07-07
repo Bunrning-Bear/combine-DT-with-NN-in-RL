@@ -32,8 +32,7 @@ def preprocess(observation):
     return np.reshape(observation,(80,80,1))
 
 def main():
-    # Step 1: init BrainDQN
-    actions = 2
+    # Step 1: init BrainDQN\
 
     # Step 2: init Game, sampling.
     game_engine = gym.make(GAME_NAME)
@@ -52,7 +51,6 @@ def main():
     forest_agent.build()
 
     # initial model
-    
     # data_iter = iter(sample_data)
     # first_origin_sample = data_iter.__next__()
     # feature = get_features_from_origin_sample(first_origin_sample)
@@ -73,7 +71,6 @@ def main():
 
     observation = game_engine.reset()
     forest_agent.setInitState(observation)
-    game_engine.render()
 
     t = 0
     end_times = 0
@@ -86,7 +83,15 @@ def main():
     while 1!= 0:
         # game_engine.render()
         action = forest_agent.predict()
-        nextObservation,reward,terminal,info = game_engine.step(action)
+        nextObservation,reward,terminal,_ = game_engine.step(action)
+        record={
+            'observation': nextObservation,
+            'feature': list_to_dic(nextObservation),
+            REWARD: reward,
+            TERMINAL: terminal,
+            ACTION: action
+        }
+        forest_agent.set_replay_buffer(record)
 
         episode_rewards[-1] += reward # calculate total reward in single episode
         if terminal:
@@ -98,17 +103,9 @@ def main():
             # Show off the result
             game_engine.render()
         else:
-            record={
-                'observation': nextObservation,
-                'feature': list_to_dic(nextObservation),
-                REWARD: reward,
-                TERMINAL: terminal,
-                ACTION: action
-            }
-            forest_agent.set_replay_buffer(record)
-            forest_agent.update_model()
 
-        if terminal and len(episode_rewards) % 2 == 0:
+            forest_agent.update_to_all_model()
+        if terminal and len(episode_rewards) % 10 == 0:
             # show table to console
             logger.record_tabular("steps", t)
             logger.record_tabular("episodes", len(episode_rewards))

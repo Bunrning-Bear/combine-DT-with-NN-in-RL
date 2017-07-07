@@ -7,11 +7,6 @@
 # Version     :   1.0
 
 
-# -----------------------------
-# File: Deep Q-Learning Algorithm
-# Author: Flood Sung
-# Date: 2016.3.21
-# -----------------------------
 import logging
 import csv
 import random
@@ -26,6 +21,7 @@ from Base_Data_Structure import DataFeature
 import combine_baselines.common.tf_util as U
 from combine_baselines import logger
 from combine_baselines import deepq
+from combine_baselines.deepq.models import model
 from combine_baselines.deepq.replay_buffer import ReplayBuffer
 from combine_baselines.common.schedules import LinearSchedule
 # dtree
@@ -37,14 +33,15 @@ from Global_Variables import ACTION
 
 
 class ForestAgent(object):
-    def __init__(self,data,size=10):
+    def __init__(self,data, size=10):
         self._data = data
-        self.size =size
+        self.size = size
         self.replay_buffer = ReplayBuffer(REPLAY_MEMORY)
         self.trees = []
         self.current_state = []
         self.current_observation = []
         self.timeStep = 0
+        
     @property
     def data(self):
         return self._data
@@ -124,7 +121,7 @@ class ForestAgent(object):
         # weights = self.weighting_method(predictions.keys())
         # if not weights:
         #     return
-#        assert sum(weights) == 1.0, "Sum of weights must equal 1."
+        # assert sum(weights) == 1.0, "Sum of weights must equal 1."
         # assert (not self.data.is_continuous_class),"this project can not use in continuous class now!"
             # Merge continuous class predictions.
             # total = sum(w*predictions[tree].mean for w, tree in weights)
@@ -150,7 +147,9 @@ class ForestAgent(object):
                 'next_observation':
         """
         new_state = self.observation2state(record['observation'])
-        self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state, record['terminal'], record['feature'])
+        if type(self.current_state) != dict:
+            raise Exception("current state type error")
+        self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state, float(record['terminal']), record['feature'])
         # self.replayMemory.append([self.current_state,record['action'],record['reward'],new_state,record['terminal'],record['feature']])
         # if len(self.replayMemory) > REPLAY_MEMORY:
         #     self.replayMemory.popleft()
@@ -189,8 +188,33 @@ class ForestAgent(object):
             # logging.info(" training completed")
             # step4 clear state.
             self.clear_activated_node()
+        self.timeStep += 1
+
+    def update_to_all_model(self):
+        if self.timeStep > OBSERVE:
+            # Step 1: obtain random minibatch from replay memory
+            # logging.info("in sampling")
+            minibatch = self.replay_buffer.sample(BATCH_SIZE)  
+            for sample in minibatch:
+                for tree in self.trees:
+                    # for leaf in tree.leaves_list:
+                    leaf = tree.leaves_list[0]
+                    data = copy.deepcopy(sample)
+                    data[0] = leaf.filter_state(sample[0])
+                    data[3] = leaf.filter_state(sample[3])
+                    sample_list_add_data(leaf.sample_list, data)
+                    leaf._tree.activated.add(leaf)
+                        
+            for tree in self.trees:
+                # logging.info("total activated node are %s"%len(tree.activated))
+                for activated_node in tree.activated:
+                    activated_node.train_driver(activated_node.sample_list)
+            # logging.info(" training completed")
+            # step4 clear state.
+            self.clear_activated_node()
 
         self.timeStep += 1
+
 
     def initial_model(self):
         # step1 : distribute data in replay buffer.
@@ -321,9 +345,11 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
     node = None
     if current_deep > wrapper.max_deep:
         # stop create tree node only if enough deep.
-        if wrapper:
-            logging.info(" create model index : %s"%wrapper.leaf_count)
-            wrapper.leaf_count += 1
+        logging.info(" create model index : %s"%wrapper.leaf_count)
+        wrapper.leaf_count += 1
+        # 【temp】
+        if wrapper.leaf_count >1:
+            return node
         node = Node(tree=wrapper,node_name=MODEL_NAME+'-'+str(wrapper.tree_index)+'-'+str(wrapper.leaf_count))
         node.leaf_attributes = attributes
         node.father_node = father_node
@@ -380,7 +406,9 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
             #     node.set_leaf_dist(attr_value=val, dist=subtree)
                 # [change] add node to leaves list.
             else:
-                raise Exception("Unknown subtree type: %s" % (type(subtree),))
+                #[temp]
+                print("skip node")
+                # raise Exception("Unknown subtree type: %s" % (type(subtree),))
     return node
 
 
@@ -525,11 +553,12 @@ class Tree(object):
         return t
 
     def distribute(self, sample):
-        sample = sample[:]
-        return self._tree.distribute(sample)
+        copy_sample = copy.deepcopy(sample)
+        return self._tree.distribute(copy_sample)
 
     def predict(self,sample):
-        return self._tree.predict(sample)
+        return self.leaves_list[0].predict(sample)
+        # return self._tree.predict(sample)
 
     def _find_data(self,node, attrs):
         """Find data which is the nearest to node.
@@ -661,23 +690,23 @@ class Node(object):
             self.path = 'saved_networks/'+agent_name
             g = tf.Graph()
             with g.as_default():
-                with tf.variable_scope(agent_name):
-                    self.session.make_session(g,CPU_NUM)
-                    # [todo] just suit to one dim observation.
-                    self.act, self.train, self.update_target, self.debug = deepq.build_train(
-                        session=self.session,
-                        make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
-                        q_func=deepq.models.model,
-                        num_actions=actions,
-                        optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
-                    )
-                    self.exploration = LinearSchedule(schedule_timesteps=20000, initial_p=1.0, final_p=0.02)
-                    self.t_val = tf.Variable(0)
-                    self.session.initialize()
-                    self.session.init_saver()
-                    self.update_target()
-                    self.session.load_state(self.path)
-                    self.time_step = self.session.sess.run(self.t_val)
+                # with tf.variable_scope(agent_name):
+                self.session.make_session(g,CPU_NUM)
+                # [todo] just suit to one dim observation.
+                self.act, self.train, self.update_target, self.debug = deepq.build_train(
+                    session=self.session,
+                    make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
+                    q_func=model,
+                    num_actions=actions,
+                    optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
+                )
+                self.exploration = LinearSchedule(schedule_timesteps=200000, initial_p=1.0, final_p=0.02)
+                self.t_val = tf.Variable(0)
+                self.session.initialize()
+                self.session.init_saver()
+                self.update_target()
+                self.session.load_state(self.path)
+                self.time_step = self.session.sess.run(self.t_val)
         else:
             self.base_model = None
     
@@ -792,8 +821,10 @@ class Node(object):
             action = self.act(state[None], update_eps=self.exploration.value(self.time_step))[0]
             # print("predict Action is %s"%action)
             # result = self.base_model.getAction(state)
+            self.time_step += 1
             return action
         else:
+            raise Exception("impossible in single node predict test!")
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
             # try:
@@ -801,6 +832,7 @@ class Node(object):
                 # assert self.attr_name
             # logging.info("[to next deep]")
             return self._branches[attr_value].predict(sample, depth=depth+1)
+
 
     def train_driver(self,sample_list):
         obses_t, actions, rewards, obses_tp1, dones = sample_list['obses_t'], sample_list['actions'], sample_list['rewards'], sample_list['obses_tp1'], sample_list['dones']
@@ -813,7 +845,7 @@ class Node(object):
         self.train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
         # self.base_model.trainQNetwork(self.sample_list)
         self.sample_list = sample_list_reset()
-        self.time_step += 1
+        
         if self.time_step % UPDATE_TARGET_INTERVAL == 0:
             print("update target")
             self.update_target()

@@ -34,9 +34,9 @@ def main():
 
     # Step 2: init Game, sampling.
     game_engine = gym.make(GAME_NAME)
-    sampling_amount = 10000
+    sampling_amount = 100
     file_name = 'dataset/'+GAME_NAME+'-sample'+str(sampling_amount)+'csv'
-    data_range = zip(game_engine.observation_space.low,game_engine.observation_space.high)
+    data_range = list(zip(game_engine.observation_space.low, game_engine.observation_space.high))
     data_range = list_to_dic(data_range)
     if os.path.isfile(file_name):
         sample_data = DataFeature(file_name,actions=game_engine.action_space.n,observations=game_engine.observation_space.shape[0], data_range=data_range)
@@ -45,10 +45,11 @@ def main():
         sample_data = DataFeature(file_name,actions=game_engine.action_space.n,observations=game_engine.observation_space.shape[0], data_range=data_range)
     # build forest data structure.
     forest_agent = ForestAgent(sample_data, FOREST_SIZE)
+    
     forest_agent.build()
 
     data_iter = iter(sample_data)
-    first_origin_sample = data_iter.next()
+    first_origin_sample = data_iter.__next__()
     feature = get_features_from_origin_sample(first_origin_sample)
     observation = dic_to_list(feature)
     forest_agent.setInitState(observation)
@@ -71,61 +72,61 @@ def main():
     #     forest_agent.distribute(item)
     # # initial env and agent
 
-    observation = game_engine.reset()
-    forest_agent.setInitState(observation)
-    game_engine.render()
+    # observation = game_engine.reset()
+    # forest_agent.setInitState(observation)
+    # game_engine.render()
 
-    time_count = 0
-    end_times = 0
-    accumlate_amount = 0
-    accumlate_time = 0.
-    accumlate_time_list =[]
-    max_times=0
-    current_times = 0
-    while 1!= 0:
-        game_engine.render()
-        action = forest_agent.predict()
-        nextObservation,reward,terminal,info = game_engine.step(action)
-        record={
-            'observation': nextObservation,
-            'feature': list_to_dic(nextObservation),
-            REWARD: reward,
-            TERMINAL: terminal,
-            ACTION: action
-        }
-        forest_agent.set_replay_buffer(record)
-        forest_agent.update_model()
-        # nextObservation = preprocess(nextObservation)
+    # time_count = 0
+    # end_times = 0
+    # accumlate_amount = 0
+    # accumlate_time = 0.
+    # accumlate_time_list =[]
+    # max_times=0
+    # current_times = 0
+    # while 1!= 0:
+    #     game_engine.render()
+    #     action = forest_agent.predict()
+    #     nextObservation,reward,terminal,info = game_engine.step(action)
+    #     record={
+    #         'observation': nextObservation,
+    #         'feature': list_to_dic(nextObservation),
+    #         REWARD: reward,
+    #         TERMINAL: terminal,
+    #         ACTION: action
+    #     }
+    #     forest_agent.set_replay_buffer(record)
+    #     forest_agent.update_model()
+    #     # nextObservation = preprocess(nextObservation)
         
-        # brain.setPerception(nextObservation,action,reward,terminal)
+    #     # brain.setPerception(nextObservation,action,reward,terminal)
         
-        # if reward != 1:
-        #     time.sleep(0.5)
-        # print "action is %s, reward is %s"%(action,reward)
+    #     # if reward != 1:
+    #     #     time.sleep(0.5)
+    #     # print "action is %s, reward is %s"%(action,reward)
 
 
-        time_count +=1
-        current_times+=1
-        if terminal:
-            end_times +=1
-            max_times = max(max_times,current_times)
-            current_times = 0
-            if end_times % 100 == 0:
-                accumlate_amount = accumlate_amount + 1.
-                ave = (time_count)/100.0
-                accumlate_time = accumlate_time * (accumlate_amount - 1.) / accumlate_amount + ave / accumlate_amount
-                print "[end game] time_count : %s,accumlate_time :%s accumlate_amount %s max times %s"%(ave,accumlate_time, accumlate_amount,max_times)
-                max_times  = 0
-                time_count = 0
-            if end_times % 2000 == 0:
-                accumlate_time_list.append(accumlate_time)
-                print "accumlate_time_list %s"%accumlate_time_list[-10:]
-                accumlate_time_list = accumlate_time_list[-10:]
-                accumlate_time = 0
-                accumlate_amount = 0
-            # time.sleep(3)
-            observation = game_engine.reset()
-            forest_agent.setInitState(observation)
+    #     time_count +=1
+    #     current_times+=1
+    #     if terminal:
+    #         end_times +=1
+    #         max_times = max(max_times,current_times)
+    #         current_times = 0
+    #         if end_times % 100 == 0:
+    #             accumlate_amount = accumlate_amount + 1.
+    #             ave = (time_count)/100.0
+    #             accumlate_time = accumlate_time * (accumlate_amount - 1.) / accumlate_amount + ave / accumlate_amount
+    #             print "[end game] time_count : %s,accumlate_time :%s accumlate_amount %s max times %s"%(ave,accumlate_time, accumlate_amount,max_times)
+    #             max_times  = 0
+    #             time_count = 0
+    #         if end_times % 2000 == 0:
+    #             accumlate_time_list.append(accumlate_time)
+    #             print "accumlate_time_list %s"%accumlate_time_list[-10:]
+    #             accumlate_time_list = accumlate_time_list[-10:]
+    #             accumlate_time = 0
+    #             accumlate_amount = 0
+    #         # time.sleep(3)
+    #         observation = game_engine.reset()
+    #         forest_agent.setInitState(observation)
 
     # # forest_agent = initial_model()
 

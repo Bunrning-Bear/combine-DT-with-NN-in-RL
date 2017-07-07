@@ -116,7 +116,7 @@ class DataFeature(object):
             attrs = self.attribute_names
             for item in self:
                 for key in attrs:
-                    if not self._uni_attri_value.has_key(key):
+                    if key not in self._uni_attri_value:
                         self._uni_attri_value[key] = set()
                     self._uni_attri_value[key].add(item[key])
         return self._uni_attri_value

@@ -25,7 +25,7 @@ def simple_sampling(env,file_name,sampling_amount):
         ob_list.append(int(action))
         ob_list.append(int(terminal))
         str_list = [str(i) for i in ob_list]
-        print str_list
+        print(str_list)
         content = ",".join(str_list)# join(line_list[0:10]+[line_list[-1]])
         content +='\n'
         w.write(content)
@@ -43,7 +43,7 @@ def _get_head_line(ob_size):
 
 def get_features_from_origin_sample(sample):
     feature = sample.copy()
-    for key,value in feature.items():
+    for key,value in sample.items():
         if key in STATE_ATTRS:
             del feature[key]
     return feature

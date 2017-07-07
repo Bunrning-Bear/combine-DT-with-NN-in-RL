@@ -7,8 +7,8 @@
 # Version     :   1.0
 import re
 GAME_NAME = 'AirRaid-ram-v0'
-FOREST_SIZE = 10
-MAX_DEPTH = 5
+FOREST_SIZE = 1
+MAX_DEPTH = 2
 MAX_VALUE = 9999999999
 
 # Data format names.
@@ -36,3 +36,6 @@ UPDATE_TIME = 100
 # baisc_model_name_prefix
 MODEL_NAME = 'basic_qnetwork'
 MODEL_PATH ='saved_networks/'
+
+# network parameter
+CPU_NUM = 2

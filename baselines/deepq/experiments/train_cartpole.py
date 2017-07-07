@@ -1,5 +1,15 @@
-import gym
 
+import os
+import sys
+location = str(os.path.abspath(
+    os.path.join(
+        os.path.join(
+            os.path.join(
+            os.path.dirname(__file__), os.pardir),
+            os.pardir),os.pardir))) + '/'
+sys.path.append(location)
+
+import gym
 from baselines import deepq
 
 

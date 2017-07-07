@@ -26,7 +26,7 @@ class ReplayBuffer(object):
         ob means observation which will be trained in q network
         features is to determine.
         """
-        data = (obs_t, action, reward, obs_tp1, done,features)
+        data = [obs_t, action, reward, obs_tp1, done,features]
 
         if self._next_idx >= len(self._storage):
             self._storage.append(data)
@@ -74,6 +74,9 @@ class ReplayBuffer(object):
             data.append(self._storage[i])
         return data
         # return self._encode_sample(idxes)
+
+    def get_all_data(self):
+        return self._storage
 
 
 class PrioritizedReplayBuffer(ReplayBuffer):

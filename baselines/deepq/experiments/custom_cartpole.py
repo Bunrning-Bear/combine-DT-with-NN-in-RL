@@ -1,3 +1,14 @@
+import os
+import sys
+location = str(os.path.abspath(
+    os.path.join(
+        os.path.join(
+            os.path.join(
+            os.path.dirname(__file__), os.pardir),
+            os.pardir),os.pardir))) + '/'
+sys.path.append(location)
+
+
 import gym
 import itertools
 import numpy as np
@@ -32,6 +43,14 @@ if __name__ == '__main__':
             num_actions=env.action_space.n,
             optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
         )
+
+        '''
+        act 是决策函数，用于做行为预测
+        train 是训练函数，用于做参数更新
+        update target 应该是更新 target网络何当前训练网络的函数:
+            update_target_fn will be called periodically to copy Q network to target Q network
+        我现在要做的，就是把这些函数嵌入原本写好的类中。完成11映射的关系
+        '''
         # Create the replay buffer
         replay_buffer = ReplayBuffer(50000)
         # Create the schedule for exploration starting from 1 (every action is random) down to
@@ -44,9 +63,11 @@ if __name__ == '__main__':
 
         episode_rewards = [0.0]
         obs = env.reset()
+        # unlimited loop
         for t in itertools.count():
             # Take action and update exploration to the newest value
             action = act(obs[None], update_eps=exploration.value(t))[0]
+            print("action select is %s"%action)
             new_obs, rew, done, _ = env.step(action)
             # Store transition in the replay buffer.
             replay_buffer.add(obs, action, rew, new_obs, float(done))
@@ -71,6 +92,7 @@ if __name__ == '__main__':
                     update_target()
 
             if done and len(episode_rewards) % 10 == 0:
+                # show table to console
                 logger.record_tabular("steps", t)
                 logger.record_tabular("episodes", len(episode_rewards))
                 logger.record_tabular("mean episode reward", round(np.mean(episode_rewards[-101:-1]), 1))

@@ -24,7 +24,6 @@ class DqnAgent(object):
             type:
             """
         # init replay memory
-        self.replayMemory = deque()
         # init some parameters
         self.timeStep = 0
         self.ob_type = ob_type
@@ -38,6 +37,7 @@ class DqnAgent(object):
         self.createQNetwork
         ]
         self.g = tf.Graph()
+        self.session = tf.Session(graph=self.g)
         with self.g.as_default():
             self.stateInput,self.QValue,self.super_para_dic = self.network_creator[ob_type](**kwargs)
             # init Target Q Network
@@ -54,7 +54,7 @@ class DqnAgent(object):
             checkpoint = tf.train.get_checkpoint_state("saved_networks")
             self.merged_summary_op = tf.merge_all_summaries()
         # saving and loading networks
-        self.session = tf.Session(graph=self.g)
+        
         self.session.run(self.initial_variable)
         
         # check point and restore
@@ -211,7 +211,6 @@ class DqnAgent(object):
         # test and add summary
         # todo: add summary should execute in forest, because we can not create a new batch now
         # if self.timeStep % 500 == 0:
-        #     minibatch = random.sample(self.replayMemory,BATCH_SIZE/2)
         #     state_batch = [data[0] for data in minibatch]
         #     action_batch = [data[1] for data in minibatch]
         #     reward_batch = [data[2] for data in minibatch]

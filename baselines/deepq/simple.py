@@ -1,15 +1,24 @@
 import numpy as np
-import os
 import dill
 import tempfile
 import tensorflow as tf
 import zipfile
+import os
+import sys
+location = str(os.path.abspath(
+    os.path.join(
+        os.path.join(
+        os.path.dirname(__file__), os.pardir),
+        os.pardir))) + '/'
+sys.path.append(location)
+print(location)
+
 
 import baselines.common.tf_util as U
 
 from baselines import logger
 from baselines.common.schedules import LinearSchedule
-from baselines import deepq
+from baselines.deepq.build_graph import build_act, build_train  # noqa
 from baselines.deepq.replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
 
 
@@ -22,7 +31,7 @@ class ActWrapper(object):
     def load(path, num_cpu=16):
         with open(path, "rb") as f:
             model_data, act_params = dill.load(f)
-        act = deepq.build_act(**act_params)
+        act = build_act(**act_params)
         sess = U.make_session(num_cpu=num_cpu)
         sess.__enter__()
         with tempfile.TemporaryDirectory() as td:
@@ -169,7 +178,7 @@ def learn(env,
     def make_obs_ph(name):
         return U.BatchInput(env.observation_space.shape, name=name)
 
-    act, train, update_target, debug = deepq.build_train(
+    act, train, update_target, debug = build_train(
         make_obs_ph=make_obs_ph,
         q_func=q_func,
         num_actions=env.action_space.n,

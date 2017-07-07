@@ -3,7 +3,7 @@ import tempfile
 import zipfile
 
 from azure.common import AzureMissingResourceHttpError
-from azure.storage.blob import BlobService
+from azure.storage.blob import BlockBlobService
 from shutil import unpack_archive
 from threading import Event
 
@@ -50,7 +50,7 @@ class Container(object):
         self._account_name = account_name
         self._container_name = container_name
         if account_name not in Container.services:
-            Container.services[account_name] = BlobService(account_name, account_key)
+            Container.services[account_name] = BlockBlobService(account_name, account_key)
         self._service = Container.services[account_name]
         if maybe_create:
             self._service.create_container(self._container_name, fail_on_exist=False)
@@ -114,11 +114,11 @@ class Container(object):
             arcpath = os.path.join(td, "archive.zip")
             for backup_blob_name in [blob_name, blob_name + '.backup']:
                 try:
-                    blob_size = self._service.get_blob_properties(
+                    blob = self._service.get_blob_properties(
                         blob_name=backup_blob_name,
                         container_name=self._container_name
-                    )['content-length']
-                    if int(blob_size) > 0:
+                    )
+                    if blob.content !="":
                         self._service.get_blob_to_path(
                             container_name=self._container_name,
                             blob_name=backup_blob_name,

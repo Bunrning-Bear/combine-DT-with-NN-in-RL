@@ -23,9 +23,7 @@ import itertools
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.layers as layers
-
 import combine_baselines.common.tf_util as U
-
 from combine_baselines import logger
 from combine_baselines import deepq
 from combine_baselines.deepq.replay_buffer import ReplayBuffer
@@ -43,10 +41,10 @@ def model(inpt, num_actions, scope, reuse=False):
 
 
 if __name__ == '__main__':
-
+    game_name = "AirRaid-ram-v0"
     agent_name = 'agent_test'
     session = U.MultiSession(agent_name)
-    path = 'saved_networks/'+agent_name
+    path = 'saved_networks/'+game_name+'-'+agent_name
 
     # with U.make_session(8):
     g = tf.Graph()
@@ -61,7 +59,7 @@ if __name__ == '__main__':
         # print(session.sess.run(a))
 
         # Create the environment
-        env = gym.make("CartPole-v0")
+        env = gym.make(game_name)
         # Create all the functions necessary to train the model
         act, train, update_target, debug = deepq.build_train(
             session=session,
@@ -81,7 +79,7 @@ if __name__ == '__main__':
         replay_buffer = ReplayBuffer(50000)
         # # Create the schedule for exploration starting from 1 (every action is random) down to
         # # 0.02 (98% of actions are selected according to values predicted by the model).
-        exploration = LinearSchedule(schedule_timesteps=10000, initial_p=1.0, final_p=0.02)
+        exploration = LinearSchedule(schedule_timesteps=300000, initial_p=1.0, final_p=0.02)
 
         t_val = tf.Variable(0)    
 
@@ -110,15 +108,15 @@ if __name__ == '__main__':
                 obs = env.reset()
                 episode_rewards.append(0)
 
-            is_solved = np.mean(episode_rewards[-101:-1]) >= 250
+            is_solved = np.mean(episode_rewards[-101:-1]) >= 3000
+            
             if is_solved:
                 # Show off the result
-
                 env.render()
             else:
                 # Minimize the error in Bellman's equation on a batch sampled from replay buffer.
                 if t > 1000:
-                    data_list = replay_buffer.sample(32)
+                    data_list = replay_buffer.sample(640)
                     # distribute
 
                     obses_t, actions, rewards, obses_tp1, dones = [], [], [], [], []
@@ -139,15 +137,17 @@ if __name__ == '__main__':
                     train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
                 # Update target network periodically.
                 if t % 1000 == 0:
-                    print("update target and saves")
-                    session.sess.run(tf.assign(t_val,t))
-                    session.save_state(path, t)
+                    print("update target")
                     update_target()
+                if t % 5000 == 0:
+                    print("saves")
+                    session.sess.run(tf.assign(t_val,t))
+                    session.save_state(path, t)                    
 
             if done and len(episode_rewards) % 10 == 0:
                 # show table to console
                 logger.record_tabular("steps", t)
                 logger.record_tabular("episodes", len(episode_rewards))
                 logger.record_tabular("mean episode reward", round(np.mean(episode_rewards[-101:-1]), 1))
-                logger.record_tabular("% time spent exploring", int(100 * exploration.value(t)))
+                logger.record_tabular("% time spent exploring", int(100.0 * exploration.value(t)))
                 logger.dump_tabular()

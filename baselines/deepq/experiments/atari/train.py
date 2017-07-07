@@ -1,7 +1,17 @@
+import os
+import sys
+location = str(os.path.abspath(
+    os.path.join(
+        os.path.join(
+            os.path.join(
+                os.path.join(
+            os.path.dirname(__file__), os.pardir),
+            os.pardir),os.pardir),os.pardir))) + '/'
+sys.path.append(location)
+
 import argparse
 import gym
 import numpy as np
-import os
 import tensorflow as tf
 import tempfile
 import time
@@ -25,7 +35,7 @@ from baselines.common.schedules import LinearSchedule, PiecewiseSchedule
 # copy over LazyFrames
 from baselines.common.atari_wrappers_deprecated import wrap_dqn
 from baselines.common.azure_utils import Container
-from .model import model, dueling_model
+from model import model, dueling_model
 
 
 def parse_args():
@@ -123,8 +133,10 @@ if __name__ == '__main__':
         set_global_seeds(args.seed)
         env.unwrapped.seed(args.seed)
 
-    with U.make_session(4) as sess:
+    # parameter of make session is the number of cpu
+    with U.make_session(4) as sess: 
         # Create training graph and replay buffer
+        # [inner]
         act, train, update_target, debug = deepq.build_train(
             make_obs_ph=lambda name: U.Uint8Input(env.observation_space.shape, name=name),
             q_func=dueling_model if args.dueling else model,
@@ -141,8 +153,9 @@ if __name__ == '__main__':
             (approximate_num_iters / 50, 0.1),
             (approximate_num_iters / 5, 0.01)
         ], outside_value=0.01)
-
+        # inner
         if args.prioritized:
+
             replay_buffer = PrioritizedReplayBuffer(args.replay_buffer_size, args.prioritized_alpha)
             beta_schedule = LinearSchedule(approximate_num_iters, initial_p=args.prioritized_beta0, final_p=1.0)
         else:

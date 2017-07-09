@@ -121,22 +121,23 @@ def main():
     forest_agent.setInitState(observation)
 
     # initial model
-    # data_iter = iter(sample_data)
-    # first_origin_sample = data_iter.__next__()
-    # feature = get_features_from_origin_sample(first_origin_sample)
-    # observation = dic_to_list(feature)
-    # forest_agent.setInitState(observation)
-    # for data in data_iter:
-    #     feature = get_features_from_origin_sample(data)
-    #     observation = dic_to_list(feature)
-    #     record={
-    #         'observation': observation,
-    #         'feature': feature,
-    #         REWARD: data[REWARD],
-    #         TERMINAL: data[TERMINAL],
-    #         ACTION: data[ACTION]
-    #     }
-    #     forest_agent.set_replay_buffer(record)
+    data_iter = iter(sample_data)
+    first_origin_sample = data_iter.__next__()
+    feature = get_features_from_origin_sample(first_origin_sample)
+    observation = dic_to_list(feature)
+    forest_agent.setInitState(observation)
+    for data in data_iter:
+        feature = get_features_from_origin_sample(data)
+        observation = dic_to_list(feature)
+        record={
+            'observation': observation,
+            'feature': feature,
+            REWARD: data[REWARD],
+            TERMINAL: data[TERMINAL],
+            ACTION: data[ACTION]
+        }
+        forest_agent.set_replay_buffer(record)
+    forest_agent.initial_model()
     # initial env and agent
 
 

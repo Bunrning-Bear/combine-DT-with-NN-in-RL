@@ -27,7 +27,7 @@ from combine_baselines.common.schedules import LinearSchedule
 # dtree
 from Global_Variables import MAX_DEPTH, ATTR_TYPE_CONTINUOUS, MAX_VALUE, MODEL_NAME
 # network
-from Global_Variables import REPLAY_MEMORY, OBSERVE, BATCH_SIZE, EXPLORE, CPU_NUM, SAVE_MODEL_INTERVAL, UPDATE_TARGET_INTERVAL
+from Global_Variables import REPLAY_MEMORY, OBSERVE, BATCH_SIZE, EXPLORE, CPU_NUM, SAVE_MODEL_INTERVAL, UPDATE_TARGET_INTERVAL, SCHEDULE_TIMES, MODEL_PATH
 from Global_Function import dic_to_list,list_to_dic
 from Global_Variables import ACTION
 
@@ -41,7 +41,7 @@ class ForestAgent(object):
         self.current_state = []
         self.current_observation = []
         self.timeStep = 0
-        
+
     @property
     def data(self):
         return self._data
@@ -197,13 +197,13 @@ class ForestAgent(object):
             minibatch = self.replay_buffer.sample(BATCH_SIZE)  
             for sample in minibatch:
                 for tree in self.trees:
-                    # for leaf in tree.leaves_list:
-                    leaf = tree.leaves_list[0]
-                    data = copy.deepcopy(sample)
-                    data[0] = leaf.filter_state(sample[0])
-                    data[3] = leaf.filter_state(sample[3])
-                    sample_list_add_data(leaf.sample_list, data)
-                    leaf._tree.activated.add(leaf)
+                    for leaf in tree.leaves_list:
+                    # leaf = tree.leaves_list[0]
+                        data = copy.deepcopy(sample)
+                        data[0] = leaf.filter_state(sample[0])
+                        data[3] = leaf.filter_state(sample[3])
+                        sample_list_add_data(leaf.sample_list, data)
+                        leaf._tree.activated.add(leaf)
                         
             for tree in self.trees:
                 # logging.info("total activated node are %s"%len(tree.activated))
@@ -348,8 +348,8 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
         logging.info(" create model index : %s"%wrapper.leaf_count)
         wrapper.leaf_count += 1
         # 【temp】
-        if wrapper.leaf_count >1:
-            return node
+        # if wrapper.leaf_count >1:
+        #     return node
         node = Node(tree=wrapper,node_name=MODEL_NAME+'-'+str(wrapper.tree_index)+'-'+str(wrapper.leaf_count))
         node.leaf_attributes = attributes
         node.father_node = father_node
@@ -407,8 +407,8 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
                 # [change] add node to leaves list.
             else:
                 #[temp]
-                print("skip node")
-                # raise Exception("Unknown subtree type: %s" % (type(subtree),))
+                # print("skip node")
+                raise Exception("Unknown subtree type: %s" % (type(subtree),))
     return node
 
 
@@ -557,8 +557,9 @@ class Tree(object):
         return self._tree.distribute(copy_sample)
 
     def predict(self,sample):
-        return self.leaves_list[0].predict(sample)
-        # return self._tree.predict(sample)
+        # [temp]
+        # return self.leaves_list[0].predict(sample)
+        return self._tree.predict(sample)
 
     def _find_data(self,node, attrs):
         """Find data which is the nearest to node.
@@ -687,26 +688,26 @@ class Node(object):
             # [todo] now assump
             # self.base_model  = DqnAgent(actions,observations,DqnAgent.SIMPLE_OB, node_name)
             self.session = U.MultiSession(agent_name)
-            self.path = 'saved_networks/'+agent_name
+            self.path = MODEL_PATH+agent_name
             g = tf.Graph()
             with g.as_default():
-                # with tf.variable_scope(agent_name):
-                self.session.make_session(g,CPU_NUM)
-                # [todo] just suit to one dim observation.
-                self.act, self.train, self.update_target, self.debug = deepq.build_train(
-                    session=self.session,
-                    make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
-                    q_func=model,
-                    num_actions=actions,
-                    optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
-                )
-                self.exploration = LinearSchedule(schedule_timesteps=200000, initial_p=1.0, final_p=0.02)
-                self.t_val = tf.Variable(0)
-                self.session.initialize()
-                self.session.init_saver()
-                self.update_target()
-                self.session.load_state(self.path)
-                self.time_step = self.session.sess.run(self.t_val)
+                with tf.variable_scope(agent_name):
+                    self.session.make_session(g,CPU_NUM)
+                    # [todo] just suit to one dim observation now.
+                    self.act, self.train, self.update_target, self.debug = deepq.build_train(
+                        session=self.session,
+                        make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
+                        q_func=model,
+                        num_actions=actions,
+                        optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
+                    )
+                    self.exploration = LinearSchedule(schedule_timesteps=SCHEDULE_TIMES, initial_p=1.0, final_p=0.02)
+                    self.t_val = tf.Variable(0)
+                    self.session.initialize()
+                    self.session.init_saver()
+                    self.update_target()
+                    self.session.load_state(self.path)
+                    self.time_step = self.session.sess.run(self.t_val)
         else:
             self.base_model = None
     
@@ -824,7 +825,7 @@ class Node(object):
             self.time_step += 1
             return action
         else:
-            raise Exception("impossible in single node predict test!")
+            # raise Exception("impossible in single node predict test!")
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
             # try:

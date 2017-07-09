@@ -8,7 +8,7 @@
 import re
 GAME_NAME = 'CartPole-v0'
 FOREST_SIZE = 1
-MAX_DEPTH = 1
+MAX_DEPTH = 3
 MAX_VALUE = 9999999999
 
 # Data format names.
@@ -30,14 +30,18 @@ EXPLORE = 200000. # frames over which to anneal epsilon
 FINAL_EPSILON = 0#0.001 # final value of epsilon
 INITIAL_EPSILON = 0.02#0.01 # starting value of epsilon
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
-BATCH_SIZE = 64 # size of minibatch
+BATCH_SIZE = 32 * MAX_DEPTH  # size of minibatch
 UPDATE_TIME = 100
 
 # baisc_model_name_prefix
 MODEL_NAME = 'basic_qnetwork'
-MODEL_PATH ='saved_networks/'
+MODEL_PATH ='saved_networks_temp_max_depth/'
 
 # network parameter
 CPU_NUM = 4
 UPDATE_TARGET_INTERVAL= 1000
 SAVE_MODEL_INTERVAL=5000
+SCHEDULE_TIMES = 20000
+
+# task
+REWARD_GOAL = 300

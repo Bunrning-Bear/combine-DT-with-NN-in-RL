@@ -20,6 +20,7 @@ gym.undo_logger_setup()
 
 from Global_Function import list_to_dic, dic_to_list
 from Global_Variables import GAME_NAME, FOREST_SIZE, REWARD,ACTION,TERMINAL
+from Global_Variables import REWARD_GOAL
 from Base_Data_Structure import DataFeature
 from Data_Sample import simple_sampling, get_features_from_origin_sample
 from Agent import ForestAgent
@@ -98,13 +99,13 @@ def main():
             observation = game_engine.reset()
             episode_rewards.append(0)
             forest_agent.setInitState(observation)
-        is_solved = np.mean(episode_rewards[-101:-1]) >= 200
+        is_solved = np.mean(episode_rewards[-101:-1]) >= REWARD_GOAL
         if is_solved:
             # Show off the result
             game_engine.render()
         else:
-
-            forest_agent.update_to_all_model()
+            forest_agent.update_model()
+            # forest_agent.update_to_all_model()
         if terminal and len(episode_rewards) % 10 == 0:
             # show table to console
             logger.record_tabular("steps", t)

@@ -280,7 +280,7 @@ class MultiSession(object):
 
 
     def save_state(self, fname, time_step):
-        os.makedirs(os.path.dirname(fname), exist_ok=True)
+        os.makedirs(os.path.dirname(fname+'/model'), exist_ok=True)
         self.saver.save(self.sess, fname+'/model',global_step=time_step)
 
 

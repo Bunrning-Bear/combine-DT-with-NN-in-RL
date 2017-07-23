@@ -7,7 +7,7 @@
 # Version     :   1.0
 
 
-import cv2
+
 import sys
 import os
 import logging
@@ -27,10 +27,10 @@ from Agent import ForestAgent
 
 from combine_baselines import logger
 # preprocess raw image to 80*80 gray image
-def preprocess(observation):
-    observation = cv2.cvtColor(cv2.resize(observation, (80, 80)), cv2.COLOR_BGR2GRAY)
-    ret, observation = cv2.threshold(observation,1,255,cv2.THRESH_BINARY)
-    return np.reshape(observation,(80,80,1))
+# def preprocess(observation):
+#     observation = cv2.cvtColor(cv2.resize(observation, (80, 80)), cv2.COLOR_BGR2GRAY)
+#     ret, observation = cv2.threshold(observation,1,255,cv2.THRESH_BINARY)
+#     return np.reshape(observation,(80,80,1))
 
 def main():
     # Step 1: init BrainDQN\
@@ -48,7 +48,7 @@ def main():
         sample_data = DataFeature(file_name,actions=game_engine.action_space.n,observations=game_engine.observation_space.shape[0], data_range=data_range)
     # build forest data structure.
     forest_agent = ForestAgent(sample_data, FOREST_SIZE)
-    
+    logging.info("before build ")
     forest_agent.build()
 
     # initial model
@@ -72,7 +72,7 @@ def main():
 
     observation = game_engine.reset()
     forest_agent.setInitState(observation)
-
+    # forest_agent.initial_model()
     t = 0
     end_times = 0
     accumlate_amount = 0
@@ -81,6 +81,7 @@ def main():
     max_times=0
     current_times = 0
     episode_rewards = [0.0]
+    print("before training")
     while 1!= 0:
         # game_engine.render()
         action = forest_agent.predict()
@@ -92,6 +93,7 @@ def main():
             TERMINAL: terminal,
             ACTION: action
         }
+        
         forest_agent.set_replay_buffer(record)
 
         episode_rewards[-1] += reward # calculate total reward in single episode
@@ -145,7 +147,7 @@ def main():
     #         observation = game_engine.reset()
     #         forest_agent.setInitState(observation)
 
-    # # forest_agent = initial_model()
+    # 
 
     # # Step 3: play game
     # # Step 3.1: obtain init state

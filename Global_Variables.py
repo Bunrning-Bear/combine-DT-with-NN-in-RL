@@ -7,8 +7,8 @@
 # Version     :   1.0
 import re
 GAME_NAME = 'CartPole-v0'
-FOREST_SIZE = 1
-MAX_DEPTH = 3
+FOREST_SIZE = 2
+MAX_DEPTH = 2
 MAX_VALUE = 9999999999
 
 # Data format names.
@@ -35,13 +35,13 @@ UPDATE_TIME = 100
 
 # baisc_model_name_prefix
 MODEL_NAME = 'basic_qnetwork'
-MODEL_PATH ='saved_networks_temp_max_depth/'
+MODEL_PATH ='saved_networks_%s_forest_%s_depth/'%(str(FOREST_SIZE),str(MAX_DEPTH))
 
 # network parameter
 CPU_NUM = 4
 UPDATE_TARGET_INTERVAL= 1000
-SAVE_MODEL_INTERVAL=5000
+SAVE_MODEL_INTERVAL= 5000
 SCHEDULE_TIMES = 20000
 
 # task
-REWARD_GOAL = 300
+REWARD_GOAL = 200

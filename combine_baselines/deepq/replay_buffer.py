@@ -97,6 +97,7 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         ReplayBuffer.__init__
         """
         super(PrioritizedReplayBuffer, self).__init__(size)
+
         assert alpha > 0
         self._alpha = alpha
 
@@ -168,13 +169,20 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         p_min = self._it_min.min() / self._it_sum.sum()
         max_weight = (p_min * len(self._storage)) ** (-beta)
 
+        # for idx in idxes:
+        #     p_sample = self._it_sum[idx] / self._it_sum.sum()
+        #     weight = (p_sample * len(self._storage)) ** (-beta)
+        #     weights.append(weight / max_weight)
+        # weights = np.array(weights)
+        # encoded_sample = self._encode_sample(idxes)
+        data = []
         for idx in idxes:
             p_sample = self._it_sum[idx] / self._it_sum.sum()
             weight = (p_sample * len(self._storage)) ** (-beta)
-            weights.append(weight / max_weight)
-        weights = np.array(weights)
-        encoded_sample = self._encode_sample(idxes)
-        return tuple(list(encoded_sample) + [weights, idxes])
+            normal_weight = weight / max_weight
+            data.append(self._storage[idx]+[normal_weight, idx])
+        return data
+        # return tuple(list(encoded_sample) + [weights, idxes])
 
     def update_priorities(self, idxes, priorities):
         """Update priorities of sampled transitions.

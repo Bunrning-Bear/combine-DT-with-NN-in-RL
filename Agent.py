@@ -3,10 +3,10 @@
 
 # Author      :   Xionghui Chen
 # Created     :   2017.6.29
-# Modified    :   2017.6.29
+# Modified    :   2017.7.23
 # Version     :   1.0
 
-
+import os
 import logging
 import csv
 import random
@@ -21,27 +21,37 @@ from Base_Data_Structure import DataFeature
 import combine_baselines.common.tf_util as U
 from combine_baselines import logger
 from combine_baselines import deepq
-from combine_baselines.deepq.models import model
-from combine_baselines.deepq.replay_buffer import ReplayBuffer
+from combine_baselines.deepq.models import model,mlp
+from combine_baselines.deepq.replay_buffer import ReplayBuffer, PrioritizedReplayBuffer
 from combine_baselines.common.schedules import LinearSchedule
 # dtree
-from Global_Variables import MAX_DEPTH, ATTR_TYPE_CONTINUOUS, MAX_VALUE, MODEL_NAME
+from Global_Variables import  ATTR_TYPE_CONTINUOUS, MAX_VALUE
 # network
-from Global_Variables import REPLAY_MEMORY, OBSERVE, BATCH_SIZE, EXPLORE, CPU_NUM, SAVE_MODEL_INTERVAL, UPDATE_TARGET_INTERVAL, SCHEDULE_TIMES, MODEL_PATH
+from Global_Variables import REPLAY_MEMORY, OBSERVE,MODEL_NAME, CPU_NUM, SAVE_MODEL_INTERVAL, UPDATE_TARGET_INTERVAL, SCHEDULE_TIMES
 from Global_Function import dic_to_list,list_to_dic
-from Global_Variables import ACTION
-
+from Global_Variables import ACTION, FINAL_EPSILON, PRECISION
+from Global_Variables import MODEL_PREFIX_PATH
 
 class ForestAgent(object):
-    def __init__(self,data, size=10):
+    def __init__(self, data, config, exp_file_name, itera_times, model_type=[372, 64]):
         self._data = data
-        self.size = size
-        self.replay_buffer = ReplayBuffer(REPLAY_MEMORY)
+        self.size = config['forest_size']
+        self.config= config
+        self.prioritized_replay_alpha = 0.6
+        self.replay_buffer = PrioritizedReplayBuffer(REPLAY_MEMORY,alpha=self.prioritized_replay_alpha)
         self.trees = []
         self.current_state = []
         self.current_observation = []
-        self.timeStep = 0
-
+        self.time_step = 0
+        self.model_path = MODEL_PREFIX_PATH+exp_file_name
+        self.batch_size = 32 * (2**(config['depth']))
+        self.model_type = model_type
+        self.prioritized_replay = True
+        self.beta_schedule =None
+        self.prioritized_replay_beta0 = 0.4
+        self.prioritized_replay_beta_iters = None
+        self.prioritized_replay_eps = 1e-6
+        self.itera_times = itera_times
     @property
     def data(self):
         return self._data
@@ -54,11 +64,10 @@ class ForestAgent(object):
             tree_amount: int, amount of tree.
         """
         assert isinstance(self.data, DataFeature)
-        for index in range(0,self.size):
+        for index in range(0, self.size):
             # logging.info("-------------[build tree index]: %s"%index)
-            tree = Tree.build(self.data,index)
-            # [todo] delete this!
-            # tree.set_missing_value_policy(USE_NEAREST)
+            tree = Tree.build(self, self.data, index, model_type=self.model_type,
+                              model_path=self.model_path, depth=self.config['depth'])
             self.trees.append(tree)
 
     def setInitState(self,observation):
@@ -75,6 +84,13 @@ class ForestAgent(object):
         self.current_state = __set_state(observation)
         # np.stack((observation, observation, observation, observation), axis = 2)
 
+    def restore_init_state(self,current_feature,current_state):
+        self.current_feature = current_feature
+        self.current_state = current_state
+
+    def getInitState(self):
+        return (self.current_feature,self.current_state)
+
     def observation2state(self,observation):
         # np.append(self.current_state[:,:,1:],record['next_observation'],axis = 2)
         return list_to_dic(observation)
@@ -84,7 +100,7 @@ class ForestAgent(object):
             # logging.info("-------------[distribute tree index]: %s"%index)
             tree.distribute(sample)
 
-    def predict(self):
+    def predict(self,for_test=False):
         """
         Attempts to predict the value of the class attribute by aggregating
         the predictions of each tree.
@@ -95,9 +111,10 @@ class ForestAgent(object):
         """
         assert self.current_state !=[], "None initial current state"
         predictions = {}
+        sample = [self.current_state, self.current_feature]
         for tree in self.trees:
-            sample = [self.current_state, self.current_feature]
-            _p = tree.predict(sample)
+            
+            _p = tree.predict(sample,for_test=for_test)
             assert type(_p)!=list," predict is a list, it is %s, type %s, impossible as normal!"%(_p,type(_p))
             # if _p is None:
             #     continue
@@ -149,11 +166,31 @@ class ForestAgent(object):
         new_state = self.observation2state(record['observation'])
         if type(self.current_state) != dict:
             raise Exception("current state type error")
+
+        if self.prioritized_replay:
+            if self.prioritized_replay_beta_iters is None:
+                prioritized_replay_beta_iters = self.itera_times
+            self.beta_schedule = LinearSchedule(prioritized_replay_beta_iters,
+                                           initial_p=self.prioritized_replay_beta0,
+                                           final_p=1.0)
+
         self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state, float(record['terminal']), record['feature'])
         # self.replayMemory.append([self.current_state,record['action'],record['reward'],new_state,record['terminal'],record['feature']])
         # if len(self.replayMemory) > REPLAY_MEMORY:
         #     self.replayMemory.popleft()
         self.current_state = new_state
+        self.current_feature = list_to_dic(record['observation'])
+
+    def update_state(self,record):
+        """just update not set record to replay buffer.
+
+        Args:
+            record: dict type, has following key at least:
+                'reward':
+                'terminal':
+                'next_observation':
+        """
+        self.current_state = self.observation2state(record['observation'])        
         self.current_feature = list_to_dic(record['observation'])
 
     def update_model(self):
@@ -164,37 +201,48 @@ class ForestAgent(object):
         # state = ""
         # if len(self.replayMemory) <= OBSERVE:
         #     state = "observe"
-        # elif len(self.replayMemory) > OBSERVE and self.timeStep <= OBSERVE + EXPLORE:
+        # elif len(self.replayMemory) > OBSERVE and self.time_step <= OBSERVE + EXPLORE:
         #     state = "explore"
         # else:
         #     state = "train"
 
-        # print("TIMESTEP", self.timeStep, "/ STATE", state)
+        # print("time_step", self.time_step, "/ STATE", state)
 
-        if self.timeStep > OBSERVE:
-            # Step 1: obtain random minibatch from replay memory
-            # logging.info("in sampling")
-            minibatch = self.replay_buffer.sample(BATCH_SIZE)
-            # Step 2: distribute
-            # logging.info("in distributing")
-            for data in minibatch:
-                self.distribute(data)
-            # Step 3: update
-            # logging.info("in training")
-            for tree in self.trees:
-                # logging.info("total activated node are %s"%len(tree.activated))
-                for activated_node in tree.activated:
-                    activated_node.train_driver(activated_node.sample_list)
-            # logging.info(" training completed")
-            # step4 clear state.
-            self.clear_activated_node()
-        self.timeStep += 1
+
+        # Step 1: obtain random minibatch from replay memory
+        # logging.info("in sampling")
+        if self.prioritized_replay:
+            minibatch = self.replay_buffer.sample(self.batch_size, beta=self.beta_schedule.value(self.time_step))
+        else:
+            assert(False,"error conditions")
+
+        # minibatch = self.replay_buffer.sample(self.batch_size)
+        # Step 2: distribute
+        # logging.info("in distributing")
+        for data in minibatch:
+            self.distribute(data)
+        # Step 3: update
+        # logging.info("in training")
+        for tree in self.trees:
+            # logging.info("total activated node are %s"%len(tree.activated))
+            assert type(tree.activated)== set,"activated type error"
+            for activated_node in tree.activated:
+                activated_node.train_driver(activated_node.sample_list)
+        # logging.info(" training completed")
+        # step4 clear state.
+
+        self.clear_activated_node()
+        self.time_step += 1
+
 
     def update_to_all_model(self):
-        if self.timeStep > OBSERVE:
+        if self.time_step > OBSERVE:
             # Step 1: obtain random minibatch from replay memory
             # logging.info("in sampling")
-            minibatch = self.replay_buffer.sample(BATCH_SIZE)  
+            if self.prioritized_replay:
+                minibatch = self.replay_buffer.sample(self.batch_size, beta=self.beta_schedule.value(self.time_step))
+            else:
+                assert(False,"error conditions") 
             for sample in minibatch:
                 for tree in self.trees:
                     for leaf in tree.leaves_list:
@@ -207,13 +255,14 @@ class ForestAgent(object):
                         
             for tree in self.trees:
                 # logging.info("total activated node are %s"%len(tree.activated))
+
                 for activated_node in tree.activated:
                     activated_node.train_driver(activated_node.sample_list)
             # logging.info(" training completed")
             # step4 clear state.
             self.clear_activated_node()
 
-        self.timeStep += 1
+        self.time_step += 1
 
 
     def initial_model(self):
@@ -236,65 +285,6 @@ class ForestAgent(object):
         for tree in self.trees:
             tree.activated = set()
 
-    # def initial_model(self):
-    #     """Initial nerual network after contructure trees.
-
-    #     """
-    #     logging.info("[in initial_model...]")
-    #     non_data_index = []
-    #     for index, leaf in enumerate(self.leaves_list):
-    #         logging.error("training %s all %s"%(index,len(self.leaves_list)))
-    #         attrs = leaf.leaf_attributes
-    #         leaf_data = leaf.sample_list
-    #         label_list = []
-    #         features_list = []
-    #         (features_list,label_list) = self._find_data(leaf,attrs)
-    #         # logging.info("the leaf's attributes is %s"%json.dumps(attrs,indent=2))
-    #         # logging.info("the leaf's record is  %s"%json.dumps(leaf_data,indent=2))
-    #         # logging.info("label :%s"%label_list)
-    #         # logging.info("features : %s"%features_list)
-    #         features_list = np.array(features_list)
-    #         label_list = np.array(label_list)
-    #         leaf.base_model.train(features_list,label_list,initial=True,display_step=True)
-    #     for leaf in self.leaves_list:
-    #         leaf.sample_list = []
-
-    # def _find_data(self,node,attrs):
-    #     """Find data which is the nearest to node. 
-    #     Args:
-    #         node: tree node.
-    #         attrs: attribute you want to get.
-        
-    #     Returns:
-    #         features_list
-    #         label_list
-    #     """
-    #     label_list = []
-    #     features_list = []
-    #     if node.n == 0:
-    #         fn = node.father_node
-    #         (f,l) = self._find_data(fn,attrs)
-    #         features_list.extend(f)
-    #         label_list.extend(l)
-    #     else:
-    #         if node.attr_name == None:
-    #             # this is a leaf node with records.
-    #             leaf_data = node.sample_list
-    #             for item in leaf_data:
-    #                 label_list.append(item[self.data.class_attribute_name])
-    #                 features_list.append([value for key,value in item.items() if key in attrs])
-    #         else:
-    #             # this is not a leaf node, but some of its children have records.
-    #             for key,children in node._branches.items():
-    #                 if children.n == 0:
-    #                     continue
-    #                 (f,l) = self._find_data(children,attrs)
-    #                 features_list.extend(f)
-    #                 label_list.extend(l)
-    #     return (features_list,label_list)
-
-
-
 def get_values(data, attr):
     """
     Creates a list of values in the chosen attribut for each record in data,
@@ -310,12 +300,14 @@ def split_values(data, attr):
     """
     extr_value = data.extre_attri_value[attr]
     range_value = data.data_range[attr]
+    min_gap = 0.01
     # logging.info(extr_value)
     # logging.info(attr)
-    min_value = extr_value[0] if extr_value[0] > range_value[0] + 1 else range_value[0] + 1
-    max_value = extr_value[1] if extr_value[1] < range_value[1] - 1 else range_value[1] - 1
+    min_value = extr_value[0] if extr_value[0] > range_value[0] + min_gap else range_value[0] + min_gap
+    max_value = extr_value[1] if extr_value[1] < range_value[1] - min_gap else range_value[1] - min_gap
     # print("split_values [min: %s, max: %s]"%(min_value,max_value))
-    selected_val = random.randint(int(min_value),int(max_value))
+    random_value = float(random.randint(int(min_value * PRECISION), int(max_value * PRECISION)))
+    selected_val = random_value/PRECISION
     return [selected_val, MAX_VALUE]
 
 def random_choose_attribute(data, attributes):
@@ -327,11 +319,10 @@ def random_choose_attribute(data, attributes):
         attributes: a list of attribute. eg. ['a', 'c', 'b', 'd']
     """
     length = len(attributes)
-
     attr = random.randint(0,length-1)
     return attributes[attr]
 
-def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_node, **kwargs):
+def create_decision_tree(attributes, class_attr, wrapper,current_deep, father_node, **kwargs):
     """
     Returns a new decision tree based on the examples given.
     Args:
@@ -343,14 +334,14 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
     """
     assert class_attr not in attributes, "Class attributes should not in class attribute"
     node = None
-    if current_deep > wrapper.max_deep:
+    if current_deep >= wrapper.max_deep:
         # stop create tree node only if enough deep.
         logging.info(" create model index : %s"%wrapper.leaf_count)
         wrapper.leaf_count += 1
         # 【temp】
         # if wrapper.leaf_count >1:
         #     return node
-        node = Node(tree=wrapper,node_name=MODEL_NAME+'-'+str(wrapper.tree_index)+'-'+str(wrapper.leaf_count))
+        node = Node(model_type=wrapper.model_type, tree=wrapper, node_name=MODEL_NAME+'-'+str(wrapper.tree_index)+'-'+str(wrapper.leaf_count))
         node.leaf_attributes = attributes
         node.father_node = father_node
         wrapper.leaves_list.append(node)
@@ -364,8 +355,8 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
 
         # Create a new decision tree/node with the best attribute and an empty
         # dictionary object--we'll fill that up next.
-#        tree = {best:{}}
-        node = Node(tree=wrapper, attr_name=best)
+        # tree = {best:{}}
+        node = Node(model_type=wrapper.model_type, tree=wrapper, attr_name=best)
         logging.info("random choose attribute is %s"%best)
         # [question] n is data amount in current node. 
         node.leaf_attributes = [attr for attr in attributes if attr != best]
@@ -383,7 +374,7 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep,father_nod
         for val in values:
             # Create a subtree for the current value under the "best" field
             # [question] for countinus attribute, should we regard it as discrete points. means create a node for each points?
-            logging.info("now we choose value (%s),from [%s]"%(val,best))
+            logging.info("now we choose value (%s),from [%s]"%(val, best))
             #[delete data]
             #  if is_continuous:
             #     selected_data = [r for r in data if r[best] <= val]
@@ -417,7 +408,7 @@ class Tree(object):
     Represents a single grown or built decision tree.
     """
     
-    def __init__(self, data, **kwargs):
+    def __init__(self, forest, data, model_type, *args, **kwargs):
         """Init method just set some parameter of decision tree.
         
         Args:
@@ -432,11 +423,10 @@ class Tree(object):
         """
         assert isinstance(data, DataFeature)
         self._data = data
-        self.max_deep = len(data.attribute_names)/2 if len(data.attribute_names)/2 <= MAX_DEPTH else MAX_DEPTH
-        
+        self.forest = forest
         # Root splitting node.
         # This can be traversed via [name1][value1][name2][value2]...
-        self._tree = Node(self,is_root=True)
+        self._tree = Node(self, model_type=kwargs.get('model_type', [376, 64]), is_root=True)
 
         # The total number of leaf nodes.
         self.leaf_count = 0
@@ -448,7 +438,8 @@ class Tree(object):
         self.sample_count = 0
         # store the reference of activated leaves node
         self.activated = set()
-
+        self.forest = forest
+        self.model_type = model_type
         # The mean absolute error.
         # self.mae = CDist()
         # self._mae_clean = True
@@ -521,7 +512,7 @@ class Tree(object):
         return self._tree_index
 
     @classmethod
-    def build(cls, data, index, *args, **kwargs):
+    def build(cls, forest, data, index, model_type, *args,**kwargs):
         """
         Constructs a classification or regression tree in a single batch by
         analyzing the given data.
@@ -536,9 +527,11 @@ class Tree(object):
         # else:
         #     fitness_func = get_gain
         
-        t = cls(data=data, *args, **kwargs)
-        t._data = data
+        t = cls(forest=forest, data=data, model_type=model_type, *args, **kwargs)
         t._tree_index = index
+        t.model_path = kwargs['model_path']
+        t.depth = kwargs['depth']
+        t.max_deep = len(data.attribute_names)/2 if len(data.attribute_names)/2 <= t.depth else t.depth
         # [todo] sample_count 
         t.sample_count = len(data)
         t._tree = create_decision_tree(
@@ -547,7 +540,7 @@ class Tree(object):
             class_attr=data.class_attribute_name,
             # fitness_func=fitness_func,
             wrapper=t,
-            current_deep=1,
+            current_deep=0,
             father_node=None
         )
         return t
@@ -556,10 +549,10 @@ class Tree(object):
         copy_sample = copy.deepcopy(sample)
         return self._tree.distribute(copy_sample)
 
-    def predict(self,sample):
+    def predict(self,sample,for_test=False):
         # [temp]
         # return self.leaves_list[0].predict(sample)
-        return self._tree.predict(sample)
+        return self._tree.predict(sample,for_test=for_test)
 
     def _find_data(self,node, attrs):
         """Find data which is the nearest to node.
@@ -635,7 +628,7 @@ class Node(object):
     Represents a specific split or branch in the tree.
     """
     
-    def __init__(self, tree, attr_name=None,node_name=None,is_root=False):
+    def __init__(self, tree, model_type, attr_name=None,node_name=None,is_root=False):
         
         # The number of samples this node has been trained on.
         self.n = 0
@@ -645,27 +638,6 @@ class Node(object):
         
         # The splitting attribute at this node.
         self.attr_name = attr_name
-        
-        #### Discrete values.
-        
-        # Counts of each observed attribute value, used to calculate an
-        # attribute value's probability.
-        # {attr_name:{attr_value:count}}
-        # [delete] self._attr_value_counts = defaultdict(_get_dd_int)
-        # {attr_name:total}
-        # [delete] self._attr_value_count_totals = defaultdict(int)
-        
-        # Counts of each observed class value and attribute value in
-        # combination, used to calculate an attribute value's entropy.
-        # {attr_name:{attr_value:{class_value:count}}}
-        # [delete] self._attr_class_value_counts = defaultdict(_get_dd_dd_int)
-        
-        #### Continuous values.
-        
-        # Counts of each observed class value, used to calculate a class
-        # value's probability.
-        # {class_value:count}
-        # self._class_ddist = DDist()
 
         self.sample_list = sample_list_reset()
         # {attr_name:{attr_value:CDist(variance)}}
@@ -679,7 +651,7 @@ class Node(object):
         #             learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
         if self.attr_name == None and not is_root:
             assert node_name != None, "not defined node name"
-            agent_name = node_name
+            self.agent_name = node_name
             # [todo] now assump that all of node in the same deep
             actions = self._tree.data.actions # len(self._tree.data.uni_class_value) 
             # todo: add "- self._tree.max_deep" in the future work
@@ -687,21 +659,23 @@ class Node(object):
             # logging.info("c: %s, f: %s"%(class_amount,feature_amount))
             # [todo] now assump
             # self.base_model  = DqnAgent(actions,observations,DqnAgent.SIMPLE_OB, node_name)
-            self.session = U.MultiSession(agent_name)
-            self.path = MODEL_PATH+agent_name
+            self.session = U.MultiSession(self.agent_name)
+            self.path = self._tree.model_path+self.agent_name
             g = tf.Graph()
             with g.as_default():
-                with tf.variable_scope(agent_name):
+                with tf.variable_scope(self.agent_name):
                     self.session.make_session(g,CPU_NUM)
                     # [todo] just suit to one dim observation now.
                     self.act, self.train, self.update_target, self.debug = deepq.build_train(
                         session=self.session,
                         make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
-                        q_func=model,
+                        q_func=mlp(model_type),
                         num_actions=actions,
-                        optimizer=tf.train.AdamOptimizer(learning_rate=5e-4),
+                        optimizer=tf.train.AdamOptimizer(learning_rate=25e-5),
+                        gamma=0.99
                     )
-                    self.exploration = LinearSchedule(schedule_timesteps=SCHEDULE_TIMES, initial_p=1.0, final_p=0.02)
+                    exploration_fraction = 0.1
+                    self.exploration = LinearSchedule(schedule_timesteps=exploration_fraction*self.tree.forest.itera_times, initial_p=1.0, final_p=FINAL_EPSILON)
                     self.t_val = tf.Variable(0)
                     self.session.initialize()
                     self.session.init_saver()
@@ -723,6 +697,9 @@ class Node(object):
     #             branches[value] = self.get_value_ddist(self.attr_name, value)
     #     return branches
 
+    @property
+    def tree(self):
+        return self._tree
 
     def _get_attribute_value_for_node(self, record):
         """
@@ -772,7 +749,7 @@ class Node(object):
 
         Args: sample:a dict include current_state, action, reward, terminal, next_state, observation 
         """
-        feature = sample[-1] # the last element of sample is feature.
+        feature = sample[-3] # the -3 element of sample is feature.
         # Lookup attribute value.
         attr_value = self._get_attribute_value_for_node(feature)
         # logging.info("attribute:[%s]"%self.attr_name)
@@ -800,7 +777,7 @@ class Node(object):
             #     # TODO:allow re-raise if user doesn't want an intermediate prediction?
             #     pass
 
-    def predict(self, sample, depth=0):
+    def predict(self, sample, depth=0, for_test=False):
         """
         Returns the estimated value of the class attribute for the given
         record.
@@ -819,10 +796,12 @@ class Node(object):
             state = np.array(state)# the first element is 'state'
             # logging.info("in predicting ,sample is %s"%sample)
             # assert (not self.is_continuous_class),"this project can not use in continuous class now!"
-            action = self.act(state[None], update_eps=self.exploration.value(self.time_step))[0]
+            if not for_test:
+                action = self.act(state[None], update_eps=self.exploration.value(self.time_step))[0]
+            else:
+                action = self.act(state[None], update_eps=FINAL_EPSILON)[0]
             # print("predict Action is %s"%action)
             # result = self.base_model.getAction(state)
-            self.time_step += 1
             return action
         else:
             # raise Exception("impossible in single node predict test!")
@@ -832,28 +811,34 @@ class Node(object):
                 # Propagate decision to leaf node.
                 # assert self.attr_name
             # logging.info("[to next deep]")
-            return self._branches[attr_value].predict(sample, depth=depth+1)
+            return self._branches[attr_value].predict(sample, depth=depth+1, for_test=for_test)
+
 
 
     def train_driver(self,sample_list):
         obses_t, actions, rewards, obses_tp1, dones = sample_list['obses_t'], sample_list['actions'], sample_list['rewards'], sample_list['obses_tp1'], sample_list['dones']
+        weights,indexs = sample_list['weights'],sample_list['indexs']
         # total distribute completed, before train.
         np.array(obses_t)
         np.array(actions)
         np.array(rewards)
         np.array(obses_tp1)
         np.array(dones)
-        self.train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
+        td_error = self.train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
         # self.base_model.trainQNetwork(self.sample_list)
         self.sample_list = sample_list_reset()
-        
+        self.time_step += 1      
         if self.time_step % UPDATE_TARGET_INTERVAL == 0:
-            print("update target")
+            print("update target times %s, agent name %s"%(self.time_step,self.agent_name))
             self.update_target()
         if self.time_step % SAVE_MODEL_INTERVAL == 0:
-            print("save model")
+            # pass
+            print("save model to %s"%self.path)
             self.session.sess.run(tf.assign(self.t_val,self.time_step))
             self.session.save_state(self.path, self.time_step)
+        new_priorities = np.abs(td_error) + self.tree.forest.prioritized_replay_eps
+        self.tree.forest.replay_buffer.update_priorities(indexs, new_priorities)
+        return td_error
 
     def clear_node_sample_number(self):
         self.n = 0
@@ -872,17 +857,21 @@ def sample_list_reset():
         'actions':[],
         'rewards':[],
         'obses_tp1':[],
-        'dones':[]
+        'dones':[],
+        'weights':[],
+        'indexs':[]
     }
     return sample_list
 
 def sample_list_add_data(sample_list,data):
-    obs_t, action, reward, obs_tp1, done, features = tuple(data)
+    obs_t, action, reward, obs_tp1, done, features,weight, index = tuple(data)
     sample_list['obses_t'].append(np.array(obs_t, copy=False))
     sample_list['actions'].append(np.array(action, copy=False))
     sample_list['rewards'].append(reward)
     sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
     sample_list['dones'].append(done)
+    sample_list['weights'].append(weight)
+    sample_list['indexs'].append(index)
 
 def sample_list_add_sample_list(sample_list_1, sample_list_to_copy):
     sample_list_2 = copy.deepcopy(sample_list_to_copy)
@@ -891,3 +880,5 @@ def sample_list_add_sample_list(sample_list_1, sample_list_to_copy):
     sample_list_1['rewards'].extend(sample_list_2['rewards'])
     sample_list_1['obses_tp1'].extend(sample_list_2['obses_tp1'])
     sample_list_1['dones'].extend(sample_list_2['dones'])
+    sample_list_1['weights'].extend(sample_list_2['weights'])
+    sample_list_1['indexs'].extend(sample_list_2['indexs'])

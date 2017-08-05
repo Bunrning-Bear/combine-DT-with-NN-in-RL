@@ -7,6 +7,7 @@
 # Version     :   1.0
 
 from Global_Variables import REWARD, ACTION, TERMINAL, STATE_ATTRS
+import gym
 
 def simple_sampling(env,file_name,sampling_amount):
     observations = env.observation_space
@@ -17,6 +18,7 @@ def simple_sampling(env,file_name,sampling_amount):
     observation = env.reset()
     env.render()
     for i in range(0,sampling_amount):
+        print("sampling times %s"%i)
         env.render()
         action = env.action_space.sample()
         nextObservation,reward,terminal,info = env.step(action)
@@ -25,7 +27,7 @@ def simple_sampling(env,file_name,sampling_amount):
         ob_list.append(int(action))
         ob_list.append(int(terminal))
         str_list = [str(i) for i in ob_list]
-        print(str_list)
+        # print(str_list)
         content = ",".join(str_list)# join(line_list[0:10]+[line_list[-1]])
         content +='\n'
         w.write(content)
@@ -47,3 +49,6 @@ def get_features_from_origin_sample(sample):
         if key in STATE_ATTRS:
             del feature[key]
     return feature
+
+if __name__ == '__main__':
+    simple_sampling(gym.make("AirRaid-ram-v0"),'./test.csv',1000)

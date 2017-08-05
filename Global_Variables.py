@@ -6,9 +6,9 @@
 # Modified    :   2017.6.29
 # Version     :   1.0
 import re
-GAME_NAME = 'CartPole-v0'
-FOREST_SIZE = 2
-MAX_DEPTH = 2
+# GAME_NAME = 'CartPole-v0'
+# FOREST_SIZE = 2
+# MAX_DEPTH = 2
 MAX_VALUE = 9999999999
 
 # Data format names.
@@ -26,22 +26,21 @@ STATE_ATTRS = [REWARD, ACTION, TERMINAL]
 FRAME_PER_ACTION = 1
 GAMMA = 0.99 # decay rate of past observations
 OBSERVE = 1000 # timesteps to observe before training
-EXPLORE = 200000. # frames over which to anneal epsilon
-FINAL_EPSILON = 0#0.001 # final value of epsilon
-INITIAL_EPSILON = 0.02#0.01 # starting value of epsilon
+FINAL_EPSILON = 0.01#0.001 # final value of epsilon
 REPLAY_MEMORY = 50000 # number of previous transitions to remember
-BATCH_SIZE = 32 * MAX_DEPTH  # size of minibatch
-UPDATE_TIME = 100
 
 # baisc_model_name_prefix
+MODEL_PREFIX_PATH = 'saved_networks/'
+RECORD_PREFIX_PATH ='record/'
 MODEL_NAME = 'basic_qnetwork'
-MODEL_PATH ='saved_networks_%s_forest_%s_depth/'%(str(FOREST_SIZE),str(MAX_DEPTH))
+# MODEL_PATH ='saved_networks_%s_forest_%s_depth/'%(str(FOREST_SIZE),str(MAX_DEPTH))
 
 # network parameter
 CPU_NUM = 4
-UPDATE_TARGET_INTERVAL= 1000
-SAVE_MODEL_INTERVAL= 5000
+UPDATE_TARGET_INTERVAL= 5000
+SAVE_MODEL_INTERVAL= 200000
 SCHEDULE_TIMES = 20000
 
 # task
 REWARD_GOAL = 200
+PRECISION = 1000

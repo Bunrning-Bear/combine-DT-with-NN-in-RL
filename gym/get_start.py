@@ -10,6 +10,7 @@
 
 import gym
 from gym import envs
+import time
 envs = envs.registry.all()
 
 # class EnvSpec(__builtin__.object)
@@ -58,8 +59,12 @@ envs = envs.registry.all()
 #     except Exception as e:
 #         pass
 
-env = gym.make('UpNDown-ram-v0')
-
+# PongNoFrameskip-v4
+# AirRaid-ramNoFrameskip-v0 :pass
+# Breakout-ram-v4: pass
+# Pong-ram-v4 : pass
+env = gym.make('Centipede-ram-v4')
+print("ob space is %s, action space is %s"%(env.observation_space,env.action_space.n))
     # game = gym.make(str(env))
 # env.reset()
 
@@ -78,16 +83,16 @@ env = gym.make('UpNDown-ram-v0')
 # print(type(env.action_space.sample()))
 
 #> Box(4,)
-for i_episode in range(2):
+for i_episode in range(1):
     observation = env.reset()
-    for t in range(1000):
+    for t in range(10000):
         env.render()
-        print(observation)
+        # print(observation)
         action = env.action_space.sample()
         observation, reward, done, info = env.step(action)
         if done:
-                
-            print("Episode finished after {} timesteps".format(t+1))
-            break
+            print("!!!!!!!!!!!!!!!!Episode finished after {} timesteps".format(t+1))
+            env.reset()
         else:
-            print ("ac is %s ob is %s \n reward is %s \n info is %s \n"%(action,observation,reward,info))
+            # if reward != 0.0:
+            print ("time is %s ac is %s ob is %s \n reward is %s \n info is %s \n"%(t,action,observation,reward,info))

@@ -238,6 +238,11 @@ class MultiSession(object):
         self.sess = tf.Session(graph=graph, config=tf_config)
         return self.sess
 
+    def make_session_cpu_only(self, graph):
+        """Return a session that will use cpu instead of gpu"""
+        self.sess = tf.Session(graph=graph, config=tf.ConfigProto(device_count={'gpu': 0}))
+        return self.sess
+
     def initialize(self):
         """Initialize all the uninitialized variables in the global scope."""
         new_variables = set(tf.global_variables()) - self.ALREADY_INITIALIZED

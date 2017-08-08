@@ -92,28 +92,28 @@ if t > learning_starts and t % train_freq == 0:
 def main(name_scope):
     with U.make_session(8):
 
-        prioritized_replay=True
-        prioritized_replay_alpha=0.6
-        prioritized_replay_beta0=0.4
-        prioritized_replay_beta_iters=None
-        prioritized_replay_eps=1e-6
+        prioritized_replay = True
+        prioritized_replay_alpha = 0.6
+        prioritized_replay_beta0 = 0.4
+        prioritized_replay_beta_iters = None
+        prioritized_replay_eps = 1e-6
         buffer_size=50000
         batch_size =32
         # use cnn reduce after 1e5 time step
-        model_list = [376,64]# pong failed [256,32]# [512,128,32]# # 
+        model_list = [372, 64]# pong failed [256,32]# [512,128,32]# # 
         model_type = 'mlp_'+str(model_list)
         exp_type = 'baselines'
         # game = "Boxing-ram-v4" # 15w , 128->18
-        game = "CrazyClimber-ram-v4" # just soso, 128->9
+        game = "Boxing-ram-v4" # just soso, 128->9
         # game = "Pong-ram-v4" # just soso, 128->12
-        itera_times = 3000000
+        itera_times = 2000000
         # game = "AirRaid-ramNoFrameskip-v0"
         start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
         exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][prioritized][simple-reward]/' % (
             exp_type, game, model_type)
 
 
-        test_points = 60
+        test_points = 100
         test_circle = itera_times/test_points
         # test_time_step = 50000
         GAME_NAME = game
@@ -220,7 +220,7 @@ def main(name_scope):
                 logger.record_tabular("% time spent exploring", int(100 * exploration.value(time_step)))
                 logger.dump_tabular()
 
-            if time_step % test_circle == 0 and len(episode_rewards) > 30:
+            if time_step % test_circle == 0 and len(episode_rewards) > 40:
                 # test_episode_rewards =episode_rewards[30:-1]
                 # record = [time_step]+test_episode_rewards
                 # print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"
@@ -229,17 +229,16 @@ def main(name_scope):
                 current_ob = obs
                 # (current_feature, current_state) = forest_agent.getInitState()
                 test_episode_rewards = [0.0]
-                print_internal = 1000
 
                 another_engine = ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME)))
                 test_ob = another_engine.reset()
                 episode_times = 0
                 # forest_agent.setInitState(test_ob)
                 # another_engine.render()
-                while episode_times < 30:
+                while episode_times < 40:
                 # for circle in range(0, test_time_step):
                     # [change]
-                    test_action = act(test_ob[None], update_eps=0.1)[0]
+                    test_action = act(test_ob[None], update_eps=0.01)[0]
                     test_next_ob, test_reward, test_terminal, _ = another_engine.step(test_action)
                     test_ob = test_next_ob
                     # test_record = {

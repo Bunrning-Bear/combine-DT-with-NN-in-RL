@@ -35,11 +35,11 @@ from combine_baselines import logger
 
 def main(config):
     # initial constant value
-    MODEL_LIST = [372.64]
+    MODEL_LIST = [372, 64]
     model_type = 'mlp_'+str(MODEL_LIST)
     exp_type = 'dt'
     start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[prioritized]/' % (
+    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[prioritized][update-all][cpu]/' % (
         exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'])
     test_points = 100
     test_circle = config['iter_times']/test_points
@@ -69,32 +69,32 @@ def main(config):
                                   observations=game_engine.observation_space.shape[0], data_range=data_range)
     # build forest data structure.
     forest_agent = ForestAgent(
-        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time,itera_times=config['iter_times'])
+        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time,itera_times=config['iter_times'], model_type=MODEL_LIST)
     logging.info("before build ")
     forest_agent.build()
 
     # initial model
-    # data_iter = iter(sample_data)
-    # first_origin_sample = data_iter.__next__()
-    # feature = get_features_from_origin_sample(first_origin_sample)
-    # observation = dic_to_list(feature)
-    # forest_agent.setInitState(observation)
-    # for data in data_iter:
-    #     feature = get_features_from_origin_sample(data)
-    #     observation = dic_to_list(feature)
-    #     record={
-    #         'observation': observation,
-    #         'feature': feature,
-    #         REWARD: data[REWARD],
-    #         TERMINAL: data[TERMINAL],
-    #         ACTION: data[ACTION]
-    #     }
-    #     forest_agent.set_replay_buffer(record)
+    data_iter = iter(sample_data)
+    first_origin_sample = data_iter.__next__()
+    feature = get_features_from_origin_sample(first_origin_sample)
+    observation = dic_to_list(feature)
+    forest_agent.setInitState(observation)
+    for data in data_iter:
+        feature = get_features_from_origin_sample(data)
+        observation = dic_to_list(feature)
+        record={
+            'observation': observation,
+            'feature': feature,
+            REWARD: data[REWARD],
+            TERMINAL: data[TERMINAL],
+            ACTION: data[ACTION]
+        }
+        forest_agent.set_replay_buffer(record)
     # initial env and agent
 
     observation = game_engine.reset()
     forest_agent.setInitState(observation)
-    # forest_agent.initial_model()
+    forest_agent.initial_model()
     model_path = forest_agent.model_path
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     if os.path.exists(model_path+'time_log'):
@@ -148,8 +148,8 @@ def main(config):
         #     game_engine.render()
         # else:
         if time_step > OBSERVE and time_step % train_freq == 0:
-            forest_agent.update_model()
-            # forest_agent.update_to_all_model()
+            # forest_agent.update_model()
+            forest_agent.update_to_all_model()
 
         if len(episode_rewards) % 10 == 0 and terminal:
         # if time_step % 200 == 0:
@@ -159,7 +159,6 @@ def main(config):
             logger.record_tabular("mean episode reward", round(
                 np.mean(episode_rewards[-51:-1]), 1))
             logger.dump_tabular()
-        logging.info("step is %s"%time_step)
         time_step = time_step + 1
         # store time step
         if time_step % 5000 == 0 :
@@ -182,7 +181,7 @@ def main(config):
             forest_agent.setInitState(test_ob)
             episode_times = 0
             # another_engine.render()
-            while episode_times < 30:
+            while episode_times < 40:
                 test_action = forest_agent.predict(for_test=True)
                 test_next_ob, test_reward, test_terminal, _ = another_engine.step(
                     test_action)
@@ -208,6 +207,7 @@ def main(config):
                     # another_engine.render()
             another_engine.close()
             forest_agent.restore_init_state(current_feature, current_state)
+            test_episode_rewards = test_episode_rewards[:-1]
             record = [time_step]+test_episode_rewards
 
             print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"

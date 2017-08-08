@@ -78,6 +78,10 @@ class ReplayBuffer(object):
     def get_all_data(self):
         return self._storage
 
+    def clear_data(self):
+        self._storage = []
+        self._next_idx = 0
+
 
 class PrioritizedReplayBuffer(ReplayBuffer):
     def __init__(self, size, alpha):
@@ -183,6 +187,9 @@ class PrioritizedReplayBuffer(ReplayBuffer):
             data.append(self._storage[idx]+[normal_weight, idx])
         return data
         # return tuple(list(encoded_sample) + [weights, idxes])
+
+    def sample_all_data(self,beta):
+        return self.sample(len(self._storage),beta)
 
     def update_priorities(self, idxes, priorities):
         """Update priorities of sampled transitions.

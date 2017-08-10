@@ -21,12 +21,13 @@ class ReplayBuffer(object):
     def __len__(self):
         return len(self._storage)
 
-    def add(self, obs_t, action, reward, obs_tp1, done, features):
+    def add(self, obs_t, action, reward, obs_tp1, done, current_ob_dict, target_ob_dict):
         """
         ob means observation which will be trained in q network
-        features is to determine.
+        current_ob_dict: current observation but type dict.
+        target_ob_dict: target_ob_dict but type dict
         """
-        data = [obs_t, action, reward, obs_tp1, done,features]
+        data = [obs_t, action, reward, obs_tp1, done, current_ob_dict, target_ob_dict]
 
         if self._next_idx >= len(self._storage):
             self._storage.append(data)

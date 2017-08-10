@@ -270,7 +270,7 @@ def main(name_scope):
                 record = [time_step]+test_episode_rewards
 
                 print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"
-                      % (len(episode_rewards), time_step, max(test_episode_rewards), min(test_episode_rewards), round(np.mean(test_episode_rewards[:]), 1)))
+                      % (len(test_episode_rewards), time_step, max(test_episode_rewards), min(test_episode_rewards), round(np.mean(test_episode_rewards[:]), 1)))
                 csvfile.writerow(record)
         scv_f.close()
 

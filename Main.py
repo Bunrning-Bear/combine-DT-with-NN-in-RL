@@ -38,23 +38,28 @@ def main(config):
     MODEL_LIST = [372, 64]
     model_type = 'mlp_'+str(MODEL_LIST)
     exp_type = 'dt'
+    use_gpu = 'gpu'
     start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[prioritized][update-all][cpu]/' % (
-        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'])
+    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s_%s[prioritized][initial][update-all]/' % (
+        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'],use_gpu)
     test_points = 100
     test_circle = config['iter_times']/test_points
     GAME_NAME = config['game_name']
     FOREST_SIZE = config['forest_size']
     train_freq = 4
-    # record file
+
+    #set record file
     os.makedirs(os.path.dirname(
         RECORD_PREFIX_PATH+exp_file_name), exist_ok=True)
     record_path = RECORD_PREFIX_PATH+exp_file_name+'test-time: %s' % start_exp_time
     scv_f = open(record_path, 'w')
     csvfile = csv.writer(scv_f)
+
+    # initial game agent
     game_engine = ClippedRewardsWrapper(ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME))))
+
     # get initial sample data.
-    sampling_amount = 1000
+    sampling_amount = 15
     file_name = '../dataset/'+GAME_NAME+'-sample'+str(sampling_amount)+'prioritized'+'.csv'
     # TODO for [0,255] only
     data_range = list(zip(game_engine.observation_space.low/255,
@@ -67,9 +72,10 @@ def main(config):
         simple_sampling(game_engine, file_name, sampling_amount)
         sample_data = DataFeature(file_name, actions=game_engine.action_space.n,
                                   observations=game_engine.observation_space.shape[0], data_range=data_range)
+
     # build forest data structure.
     forest_agent = ForestAgent(
-        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time,itera_times=config['iter_times'], model_type=MODEL_LIST)
+        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time,itera_times=config['iter_times'], model_type=MODEL_LIST, use_gpu=use_gpu)
     logging.info("before build ")
     forest_agent.build()
 
@@ -84,7 +90,7 @@ def main(config):
         observation = dic_to_list(feature)
         record={
             'observation': observation,
-            'feature': feature,
+            'target_ob': feature,
             REWARD: data[REWARD],
             TERMINAL: data[TERMINAL],
             ACTION: data[ACTION]
@@ -126,7 +132,7 @@ def main(config):
         nextObservation, reward, terminal, _ = game_engine.step(action)
         record = {
             'observation': nextObservation,
-            'feature': list_to_dic(nextObservation),
+            'target_ob': list_to_dic(nextObservation),
             REWARD: reward,
             TERMINAL: terminal,
             ACTION: action
@@ -187,7 +193,7 @@ def main(config):
                     test_action)
                 test_record = {
                     'observation': test_next_ob,
-                    'feature': list_to_dic(test_next_ob),
+                    'target_ob': list_to_dic(test_next_ob),
                     REWARD: test_reward,
                     TERMINAL: test_terminal,
                     ACTION: test_action

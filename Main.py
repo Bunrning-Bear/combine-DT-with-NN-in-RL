@@ -20,6 +20,7 @@ from Global_Function import list_to_dic, dic_to_list
 from Global_Variables import REWARD, ACTION, TERMINAL
 from Global_Variables import REWARD_GOAL, OBSERVE
 from Global_Variables import RECORD_PREFIX_PATH
+from Global_Variables import TimeStepHolder
 from Base_Data_Structure import DataFeature
 from Data_Sample import simple_sampling, get_features_from_origin_sample
 from Agent import ForestAgent
@@ -40,15 +41,15 @@ def main(config):
     exp_type = 'dt'
     use_gpu = 'gpu'
     start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s_%s[prioritized][initial][update-all]/' % (
-        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'],use_gpu)
+    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[global-time][prioritized][not-initial-clear][update-all]/' % (
+        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'])
     test_points = 100
     test_circle = config['iter_times']/test_points
     GAME_NAME = config['game_name']
     FOREST_SIZE = config['forest_size']
     train_freq = 4
-
-    #set record file
+    time_step_holder = TimeStepHolder(0)
+    # set record file
     os.makedirs(os.path.dirname(
         RECORD_PREFIX_PATH+exp_file_name), exist_ok=True)
     record_path = RECORD_PREFIX_PATH+exp_file_name+'test-time: %s' % start_exp_time
@@ -56,11 +57,13 @@ def main(config):
     csvfile = csv.writer(scv_f)
 
     # initial game agent
-    game_engine = ClippedRewardsWrapper(ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME))))
+    game_engine = ClippedRewardsWrapper(
+        ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME))))
 
     # get initial sample data.
-    sampling_amount = 15
-    file_name = '../dataset/'+GAME_NAME+'-sample'+str(sampling_amount)+'prioritized'+'.csv'
+    sampling_amount = 5000
+    file_name = '../dataset/'+GAME_NAME+'-sample' + \
+        str(sampling_amount)+'prioritized'+'.csv'
     # TODO for [0,255] only
     data_range = list(zip(game_engine.observation_space.low/255,
                           game_engine.observation_space.high/255))
@@ -75,45 +78,50 @@ def main(config):
 
     # build forest data structure.
     forest_agent = ForestAgent(
-        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time,itera_times=config['iter_times'], model_type=MODEL_LIST, use_gpu=use_gpu)
+        sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time, 
+        itera_times=config['iter_times'], model_type=MODEL_LIST, use_gpu=use_gpu,time_step_holder=time_step_holder)
     logging.info("before build ")
     forest_agent.build()
 
     # initial model
-    data_iter = iter(sample_data)
-    first_origin_sample = data_iter.__next__()
-    feature = get_features_from_origin_sample(first_origin_sample)
-    observation = dic_to_list(feature)
-    forest_agent.setInitState(observation)
-    for data in data_iter:
-        feature = get_features_from_origin_sample(data)
-        observation = dic_to_list(feature)
-        record={
-            'observation': observation,
-            'target_ob': feature,
-            REWARD: data[REWARD],
-            TERMINAL: data[TERMINAL],
-            ACTION: data[ACTION]
-        }
-        forest_agent.set_replay_buffer(record)
+
+    # data_iter = iter(sample_data)
+    # first_origin_sample = data_iter.__next__()
+    # feature = get_features_from_origin_sample(first_origin_sample)
+    # observation = dic_to_list(feature)
+    # forest_agent.setInitState(observation)
+    # for data in data_iter:
+    #     feature = get_features_from_origin_sample(data)
+    #     observation = dic_to_list(feature)
+    #     record={
+    #         'observation': observation,
+    #         'target_ob': feature,
+    #         REWARD: data[REWARD],
+    #         TERMINAL: data[TERMINAL],
+    #         ACTION: data[ACTION]
+    #     }
+    #     forest_agent.set_replay_buffer(record)
     # initial env and agent
 
     observation = game_engine.reset()
+
     forest_agent.setInitState(observation)
-    forest_agent.initial_model()
+    # forest_agent.initial_model()
+
     model_path = forest_agent.model_path
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
     if os.path.exists(model_path+'time_log'):
         # load time steps
         f1 = open(model_path+'time_log', 'r')
         time_step = int(f1.read())
-        print("loading time step %s" % time_step)
+        time_step_holder.set_time(time_step)
+        print("loading time step %s" % time_step_holder.get_time())
         f1.close()
         f1 = open(model_path+'time_log', 'w')
     else:
         # new time step
         print("new test")
-        time_step = 0
+        time_step_holder.set_time(0)
         with open(model_path+'time_log', 'w') as f1:
             f1.write('0')
 
@@ -126,7 +134,7 @@ def main(config):
 
     episode_rewards = [0.0]
     print("before training")
-    for iter_times in range(time_step+1, config['iter_times']):
+    for iter_times in range(time_step_holder.get_time()+1, config['iter_times']):
         # game_engine.render()
         action = forest_agent.predict()
         nextObservation, reward, terminal, _ = game_engine.step(action)
@@ -153,36 +161,38 @@ def main(config):
         #     break
         #     game_engine.render()
         # else:
-        if time_step > OBSERVE and time_step % train_freq == 0:
+        if time_step_holder.get_time() > OBSERVE and time_step_holder.get_time() % train_freq == 0:
             # forest_agent.update_model()
             forest_agent.update_to_all_model()
 
         if len(episode_rewards) % 10 == 0 and terminal:
-        # if time_step % 200 == 0:
+            # if time_step % 200 == 0:
             # show table to console
-            logger.record_tabular("steps", time_step)
+            logger.record_tabular("steps", time_step_holder.get_time())
             logger.record_tabular("episodes", len(episode_rewards))
             logger.record_tabular("mean episode reward", round(
                 np.mean(episode_rewards[-51:-1]), 1))
             logger.dump_tabular()
-        time_step = time_step + 1
+        time_step_holder.inc_time()
         # store time step
-        if time_step % 5000 == 0 :
+        if time_step_holder.get_time() % 5000 == 0:
             with open(model_path+'time_log', 'w') as f1:
-                print("store time step: %s"%time_step)
-                f1.write(str(time_step))
+                print("store time step: %s" % time_step_holder.get_time())
+                f1.write(str(time_step_holder.get_time()))
             # f1.write(str(time_step))
 
-        if time_step % test_circle == 0 and len(episode_rewards) >= 30:
+        if time_step_holder.get_time() % test_circle == 0 and len(episode_rewards) > 40:
             # test_episode_rewards = episode_rewards[-20:-1]
             # record = [time_step] + test_episode_rewards
             # print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"
             #       % (len(test_episode_rewards), test_time_step, max(test_episode_rewards), min(test_episode_rewards), round(np.mean(episode_rewards[:]), 1)))
             # csvfile.writerow(record)
             (current_feature, current_state) = forest_agent.getInitState()
+
             test_episode_rewards = [0.0]
 
-            another_engine = ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME)))
+            another_engine = ScaledFloatFrame(
+                EpisodicLifeEnv(gym.make(GAME_NAME)))
             test_ob = another_engine.reset()
             forest_agent.setInitState(test_ob)
             episode_times = 0
@@ -207,17 +217,17 @@ def main(config):
                     forest_agent.setInitState(test_ob)
                     episode_times += 1
                     if episode_times % 10 == 0:
-                        print("test episode %s"%episode_times)
+                        print("test episode %s" % episode_times)
                 else:
                     pass
                     # another_engine.render()
             another_engine.close()
             forest_agent.restore_init_state(current_feature, current_state)
             test_episode_rewards = test_episode_rewards[:-1]
-            record = [time_step]+test_episode_rewards
+            record = [time_step_holder.get_time()]+test_episode_rewards
 
             print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"
-                  % (len(test_episode_rewards),time_step, max(test_episode_rewards), min(test_episode_rewards), round(np.mean(test_episode_rewards[:]), 1)))
+                  % (len(test_episode_rewards), time_step_holder.get_time(), max(test_episode_rewards), min(test_episode_rewards), round(np.mean(test_episode_rewards[:]), 1)))
             csvfile.writerow(record)
     scv_f.close()
     #     # nextObservation = preprocess(nextObservation)

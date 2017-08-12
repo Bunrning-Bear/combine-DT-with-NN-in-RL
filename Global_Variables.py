@@ -44,3 +44,17 @@ SCHEDULE_TIMES = 20000
 # task
 REWARD_GOAL = 200
 PRECISION = 1000
+
+# decistion
+class TimeStepHolder(object):
+    def __init__(self,time):
+        self._timesteps = time
+    
+    def set_time(self,time):
+        self._timesteps = time
+
+    def inc_time(self):
+        self._timesteps +=1
+
+    def get_time(self):
+        return self._timesteps

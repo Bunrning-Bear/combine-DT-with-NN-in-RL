@@ -42,53 +42,6 @@ def parse_args():
     boolean_flag(parser, "dueling", default=False, help="whether or not to use dueling model")
     return parser.parse_args()
 
-'''
-1. 
-if t > learning_starts and t % train_freq == 0:
-
-2. 
-
-    act, train, update_target, debug = build_train(
-        make_obs_ph=make_obs_ph,
-        q_func=q_func,
-        num_actions=env.action_space.n,
-        optimizer=tf.train.AdamOptimizer(learning_rate=lr),
-        gamma=gamma,
-        [note] grad_norm_clipping=10
-    )
-3. 
-    exploration = LinearSchedule([note] schedule_timesteps=int(exploration_fraction * max_timesteps)
-                             initial_p=1.0,
-                             final_p=exploration_final_eps)    
-        prioritized_replay=False,
-        prioritized_replay_alpha=0.6,
-        prioritized_replay_beta0=0.4,
-        prioritized_replay_beta_iters=None,
-        prioritized_replay_eps=1e-6,
-
-
-
-    if prioritized_replay:
-        replay_buffer = PrioritizedReplayBuffer(buffer_size, alpha=prioritized_replay_alpha)
-        if prioritized_replay_beta_iters is None:
-            prioritized_replay_beta_iters = max_timesteps
-        beta_schedule = LinearSchedule(prioritized_replay_beta_iters,
-                                       initial_p=prioritized_replay_beta0,
-                                       final_p=1.0)
-
-    if prioritized_replay:
-        experience = replay_buffer.sample(batch_size, beta=beta_schedule.value(t))
-        (obses_t, actions, rewards, obses_tp1, dones, weights, batch_idxes) = experience
-    else:
-        obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(batch_size)
-        weights, batch_idxes = np.ones_like(rewards), None
-    td_errors = train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
-    if prioritized_replay:
-        new_priorities = np.abs(td_errors) + prioritized_replay_eps
-        replay_buffer.update_priorities(batch_idxes, new_priorities)
-
-          
-'''
 def main(name_scope):
     with U.make_session(8):
 
@@ -109,7 +62,7 @@ def main(name_scope):
         itera_times = 2000000
         # game = "AirRaid-ramNoFrameskip-v0"
         start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-        exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][prioritized][simple-reward]/' % (
+        exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][no-prioritized][simple-reward]/' % (
             exp_type, game, model_type)
 
 
@@ -233,22 +186,10 @@ def main(name_scope):
                 another_engine = ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME)))
                 test_ob = another_engine.reset()
                 episode_times = 0
-                # forest_agent.setInitState(test_ob)
-                # another_engine.render()
                 while episode_times < 40:
-                # for circle in range(0, test_time_step):
-                    # [change]
                     test_action = act(test_ob[None], update_eps=0.01)[0]
                     test_next_ob, test_reward, test_terminal, _ = another_engine.step(test_action)
                     test_ob = test_next_ob
-                    # test_record = {
-                    #     'observation': test_next_ob,
-                    #     'feature': list_to_dic(test_next_ob),
-                    #     REWARD: test_reward,
-                    #     TERMINAL: test_terminal,
-                    #     ACTION: test_action
-                    # }
-                    # forest_agent.update_state(test_record)
 
                     test_episode_rewards[-1] += test_reward
 
@@ -266,7 +207,7 @@ def main(name_scope):
                     #     print("testing time_step %s" % circle)
                 another_engine.close()
                 ob = current_ob
-                # forest_agent.restore_init_state(current_feature, current_state)
+                test_episode_rewards = test_episode_rewards[:-1]
                 record = [time_step]+test_episode_rewards
 
                 print("episode times %s, time_step %s, max reward %s, min reward %s, avg %s"

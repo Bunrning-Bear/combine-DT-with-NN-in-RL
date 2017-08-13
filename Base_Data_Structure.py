@@ -10,6 +10,77 @@ import csv
 from six import iteritems, iterkeys, itervalues, string_types
 from Global_Variables import *
 import os
+import numpy as np
+
+class SampleList(object):
+    def __init__(self,priority):
+        self.priority_replay = priority
+        self.sample_list_reset()
+
+    @property
+    def sample_list(self):
+        return self._sample_list
+
+    def __getitem__(self,key):
+        return self.sample_list[key]
+        
+    def sample_list_reset(self):
+        if self.priority_replay:
+            self._sample_list = {
+                'obses_t':[],
+                'actions':[],
+                'rewards':[],
+                'obses_tp1':[],
+                'dones':[],
+                'weights':[],
+                'indexs':[]
+            }
+        else:
+            self._sample_list = {
+                'obses_t':[],
+                'actions':[],
+                'rewards':[],
+                'obses_tp1':[],
+                'dones':[],
+                'indexs':[]
+            }
+
+    def sample_list_add_data(self, data):
+        if self.priority_replay:
+            obs_t, action, reward, obs_tp1, done, _, _ ,weight, index = tuple(data)
+            # pass deplicate data.
+            if index in self.sample_list['indexs']:
+                return False
+            self.sample_list['obses_t'].append(np.array(obs_t, copy=False))
+            self.sample_list['actions'].append(np.array(action, copy=False))
+            self.sample_list['rewards'].append(reward)
+            self.sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
+            self.sample_list['dones'].append(done)
+            self.sample_list['weights'].append(weight)
+            self.sample_list['indexs'].append(index)
+        else:
+            obs_t, action, reward, obs_tp1, done, _, _, index  = tuple(data)
+            if index in self.sample_list['indexs']:
+                return False
+            self.sample_list['obses_t'].append(np.array(obs_t, copy=False))
+            self.sample_list['actions'].append(np.array(action, copy=False))
+            self.sample_list['rewards'].append(reward)
+            self.sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
+            self.sample_list['dones'].append(done)
+            self.sample_list['indexs'].append(index)
+            return True
+
+    def sample_list_add_sample_list(self, sample_list_to_copy):
+        sample_list_2 = copy.deepcopy(sample_list_to_copy)
+        self.sample_list['obses_t'].extend(sample_list_2['obses_t'])
+        self.sample_list['actions'].extend(sample_list_2['actions'])
+        self.sample_list['rewards'].extend(sample_list_2['rewards'])
+        self.sample_list['obses_tp1'].extend(sample_list_2['obses_tp1'])
+        self.sample_list['dones'].extend(sample_list_2['dones'])
+        self.sample_list['indexs'].extend(sample_list_2['indexs'])
+        if self.priority_replay:
+            self.sample_list['weights'].extend(sample_list_2['weights'])
+
 class DataFeature(object):
     """
     Parses, validates and iterates over tabular data in a file

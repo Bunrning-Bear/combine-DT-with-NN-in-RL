@@ -19,9 +19,9 @@ def run_experiment(argv):
 	parser.add_argument('--repeat_times', type=int, default=1,
 	                   help='experiment times')
 	parser.add_argument(
-	    '--depth_min', type=int, default=0, help='min deap of tree')
+	    '--depth_min', type=int, default=2, help='min deap of tree')
 	parser.add_argument(
-	    '--depth_max', type=int, default=0, help='max deap of tree')
+	    '--depth_max', type=int, default=2, help='max deap of tree')
 	parser.add_argument(
 	    '--forest_min', type=int, default=1, help='min amount of tree')
 	parser.add_argument(

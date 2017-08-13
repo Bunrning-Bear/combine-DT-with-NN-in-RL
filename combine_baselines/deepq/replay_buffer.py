@@ -72,11 +72,11 @@ class ReplayBuffer(object):
         idxes = [random.randint(0, len(self._storage) - 1) for _ in range(batch_size)]
         data = []
         for i in idxes:
-            data.append(self._storage[i])
+            data.append(self._storage[i]+[i])
         return data
         # return self._encode_sample(idxes)
 
-    def get_all_data(self):
+    def sample_all_data(self):
         return self._storage
 
     def clear_data(self):

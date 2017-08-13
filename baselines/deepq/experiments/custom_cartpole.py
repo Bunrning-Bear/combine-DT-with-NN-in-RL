@@ -62,7 +62,7 @@ def main(name_scope):
         itera_times = 2000000
         # game = "AirRaid-ramNoFrameskip-v0"
         start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-        exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][no-prioritized][simple-reward]/' % (
+        exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][new-prioritized][simple-reward]/' % (
             exp_type, game, model_type)
 
 
@@ -112,6 +112,8 @@ def main(name_scope):
             beta_schedule = LinearSchedule(prioritized_replay_beta_iters,
                                            initial_p=prioritized_replay_beta0,
                                            final_p=1.0)
+        else:
+            replay_buffer = ReplayBuffer(buffer_size)
 
         # Create the schedule for exploration starting from 1 (every action is random) down to
         # 0.02 (98% of actions are selected according to values predicted by the model).
@@ -154,7 +156,9 @@ def main(name_scope):
                 else:
                     obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(batch_size)
                     weights, batch_idxes = np.ones_like(rewards), None
-                td_errors = train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
+
+                td_errors = train(obses_t, actions, rewards, obses_tp1, dones, weights)
+
                 if prioritized_replay:
                     new_priorities = np.abs(td_errors) + prioritized_replay_eps
                     replay_buffer.update_priorities(batch_idxes, new_priorities)

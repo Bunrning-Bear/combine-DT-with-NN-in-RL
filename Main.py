@@ -41,7 +41,7 @@ def main(config):
     exp_type = 'dt'
     use_gpu = 'gpu'
     start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[global-time][prioritized][not-initial-clear][update-all]/' % (
+    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[global-time][single-prioritized][not-initial-clear][update-all]/' % (
         exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'])
     test_points = 100
     test_circle = config['iter_times']/test_points

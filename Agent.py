@@ -15,7 +15,7 @@ import copy
 import tensorflow as tf 
 import tensorflow.contrib.layers as layers
 
-from Base_Data_Structure import DataFeature
+from Base_Data_Structure import DataFeature, SampleList
 # from Base_Agent import DqnAgent
 
 import combine_baselines.common.tf_util as U
@@ -32,15 +32,31 @@ from Global_Function import dic_to_list,list_to_dic
 from Global_Variables import ACTION, FINAL_EPSILON, PRECISION
 from Global_Variables import MODEL_PREFIX_PATH
 
+
+global only_update_once 
+
 class ForestAgent(object):
     CURRENT_FEATURE=0
     TARGET_FEATURE=1
     def __init__(self, data, config, exp_file_name, itera_times, model_type=[372, 64], use_gpu='gpu',time_step_holder=None):
         self._data = data
+        self.prioritized_replay = True
+        self.prioritized_replay_beta_iters = None
         self.size = config['forest_size']
         self.config= config
+        self.itera_times = itera_times
         self.prioritized_replay_alpha = 0.6
-        self.replay_buffer = PrioritizedReplayBuffer(REPLAY_MEMORY,alpha=self.prioritized_replay_alpha)
+        self.prioritized_replay_beta0 = 0.4
+        self.prioritized_replay_eps = 1e-6
+        if self.prioritized_replay:
+            self.replay_buffer = PrioritizedReplayBuffer(REPLAY_MEMORY,alpha=self.prioritized_replay_alpha)
+            if self.prioritized_replay_beta_iters is None:
+                self.prioritized_replay_beta_iters = self.itera_times
+            self.beta_schedule = LinearSchedule(self.prioritized_replay_beta_iters,
+                                           initial_p=self.prioritized_replay_beta0,
+                                           final_p=1.0)
+        else:
+            self.replay_buffer = ReplayBuffer(REPLAY_MEMORY)
         self.trees = []
         self.current_state = []
         self.current_feature = []
@@ -48,13 +64,8 @@ class ForestAgent(object):
         self.model_path = MODEL_PREFIX_PATH+exp_file_name
         self.batch_size = 32 # * (2**(config['depth']))
         self.model_type = model_type
-        self.prioritized_replay = True
-        self.beta_schedule =None
-        self.prioritized_replay_beta0 = 0.4
-        self.prioritized_replay_beta_iters = None
-        self.prioritized_replay_eps = 1e-6
-        self.itera_times = itera_times
         self.use_gpu = use_gpu
+
     @property
     def data(self):
         return self._data
@@ -171,13 +182,6 @@ class ForestAgent(object):
         if type(self.current_state) == dict:
             raise Exception("current state type error")
 
-        if self.prioritized_replay:
-            if self.prioritized_replay_beta_iters is None:
-                self.prioritized_replay_beta_iters = self.itera_times
-            self.beta_schedule = LinearSchedule(self.prioritized_replay_beta_iters,
-                                           initial_p=self.prioritized_replay_beta0,
-                                           final_p=1.0)
-
         self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state, float(record['terminal']),self.current_feature , record['target_ob'])
         # self.replayMemory.append([self.current_state,record['action'],record['reward'],new_state,record['terminal'],record['feature']])
         # if len(self.replayMemory) > REPLAY_MEMORY:
@@ -218,7 +222,7 @@ class ForestAgent(object):
         if self.prioritized_replay:
             minibatch = self.replay_buffer.sample(self.batch_size, beta=self.beta_schedule.value(self.time_step_holder.get_time()))
         else:
-            raise Exception("error conditions")
+            minibatch = self.replay_buffer.sample(self.batch_size)
 
         # minibatch = self.replay_buffer.sample(self.batch_size)
         # Step 2: distribute
@@ -242,17 +246,20 @@ class ForestAgent(object):
     def update_to_all_model(self):
         # Step 1: obtain random minibatch from replay memory
         # logging.info("in sampling")
+        global only_update_once
+        only_update_once = False
+
         if self.prioritized_replay:
             minibatch = self.replay_buffer.sample(self.batch_size, beta=self.beta_schedule.value(self.time_step_holder.get_time()))
         else:
-            raise Exception("error conditions")
+            minibatch = self.replay_buffer.sample(self.batch_size)
         for sample in minibatch:
             for tree in self.trees:
                 for leaf in tree.leaves_list:
                 # leaf = tree.leaves_list[0]
                     sample[0] = leaf.filter_state(sample[0])
                     sample[3] = leaf.filter_state(sample[3])
-                    sample_list_add_data(leaf.sample_list, sample)
+                    leaf.sample_list.sample_list_add_data(sample)
                     leaf.tree.activated.add(leaf)
 
         for tree in self.trees:
@@ -269,7 +276,10 @@ class ForestAgent(object):
 
     def initial_model(self):
         # step1 : distribute data in replay buffer.
-        all_data = self.replay_buffer.sample_all_data(beta=self.beta_schedule.value(self.time_step_holder.get_time()))
+        if self.prioritized_replay:
+            all_data = self.replay_buffer.sample_all_data(beta=self.beta_schedule.value(self.time_step_holder.get_time()))
+        else:
+            all_data = self.replay_buffer.sample_all_data()
         for sample in all_data:
             self.distribute(sample)
         # step2: training all of node.
@@ -561,10 +571,10 @@ class Tree(object):
             selected_sample_list
             label_list
         """
-        selected_sample_list = sample_list_reset()
+        selected_sample_list = SampleList(self.forest.prioritized_replay)
         if node.n == 0:
             fn = node.father_node
-            sample_list = self._find_data(fn,attrs)
+            sample_list = self._find_data(fn, attrs)
             # TODO sample list must be read only!
             return sample_list
             # sample_list_add_sample_list(selected_sample_list, sample_list)
@@ -584,7 +594,7 @@ class Tree(object):
                     if children.n == 0:
                         continue
                     sample_list = self._find_data(children,attrs)
-                    sample_list_add_sample_list(selected_sample_list, sample_list)
+                    selected_sample_list.sample_list_add_sample_list(sample_list)
                     # selected_sample_list.extend(sample)
         return selected_sample_list
 
@@ -621,7 +631,7 @@ class Tree(object):
 
     def clear_leaf_sample(self):
         for leaf in self.leaves_list:
-            leaf.sample_list = sample_list_reset()
+            leaf.sample_list.sample_list_reset()
 
 
 
@@ -640,7 +650,7 @@ class Node(object):
         # The splitting attribute at this node.
         self.attr_name = attr_name
 
-        self.sample_list = sample_list_reset()
+        self.sample_list = SampleList(self.tree.forest.prioritized_replay)
         # {attr_name:{attr_value:CDist(variance)}}
         # [delete] self._attr_value_cdist = defaultdict(_get_dd_cdist)
         # self._class_cdist = CDist()
@@ -683,7 +693,7 @@ class Node(object):
                     )
                     exploration_fraction = 0.1
                     self.exploration = LinearSchedule(schedule_timesteps=exploration_fraction*self.tree.forest.itera_times, initial_p=1.0, final_p=FINAL_EPSILON)
-                    self.t_val = tf.Variable(0)
+                    self.t_val = tf.Variable(1)
                     self.session.initialize()
                     self.session.init_saver()
                     self.update_target()
@@ -769,7 +779,7 @@ class Node(object):
             # arrived at leaf node
             sample[0] = self.filter_state(sample[0])
             sample[3] = self.filter_state(sample[3])
-            sample_list_add_data(self.sample_list, sample)
+            self.sample_list.sample_list_add_data(sample)
             if (not self._tree.activated.add(self) ) and len(self.sample_list)==0:
                 raise Exception(print("%s insert failed index: %s sample list %s"%(self.agent_name,sample[-1],self.sample_list['indexs'])))
         else:
@@ -823,17 +833,23 @@ class Node(object):
 
 
     def train_driver(self,sample_list, for_initial=False):
+        global only_update_once
         obses_t, actions, rewards, obses_tp1, dones = sample_list['obses_t'], sample_list['actions'], sample_list['rewards'], sample_list['obses_tp1'], sample_list['dones']
-        weights,indexs = sample_list['weights'], sample_list['indexs']
+        indexs = sample_list['indexs']
+        if self.tree.forest.prioritized_replay:
+            weights = sample_list['weights']
+        else:
+            weights = np.ones_like(rewards)
         # total distribute completed, before train.
         obses_t = np.array(obses_t)
         actions = np.array(actions)
         rewards = np.array(rewards)
         obses_tp1 = np.array(obses_tp1)
         dones = np.array(dones)
+        # TODO change  np.ones_like(rewards) to weights
         td_error = self.train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards))
         # self.base_model.trainQNetwork(self.sample_list)
-             
+
         if self.update_times * 4 % UPDATE_TARGET_INTERVAL == 0:
             print("update target times %s, global times %s, agent name %s"%(self.update_times, self.tree.forest.time_step_holder.get_time(),self.agent_name))
             self.update_target()
@@ -843,9 +859,13 @@ class Node(object):
             # self.session.sess.run(tf.assign(self.t_val,self.time_step))
             # self.session.save_state(self.path, self.time_step)
         if not for_initial:
-            new_priorities = np.abs(td_error) + self.tree.forest.prioritized_replay_eps
-            self.tree.forest.replay_buffer.update_priorities(indexs, new_priorities)
-            self.update_times +=1
+            if not only_update_once:
+                logging.info("[update priority] agent name:%s, sample amount: %s,global times %s"%(self.agent_name,len(obses_t),self.tree.forest.time_step_holder.get_time()))
+                if self.tree.forest.prioritized_replay:
+                    new_priorities = np.abs(td_error) + self.tree.forest.prioritized_replay_eps
+                    self.tree.forest.replay_buffer.update_priorities(indexs, new_priorities)
+                # only_update_once = True
+            self.update_times +=1            
         return td_error
 
     def clear_node_sample_number(self):
@@ -861,38 +881,38 @@ class Node(object):
         return state
 
 
-def sample_list_reset():
-    sample_list = {
-        'obses_t':[],
-        'actions':[],
-        'rewards':[],
-        'obses_tp1':[],
-        'dones':[],
-        'weights':[],
-        'indexs':[]
-    }
-    return sample_list
-
-def sample_list_add_data(sample_list,data):
-    obs_t, action, reward, obs_tp1, done, _, _ ,weight, index = tuple(data)
-    # pass deplicate data.
-    if index in sample_list['indexs']:
-        return False
-    sample_list['obses_t'].append(np.array(obs_t, copy=False))
-    sample_list['actions'].append(np.array(action, copy=False))
-    sample_list['rewards'].append(reward)
-    sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
-    sample_list['dones'].append(done)
-    sample_list['weights'].append(weight)
-    sample_list['indexs'].append(index)
-    return True
-
-def sample_list_add_sample_list(sample_list_1, sample_list_to_copy):
-    sample_list_2 = copy.deepcopy(sample_list_to_copy)
-    sample_list_1['obses_t'].extend(sample_list_2['obses_t'])
-    sample_list_1['actions'].extend(sample_list_2['actions'])
-    sample_list_1['rewards'].extend(sample_list_2['rewards'])
-    sample_list_1['obses_tp1'].extend(sample_list_2['obses_tp1'])
-    sample_list_1['dones'].extend(sample_list_2['dones'])
-    sample_list_1['weights'].extend(sample_list_2['weights'])
-    sample_list_1['indexs'].extend(sample_list_2['indexs'])
+# def sample_list_reset():
+#     sample_list = {
+#         'obses_t':[],
+#         'actions':[],
+#         'rewards':[],
+#         'obses_tp1':[],
+#         'dones':[],
+#         'weights':[],
+#         'indexs':[]
+#     }
+#     return sample_list
+#
+# def sample_list_add_data(sample_list,data):
+#     obs_t, action, reward, obs_tp1, done, _, _ ,weight, index = tuple(data)
+#     # pass deplicate data.
+#     if index in sample_list['indexs']:
+#         return False
+#     sample_list['obses_t'].append(np.array(obs_t, copy=False))
+#     sample_list['actions'].append(np.array(action, copy=False))
+#     sample_list['rewards'].append(reward)
+#     sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
+#     sample_list['dones'].append(done)
+#     sample_list['weights'].append(weight)
+#     sample_list['indexs'].append(index)
+#     return True
+#
+# def sample_list_add_sample_list(sample_list_1, sample_list_to_copy):
+#     sample_list_2 = copy.deepcopy(sample_list_to_copy)
+#     sample_list_1['obses_t'].extend(sample_list_2['obses_t'])
+#     sample_list_1['actions'].extend(sample_list_2['actions'])
+#     sample_list_1['rewards'].extend(sample_list_2['rewards'])
+#     sample_list_1['obses_tp1'].extend(sample_list_2['obses_tp1'])
+#     sample_list_1['dones'].extend(sample_list_2['dones'])
+#     sample_list_1['weights'].extend(sample_list_2['weights'])
+#     sample_list_1['indexs'].extend(sample_list_2['indexs'])

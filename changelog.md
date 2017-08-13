@@ -149,6 +149,7 @@
   - 八个叶子节点的时候效果很差，我要试一下算法是不是有问题，仍然用全分布来做尝试。
   - 一次分支难道只划分一个点嘛？
   - 初始化的功能要加上去，因为节点一多，我们要脱离一开始的过拟合的状态所需要的数据量就大！
+
 - 2017-8-7：
   - 不仅仅八个节点差，现在的实验结果看来，节点的每次增加，都会导致结果变差，我要用全分布来检验我的算法的准确性：迭代次数两百万，使用4个网络节点
   - 对于算法的进一步调整（做完全分布结果，证明原本的过程是没问题之后）：
@@ -158,17 +159,17 @@
     - 如何仍然不行：我担心这个算法效果不在于速度变快，而在于更为稳定，并且能够在后期更好的爆发:
       - 提高迭代次数进行再次测试
       - 选择换环境
+
 - 2017-8-10:
   - 检查出问题：$s_{t}$和$s_{t+1}$ 来自不同网络节点的时候更新会不符合公式，并且增加了initial的流程
-
   - 目前首先进行全分布的性能测试：
     - 目前看来，8节点的性能没有原本的baseline好，即使在全分布的情况下，那么我的问题是，是不是深度越高，这个性能越差，即使是全分布？
       - 我要验证一个答案：这个性能下降的程度，是否与节点的个数有关，以此来确定下一步的改进方向！
       - 测试结果初步证实，这个差距和节点个数没有关系，不同深度的决策树表现出了差不多的训练效果，并且都比baseline略差
         - 有没有可能是初始化引起的？
-        - 探索的概率中的time step应该由每一个网络节点来决定还是由整体的树来决定？
+        - 探索的概率中的time step应该由每一个网络节点来决定还是由整体的树来决定. 设置了全局的time_step之后，问题似乎已经得到了解决
       - baseline经过了五次实验，结果证明确实有比较好的效果，所以，不要质疑baseline的准确度
-      - ​
+
 
   - 接着，测试耗时，耗时测试的结果：
 
@@ -191,11 +192,29 @@
        318913  204.598    0.001 17720.492    0.056 Agent.py:243(update_to_all_model)
      13416335  203.012    0.000 1143.932    0.000 session.py:397(__init__)
       8312668  188.182    0.000 7373.202    0.001 Agent.py:107(predict)
-
     ```
 
     - 耗时操作最多的都在tensorflow那边，这里我们无力改变的。
     - update_prorities 可能能改变
     - list_to_dic和 multiarray.array 这两个函数可能能减少，想办法减少我们过程中的转化次数
     - 其他的耗时相对于整体的9小时而言，只用了10分钟不到，感觉已经没有必要调优了
+
+- 2017-8-13
+
+  - 目前，全分布实验已经通过，4节点的情况下已经和baseline取得了相当的效果，接下来，我们要把算法应用于真正的决策树分布中了!
+
+
+### bug fix
+
+- openai  simple.py 里面是不是有一行代码写错了？？
+
+  ```python
+                  if prioritized_replay:
+                      experience = replay_buffer.sample(batch_size, beta=beta_schedule.value(time_step))
+                      (obses_t, actions, rewards, obses_tp1, dones, weights, batch_idxes) = experience
+                  else:
+                      obses_t, actions, rewards, obses_tp1, dones = replay_buffer.sample(batch_size)
+                      weights, batch_idxes = np.ones_like(rewards), None
+                  td_errors = train(obses_t, actions, rewards, obses_tp1, dones, np.ones_like(rewards)) # 这里的ones_like(rewards) 应该是 weights
+  ```
 

@@ -94,7 +94,7 @@ def main():
     directory = create_dir('bs',2000000,'Boxing-ram-v4','[372, 64]','[gamma=0.99][no-prioritized][simple-reward]',0,1)
     plot_single_exp(directory,'k')
     # directory = create_dir('bs',2000000,'Boxing-ram-v4','[372, 64]','[gamma=0.99][new-prioritized][simple-reward]',3,1)
-    # plot_single_exp(directory,'r')
+    # plot_single_exp(directory,'m')
 
     # directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[prioritized][initial][update-all]',3,1)
     # plot_single_exp(directory,'r')
@@ -111,10 +111,19 @@ def main():
     # plot_single_exp(directory,'r')
     # directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][prioritized][not-initial-clear][update-all]',3,1)
     # plot_single_exp(directory,'g')
-
-    directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][single-prioritized][not-initial-clear][update-all]',2,1)
+    # 
+    # directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][prioritized][not-initial-clear][update-all][failed-prior-duplicate-update]',3,1)
+    # plot_single_exp(directory,'r')
+    directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][single-prioritized][not-initial-clear][update-all][simple]',2,1)
     plot_single_exp(directory,'g')
-
+    directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][single-prioritized][not-initial-clear][update-all]',2,1)
+    plot_single_exp(directory,'y')
+    # 
+    directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][single-prioritized][not-initial-clear][update-all][simple]',2,1)
+    plot_single_exp(directory,'m')
+    # 
+    directory = create_dir('dt',2000000,'Boxing-ram-v4','[372, 64]','[global-time][random-prioritized][not-initial-clear][update-all]',2,1)
+    plot_single_exp(directory,'r')
     # game crazyClimber
     # directory = create_dir('bs',3000000,'CrazyClimber-ram-v4','[376, 64]','[gamma=0.99][prioritized]')
     # plot_single_exp(directory,'b')

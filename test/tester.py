@@ -16,25 +16,25 @@ import argparse
 # import Main
 def run_experiment(argv):
 	parser = argparse.ArgumentParser()
-	parser.add_argument('--repeat_times', type=int, default=1,
+	parser.add_argument('--repeat_times', type=int, default=4,
 	                   help='experiment times')
 	parser.add_argument(
-	    '--depth_min', type=int, default=2, help='min deap of tree')
+	    '--depth_min', type=int, default=3, help='min deap of tree')
 	parser.add_argument(
-	    '--depth_max', type=int, default=2, help='max deap of tree')
+	    '--depth_max', type=int, default=4, help='max deap of tree')
 	parser.add_argument(
 	    '--forest_min', type=int, default=1, help='min amount of tree')
 	parser.add_argument(
 	    '--forest_max', type=int, default=1, help='max amount of tree')
 
 	parser.add_argument(
-	    '--game_name', type=str, default='Boxing-ram-v4',  help='game name')
+	    '--game_name', type=str, default='CartPole-v1',  help='game name')
 	parser.add_argument(
 	    '--test_circle', type=int,default=10000, help='test circle')
 	parser.add_argument(
 	    '--test_time_step', type=int, default=20000, help='test time step amount')
 	parser.add_argument(
-	    '--iter_times', type=int, default=2000000, help='test time step amount')
+	    '--iter_times', type=int, default=1500000, help='test time step amount')
 
 	args = parser.parse_args(argv[1:])
 	# usage:
@@ -43,8 +43,10 @@ def run_experiment(argv):
 	# print(args.test_cicle)
 	# output:20000
 	import Main
-	for j in range(args.forest_min,args.forest_max+2, 1):
-		for i in range(args.depth_min,args.depth_max+2, 1):
+	skepj = 1
+	skepi = 1
+	for j in range(args.forest_min,args.forest_max+skepj, skepj):
+		for i in range(args.depth_min,args.depth_max+skepi, skepi):
 			for t in range(0,args.repeat_times):
 				config ={
 					'times':t,

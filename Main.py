@@ -14,12 +14,13 @@ import time
 logging.basicConfig(level=logging.INFO)
 # sys.path.append("DQN/game/")
 import gym
+from gym import wrappers
 gym.undo_logger_setup()
 
 from Global_Function import list_to_dic, dic_to_list
 from Global_Variables import REWARD, ACTION, TERMINAL
 from Global_Variables import REWARD_GOAL, OBSERVE
-from Global_Variables import RECORD_PREFIX_PATH
+from Global_Variables import RECORD_PREFIX_PATH, VIDEO_PREFIX_PATH
 from Global_Variables import TimeStepHolder
 from Base_Data_Structure import DataFeature
 from Data_Sample import simple_sampling, get_features_from_origin_sample
@@ -36,13 +37,14 @@ from combine_baselines import logger
 
 def main(config):
     # initial constant value
-    MODEL_LIST = [372, 64]
+    MODEL_LIST = [128, 32]# [64, 8]# [372, 64]
     model_type = 'mlp_'+str(MODEL_LIST)
     exp_type = 'dt'
     use_gpu = 'gpu'
+    split_amount = 1
     start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s[global-time][single-prioritized][not-initial-clear][update-all]/' % (
-        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'])
+    exp_file_name = 'exp_%s_iter_%s_game_%s_model_%s_depth_%s_forest_%s_split_%s[global-time][single-prioritized][no-initial-clear][split-v0.1][stable-explore]/' % (
+        exp_type, config['iter_times'], config['game_name'], model_type, config['depth'], config['forest_size'],split_amount)
     test_points = 100
     test_circle = config['iter_times']/test_points
     GAME_NAME = config['game_name']
@@ -57,16 +59,18 @@ def main(config):
     csvfile = csv.writer(scv_f)
 
     # initial game agent
-    game_engine = ClippedRewardsWrapper(
-        ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME))))
+    game_engine = gym.make(GAME_NAME)
+    # game_engine = ClippedRewardsWrapper(
+    #     ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME))))
 
     # get initial sample data.
-    sampling_amount = 5000
+    sampling_amount = 10000
     file_name = '../dataset/'+GAME_NAME+'-sample' + \
         str(sampling_amount)+'prioritized'+'.csv'
     # TODO for [0,255] only
-    data_range = list(zip(game_engine.observation_space.low/255,
-                          game_engine.observation_space.high/255))
+    range_unit = 1
+    data_range = list(zip(game_engine.observation_space.low/range_unit,
+                          game_engine.observation_space.high/range_unit))
     data_range = list_to_dic(data_range)
     if os.path.isfile(file_name):
         sample_data = DataFeature(file_name, actions=game_engine.action_space.n,
@@ -79,10 +83,10 @@ def main(config):
     # build forest data structure.
     forest_agent = ForestAgent(
         sample_data, config, exp_file_name+'test-time: %s/' % start_exp_time, 
-        itera_times=config['iter_times'], model_type=MODEL_LIST, use_gpu=use_gpu,time_step_holder=time_step_holder)
+        itera_times=config['iter_times'], model_type=MODEL_LIST, use_gpu=use_gpu,time_step_holder=time_step_holder,split_amount=split_amount)
     logging.info("before build ")
     forest_agent.build()
-
+    game_engine = wrappers.Monitor(game_engine,VIDEO_PREFIX_PATH+exp_file_name+'test-time: %s' % start_exp_time)
     # initial model
 
     # data_iter = iter(sample_data)
@@ -162,8 +166,8 @@ def main(config):
         #     game_engine.render()
         # else:
         if time_step_holder.get_time() > OBSERVE and time_step_holder.get_time() % train_freq == 0:
-            # forest_agent.update_model()
-            forest_agent.update_to_all_model()
+            forest_agent.update_model()
+            # forest_agent.update_to_all_model()
 
         if len(episode_rewards) % 10 == 0 and terminal:
             # if time_step % 200 == 0:
@@ -190,9 +194,9 @@ def main(config):
             (current_feature, current_state) = forest_agent.getInitState()
 
             test_episode_rewards = [0.0]
-
-            another_engine = ScaledFloatFrame(
-                EpisodicLifeEnv(gym.make(GAME_NAME)))
+            another_engine = gym.make(GAME_NAME)
+            # another_engine = ScaledFloatFrame(
+            #     EpisodicLifeEnv(gym.make(GAME_NAME)))
             test_ob = another_engine.reset()
             forest_agent.setInitState(test_ob)
             episode_times = 0

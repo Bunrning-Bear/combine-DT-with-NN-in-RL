@@ -51,35 +51,35 @@ class SampleList(object):
             # pass deplicate data.
             if index in self.sample_list['indexs']:
                 return False
-            self.sample_list['obses_t'].append(np.array(obs_t, copy=False))
-            self.sample_list['actions'].append(np.array(action, copy=False))
-            self.sample_list['rewards'].append(reward)
-            self.sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
-            self.sample_list['dones'].append(done)
-            self.sample_list['weights'].append(weight)
-            self.sample_list['indexs'].append(index)
+            self._sample_list['obses_t'].append(np.array(obs_t, copy=False))
+            self._sample_list['actions'].append(np.array(action, copy=False))
+            self._sample_list['rewards'].append(reward)
+            self._sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
+            self._sample_list['dones'].append(done)
+            self._sample_list['weights'].append(weight)
+            self._sample_list['indexs'].append(index)
         else:
-            obs_t, action, reward, obs_tp1, done, _, _, index  = tuple(data)
+            obs_t, action, reward, obs_tp1, done, _, _, weight, index  = tuple(data)
             if index in self.sample_list['indexs']:
                 return False
-            self.sample_list['obses_t'].append(np.array(obs_t, copy=False))
-            self.sample_list['actions'].append(np.array(action, copy=False))
-            self.sample_list['rewards'].append(reward)
-            self.sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
-            self.sample_list['dones'].append(done)
-            self.sample_list['indexs'].append(index)
+            self._sample_list['obses_t'].append(np.array(obs_t, copy=False))
+            self._sample_list['actions'].append(np.array(action, copy=False))
+            self._sample_list['rewards'].append(reward)
+            self._sample_list['obses_tp1'].append(np.array(obs_tp1, copy=False))
+            self._sample_list['dones'].append(done)
+            self._sample_list['indexs'].append(index)
             return True
 
     def sample_list_add_sample_list(self, sample_list_to_copy):
-        sample_list_2 = copy.deepcopy(sample_list_to_copy)
-        self.sample_list['obses_t'].extend(sample_list_2['obses_t'])
-        self.sample_list['actions'].extend(sample_list_2['actions'])
-        self.sample_list['rewards'].extend(sample_list_2['rewards'])
-        self.sample_list['obses_tp1'].extend(sample_list_2['obses_tp1'])
-        self.sample_list['dones'].extend(sample_list_2['dones'])
-        self.sample_list['indexs'].extend(sample_list_2['indexs'])
+        # sample_list_2 = copy.deepcopy(sample_list_to_copy)
+        self._sample_list['obses_t'].extend(sample_list_to_copy['obses_t'])
+        self._sample_list['actions'].extend(sample_list_to_copy['actions'])
+        self._sample_list['rewards'].extend(sample_list_to_copy['rewards'])
+        self._sample_list['obses_tp1'].extend(sample_list_to_copy['obses_tp1'])
+        self._sample_list['dones'].extend(sample_list_to_copy['dones'])
+        self._sample_list['indexs'].extend(sample_list_to_copy['indexs'])
         if self.priority_replay:
-            self.sample_list['weights'].extend(sample_list_2['weights'])
+            self._sample_list['weights'].extend(sample_list_to_copy['weights'])
 
 class DataFeature(object):
     """

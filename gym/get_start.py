@@ -10,6 +10,7 @@
 
 import gym
 from gym import envs
+from gym import wrappers
 import time
 envs = envs.registry.all()
 
@@ -63,7 +64,10 @@ envs = envs.registry.all()
 # AirRaid-ramNoFrameskip-v0 :pass
 # Breakout-ram-v4: pass
 # Pong-ram-v4 : pass
-env = gym.make('Centipede-ram-v4')
+game = 'MountainCarContinuous-v0'
+env = gym.make(game)
+# env = gym.make('Centipede-ram-v4')
+env = wrappers.Monitor(env,'./record/'+game)
 print("ob space is %s, action space is %s"%(env.observation_space,env.action_space.n))
     # game = gym.make(str(env))
 # env.reset()
@@ -86,13 +90,17 @@ print("ob space is %s, action space is %s"%(env.observation_space,env.action_spa
 for i_episode in range(1):
     observation = env.reset()
     for t in range(10000):
-        env.render()
+        # env.render()
         # print(observation)
         action = env.action_space.sample()
         observation, reward, done, info = env.step(action)
+
         if done:
             print("!!!!!!!!!!!!!!!!Episode finished after {} timesteps".format(t+1))
+            print ("time is %s ac is %s ob is %s \n reward is %s \n info is %s \n"%(t,action,observation,reward,info))
+
+            time.sleep(2)
             env.reset()
         else:
-            # if reward != 0.0:
-            print ("time is %s ac is %s ob is %s \n reward is %s \n info is %s \n"%(t,action,observation,reward,info))
+            if reward != -1:
+                print ("time is %s ac is %s ob is %s \n reward is %s \n info is %s \n"%(t,action,observation,reward,info))

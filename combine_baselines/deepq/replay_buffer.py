@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import logging
 
 from combine_baselines.common.segment_tree import SumSegmentTree, MinSegmentTree
 
@@ -72,12 +73,12 @@ class ReplayBuffer(object):
         idxes = [random.randint(0, len(self._storage) - 1) for _ in range(batch_size)]
         data = []
         for i in idxes:
-            data.append(self._storage[i]+[i])
+            data.append(self._storage[i]+[None, i])
         return data
         # return self._encode_sample(idxes)
 
     def sample_all_data(self):
-        return self._storage
+        return self.sample(len(self._storage))
 
     def clear_data(self):
         self._storage = []
@@ -112,6 +113,7 @@ class PrioritizedReplayBuffer(ReplayBuffer):
 
         self._it_sum = SumSegmentTree(it_capacity)
         self._it_min = MinSegmentTree(it_capacity)
+        self._has_update_idx = set()
         self._max_priority = 1.0
 
     def add(self, *args, **kwargs):
@@ -192,7 +194,7 @@ class PrioritizedReplayBuffer(ReplayBuffer):
     def sample_all_data(self,beta):
         return self.sample(len(self._storage),beta)
 
-    def update_priorities(self, idxes, priorities):
+    def update_priorities(self, idxes, priorities,repeat_count, message):
         """Update priorities of sampled transitions.
 
         sets priority of transition at index idxes[i] in buffer
@@ -211,7 +213,17 @@ class PrioritizedReplayBuffer(ReplayBuffer):
         for idx, priority in zip(idxes, priorities):
             assert priority > 0
             assert 0 <= idx < len(self._storage)
+            len1 = len(self._has_update_idx)
+            self._has_update_idx.add(idx)
+            if len1 == len(self._has_update_idx):
+                # logging.info("duplicate :"+message)
+                if random.randint(1,repeat_count) % repeat_count != 0:
+                    # logging.info("continue")
+                    continue
             self._it_sum[idx] = priority ** self._alpha
             self._it_min[idx] = priority ** self._alpha
 
             self._max_priority = max(self._max_priority, priority)
+
+    def clear_has_update(self):
+        self._has_update_idx = set()

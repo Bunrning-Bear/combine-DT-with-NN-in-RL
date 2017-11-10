@@ -45,7 +45,7 @@ def parse_args():
 def main(name_scope):
     with U.make_session(8):
 
-        prioritized_replay = True
+        prioritized_replay = False
         prioritized_replay_alpha = 0.6
         prioritized_replay_beta0 = 0.4
         prioritized_replay_beta_iters = None
@@ -53,17 +53,18 @@ def main(name_scope):
         buffer_size=50000
         batch_size =32
         # use cnn reduce after 1e5 time step
-        model_list = [372, 64]# pong failed [256,32]# [512,128,32]# # 
+        model_list = [128, 32]# [64, 16]# pong failed [256,32]# [512,128,32]# # 
         model_type = 'mlp_'+str(model_list)
         exp_type = 'baselines'
         # game = "Boxing-ram-v4" # 15w , 128->18
-        game = "Boxing-ram-v4" # just soso, 128->9
+        game = "Pendulum-v0"
+        # game = "Boxing-ram-v4" # just soso, 128->9
         # game = "Pong-ram-v4" # just soso, 128->12
-        itera_times = 2000000
+        itera_times = 1000000
         # game = "AirRaid-ramNoFrameskip-v0"
         start_exp_time = time.strftime("%Y-%m-%d--%H:%M:%S", time.localtime())
-        exp_file_name = 'exp_%s_game_%s_model_%s[gamma=0.99][new-prioritized][simple-reward]/' % (
-            exp_type, game, model_type)
+        exp_file_name = 'exp_%s_game_%s_model_%s_iter_%s[gamma=0.99][no-prioritized][simple-reward]/' % (
+            exp_type, game, model_type, str(itera_times))
 
 
         test_points = 100
@@ -84,7 +85,8 @@ def main(name_scope):
         scv_f = open(record_path, 'w')
         csvfile = csv.writer(scv_f)
         # Create the environment
-        env = ClippedRewardsWrapper(ScaledFloatFrame(EpisodicLifeEnv(gym.make(game))))
+        env = gym.make(game)
+        # env = ClippedRewardsWrapper(ScaledFloatFrame(EpisodicLifeEnv(gym.make(game))))
 
         # Create all the functions necessary to train the model
         act, train, update_target, debug = deepq.build_train(
@@ -186,8 +188,8 @@ def main(name_scope):
                 current_ob = obs
                 # (current_feature, current_state) = forest_agent.getInitState()
                 test_episode_rewards = [0.0]
-
-                another_engine = ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME)))
+                another_engine = gym.make(GAME_NAME)
+                # another_engine = ScaledFloatFrame(EpisodicLifeEnv(gym.make(GAME_NAME)))
                 test_ob = another_engine.reset()
                 episode_times = 0
                 while episode_times < 40:

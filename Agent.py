@@ -38,9 +38,9 @@ global only_update_once
 class ForestAgent(object):
     CURRENT_FEATURE=0
     TARGET_FEATURE=1
-    def __init__(self, data, config, exp_file_name, itera_times, model_type=[372, 64], use_gpu='gpu',time_step_holder=None):
+    def __init__(self, data, config, exp_file_name, itera_times, model_type=[372, 64], use_gpu='gpu',time_step_holder=None, split_amount=2):
         self._data = data
-        self.prioritized_replay = True
+        self.prioritized_replay = False
         self.prioritized_replay_beta_iters = None
         self.size = config['forest_size']
         self.config= config
@@ -48,15 +48,7 @@ class ForestAgent(object):
         self.prioritized_replay_alpha = 0.6
         self.prioritized_replay_beta0 = 0.4
         self.prioritized_replay_eps = 1e-6
-        if self.prioritized_replay:
-            self.replay_buffer = PrioritizedReplayBuffer(REPLAY_MEMORY,alpha=self.prioritized_replay_alpha)
-            if self.prioritized_replay_beta_iters is None:
-                self.prioritized_replay_beta_iters = self.itera_times
-            self.beta_schedule = LinearSchedule(self.prioritized_replay_beta_iters,
-                                           initial_p=self.prioritized_replay_beta0,
-                                           final_p=1.0)
-        else:
-            self.replay_buffer = ReplayBuffer(REPLAY_MEMORY)
+        self._reset_replay_buffer()
         self.trees = []
         self.current_state = []
         self.current_feature = []
@@ -65,6 +57,7 @@ class ForestAgent(object):
         self.batch_size = 32 # * (2**(config['depth']))
         self.model_type = model_type
         self.use_gpu = use_gpu
+        self.split_amount = split_amount
 
     @property
     def data(self):
@@ -84,7 +77,18 @@ class ForestAgent(object):
                               model_path=self.model_path, depth=self.config['depth'])
             self.trees.append(tree)
 
-    def setInitState(self,observation):
+    def _reset_replay_buffer(self):
+        if self.prioritized_replay:
+            self.replay_buffer = PrioritizedReplayBuffer(REPLAY_MEMORY,alpha=self.prioritized_replay_alpha)
+            if self.prioritized_replay_beta_iters is None:
+                self.prioritized_replay_beta_iters = self.itera_times
+            self.beta_schedule = LinearSchedule(self.prioritized_replay_beta_iters,
+                                           initial_p=self.prioritized_replay_beta0,
+                                           final_p=1.0)
+        else:
+            self.replay_buffer = ReplayBuffer(REPLAY_MEMORY)
+
+    def setInitState(self, observation):
         """ input observation get from environment, change type to state.
 
         :param observation: list
@@ -182,7 +186,8 @@ class ForestAgent(object):
         if type(self.current_state) == dict:
             raise Exception("current state type error")
 
-        self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state, float(record['terminal']),self.current_feature , record['target_ob'])
+        self.replay_buffer.add(self.current_state, record['action'], record['reward'], new_state,
+                               float(record['terminal']), self.current_feature, record['target_ob'])
         # self.replayMemory.append([self.current_state,record['action'],record['reward'],new_state,record['terminal'],record['feature']])
         # if len(self.replayMemory) > REPLAY_MEMORY:
         #     self.replayMemory.popleft()
@@ -219,6 +224,8 @@ class ForestAgent(object):
 
         # Step 1: obtain random minibatch from replay memory
         # logging.info("in sampling")
+        global only_update_once
+        only_update_once = False
         if self.prioritized_replay:
             minibatch = self.replay_buffer.sample(self.batch_size, beta=self.beta_schedule.value(self.time_step_holder.get_time()))
         else:
@@ -237,6 +244,8 @@ class ForestAgent(object):
             for activated_node in tree.activated:
                 activated_node.train_driver(activated_node.sample_list)
             tree.clear_leaf_sample()
+            if self.prioritized_replay:
+                self.replay_buffer.clear_has_update()
         # logging.info(" training completed")
         # step4 clear state.
 
@@ -268,6 +277,8 @@ class ForestAgent(object):
             for activated_node in tree.activated:
                 activated_node.train_driver(activated_node.sample_list)
             tree.clear_leaf_sample()
+            if self.prioritized_replay:
+                self.replay_buffer.clear_has_update()
             # TODO 暂时不需要清空samplenumber参数，因为后面已经不再使用每一个节点的参数个数了。
             # tree.tree.clear_node_sample_number()
         self.clear_activated_node()
@@ -288,7 +299,7 @@ class ForestAgent(object):
             tree.initial_model()
         # step3: clear state.
         self.clear_activated_node()
-        self.replay_buffer.clear_data()
+        self._reset_replay_buffer()
 
     def clear_activated_node(self):
         for tree in self.trees:
@@ -302,7 +313,11 @@ def get_values(data, attr):
     """
     return data.uni_attri_value[attr]
 
-def split_values(data, attr):
+def get_random_value(min_value, max_value):
+   random_value =  float(random.randint(int(min_value * PRECISION), int(max_value * PRECISION)))
+   return random_value/PRECISION
+
+def split_values(data, attr,split_amount):
     """
     Creates a list of values in the chosen attribute, 
     including a random value in the attribute range of data set and a MAX VALUE
@@ -315,14 +330,16 @@ def split_values(data, attr):
     min_value = extr_value[0] if extr_value[0] > range_value[0] + min_gap else range_value[0] + min_gap
     max_value = extr_value[1] if extr_value[1] < range_value[1] - min_gap else range_value[1] - min_gap
     print("split_values [min: %s, max: %s], extr_value [%s,%s]"%(min_value,max_value,extr_value[0],extr_value[1]))
-    random_value = float(random.randint(int(min_value * PRECISION), int(max_value * PRECISION)))
-    selected_val = random_value/PRECISION
-    return [selected_val, MAX_VALUE]
+    select_value_list = set()
+    for i in range(0,split_amount):
+        select_value_list.add(get_random_value(min_value, max_value))
+    select_value_list.add(MAX_VALUE)
+    return sorted(list(select_value_list))
 
 def random_choose_attribute(data, attributes):
     """
     [change]Choose a attribute just randomly.
-
+ 
     Args:
         data: datafeatrue instance
         attributes: a list of attribute. eg. ['a', 'c', 'b', 'd']
@@ -376,10 +393,11 @@ def create_decision_tree(attributes, class_attr, wrapper,current_deep, father_no
         is_continuous = wrapper.get_attribute_type(best) == ATTR_TYPE_CONTINUOUS
         if is_continuous:
             # just split into two part randomly 
-            values = split_values(wrapper.data,best)
+            values = split_values(wrapper.data,best, wrapper.forest.split_amount)
         else:
             values = get_values(wrapper.data,best)
         logging.info("the values of this best attributes:[%s]"%(values))
+        node.branch_sort_keys = values
         for val in values:
             # Create a subtree for the current value under the "best" field
             # [question] for countinus attribute, should we regard it as discrete points. means create a node for each points?
@@ -538,7 +556,7 @@ class Tree(object):
         t._tree_index = index
         t.model_path = kwargs['model_path']
         t.depth = kwargs['depth']
-        t.max_deep = len(data.attribute_names)/2 if len(data.attribute_names)/2 <= t.depth else t.depth
+        t.max_deep = t.depth # len(data.attribute_names)/2 if len(data.attribute_names)/2 <= t.depth else t.depth
         # [todo] sample_count 
         t.sample_count = len(data)
         t._head_node = create_decision_tree(
@@ -657,6 +675,7 @@ class Node(object):
         self.leaf_attributes = []
         self._branches = {} # {v:Node}
         self.father_node = None
+        self.branch_sort_keys = []
         # self.base_model = MLPClassifier(hidden_layer_sizes=(40,), max_iter=70, alpha=1e-4,
         #             solver='sgd', verbose=False, tol=1e-4, random_state=1,
         #             learning_rate_init=.2,learning_rate='adaptive', warm_start=True)
@@ -683,6 +702,7 @@ class Node(object):
                     else:
                         raise Exception("use_gpu value error, value: %s"%self.tree.forest.use_gpu)
                     # [todo] just suit to one dim observation now.
+                    logging.info("model type is %s"%model_type)
                     self.act, self.train, self.update_target, self.debug = deepq.build_train(
                         session=self.session,
                         make_obs_ph=lambda name: U.BatchInput((observations,), name=name),
@@ -692,7 +712,8 @@ class Node(object):
                         gamma=0.99
                     )
                     exploration_fraction = 0.1
-                    self.exploration = LinearSchedule(schedule_timesteps=exploration_fraction*self.tree.forest.itera_times, initial_p=1.0, final_p=FINAL_EPSILON)
+                    temp_iter = 1000000
+                    self.exploration = LinearSchedule(schedule_timesteps=exploration_fraction*temp_iter, initial_p=1.0, final_p=FINAL_EPSILON)
                     self.t_val = tf.Variable(1)
                     self.session.initialize()
                     self.session.init_saver()
@@ -755,9 +776,13 @@ class Node(object):
         Retrieves the unique set of values seen for the given attribute
         at this node.
         """
-        ret = list(self._branches.keys())
-        assert len(set(ret))==len(ret),"repeated key found"
-        return ret
+        # new_ret = self.branch_sort_keys
+        # ret = list(self._branches.keys())
+        # sort_ret = sorted(ret)
+        # if new_ret != sort_ret:
+        #     raise Exception("get branches key error ret %s , sort_ret %s"%(ret, sort_ret))
+        # assert len(set(ret))==len(ret),"repeated key found"
+        return self.branch_sort_keys
 
     def distribute(self, sample, select_feature, depth=0):
         """
@@ -780,8 +805,9 @@ class Node(object):
             sample[0] = self.filter_state(sample[0])
             sample[3] = self.filter_state(sample[3])
             self.sample_list.sample_list_add_data(sample)
-            if (not self._tree.activated.add(self) ) and len(self.sample_list)==0:
-                raise Exception(print("%s insert failed index: %s sample list %s"%(self.agent_name,sample[-1],self.sample_list['indexs'])))
+            self.tree.activated.add(self)
+            # if (not self._tree.activated.add(self) ) and len(self.sample_list)==0:
+            #     raise Exception(print("%s insert failed index: %s sample list %s"%(self.agent_name,sample[-1],self.sample_list['indexs'])))
         else:
             assert attr_value in self._branches,"find attribute value not in any branch when distribute."
             # elif attr_value in self._branches:
@@ -836,6 +862,7 @@ class Node(object):
         global only_update_once
         obses_t, actions, rewards, obses_tp1, dones = sample_list['obses_t'], sample_list['actions'], sample_list['rewards'], sample_list['obses_tp1'], sample_list['dones']
         indexs = sample_list['indexs']
+        # TODO weight可以在sample层同意处理掉！
         if self.tree.forest.prioritized_replay:
             weights = sample_list['weights']
         else:
@@ -860,10 +887,11 @@ class Node(object):
             # self.session.save_state(self.path, self.time_step)
         if not for_initial:
             if not only_update_once:
-                logging.info("[update priority] agent name:%s, sample amount: %s,global times %s"%(self.agent_name,len(obses_t),self.tree.forest.time_step_holder.get_time()))
+                # logging.info("[update priority] agent name:%s, sample amount: %s,global times %s"%(self.agent_name,len(obses_t),self.tree.forest.time_step_holder.get_time()))
                 if self.tree.forest.prioritized_replay:
+                    msg = "agent name:%s, sample amount: %s,global times %s"%(self.agent_name,len(obses_t),self.tree.forest.time_step_holder.get_time())
                     new_priorities = np.abs(td_error) + self.tree.forest.prioritized_replay_eps
-                    self.tree.forest.replay_buffer.update_priorities(indexs, new_priorities)
+                    self.tree.forest.replay_buffer.update_priorities(indexs, new_priorities, 2, msg)
                 # only_update_once = True
             self.update_times +=1            
         return td_error

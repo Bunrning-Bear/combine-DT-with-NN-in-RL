@@ -32,6 +32,7 @@ REPLAY_MEMORY = 50000 # number of previous transitions to remember
 # baisc_model_name_prefix
 MODEL_PREFIX_PATH = 'saved_networks/'
 RECORD_PREFIX_PATH ='record/'
+VIDEO_PREFIX_PATH = 'video/'
 MODEL_NAME = 'basic_qnetwork'
 # MODEL_PATH ='saved_networks_%s_forest_%s_depth/'%(str(FOREST_SIZE),str(MAX_DEPTH))
 
